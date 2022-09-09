@@ -1,0 +1,270 @@
+.btn-primary {
+    &-filled {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $black !important;
+        background-color: $primary;
+        border-radius: 30px;
+        border: 1px solid $primary;
+
+        &:hover {
+            @include easeOut;
+            font-weight: 450;
+            background-color: darken($primary,15%);
+            
+        }
+        &:focus {
+            font-weight: 450;
+            background-color: darken($primary,15%);
+        }
+        &:hover {
+            @include easeOut;
+            font-weight: 450;
+            background-color: darken($primary,15%);
+        }
+    }
+    
+    &-outline {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        border: 1px solid $black;
+        border-radius: 30px;
+        color: $black;
+    
+        &:hover {
+            @include easeOut;
+        }
+        &:focus {
+            box-shadow: $primary;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $primary;
+            outline: none;
+        }
+    }
+
+    &-rounded {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $black;
+        background-color: $primary;
+        border-radius: 30px;
+
+        &:hover {
+            @include easeOut;
+            // border: 1px solid $primary;
+        }
+        &:focus {
+            box-shadow: $primary;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $primary;
+            outline: none;
+        }
+    }
+}
+
+.btn-secondary {
+    &-filled {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $white;
+        background-color: $black;
+        border-radius: 30px;
+        border: 1px solid $black;
+
+        &:hover {
+            @include easeOut;
+            color: $primary;
+            background-color: $black;
+            border: 1px solid $black;
+        }
+        &:focus {
+            box-shadow: $black;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $black;
+            outline: none;
+        }
+    }
+    
+    &-outline {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        border: 1px solid $black;
+        color: $white;
+        border-radius: 30px;
+    
+        &:hover {
+            @include easeOut;
+            border: 1px solid $black;
+            color: $primary;
+            background-color: $black;
+        }
+        &:focus {
+            box-shadow: $black;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $black;
+            outline: none;
+        }
+    }
+
+    &-rounded {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $white;
+        background-color: $black;
+        border-radius: 30px;
+
+        &:hover {
+            @include easeOut;
+            color: $primary;
+            background-color: $black;
+            border: 1px solid $black;
+        }
+        &:focus {
+            box-shadow: $black;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $black;
+            outline: none;
+        }
+    }
+
+    &-rounded-outline {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $black;
+        border-radius: 30px;
+        border: 1px solid $black;
+
+        &:hover {
+            @include easeOut;
+        }
+    }
+}
+
+.btn-home{
+    &-rounded-outline {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 8px 14px;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        text-align: center;
+        color: $black;
+        border-radius: 27px;
+        border: 2px solid $black;
+
+        &:hover {
+            @include easeOut;
+        }
+    }
+}
+
+.btn-danger {
+    &-filled {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $black !important;
+        background-color: $danger;
+        border-radius: 30px;
+        border: 1px solid $danger;
+
+        &:hover {
+            @include easeOut;
+            font-weight: 450;
+            background-color: darken($danger,15%);
+            
+        }
+        &:focus {
+            font-weight: 450;
+            background-color: darken($danger,15%);
+        }
+        &:hover {
+            @include easeOut;
+            font-weight: 450;
+            background-color: darken($danger,15%);
+        }
+    }
+    
+    &-outline {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        border: 1px solid $black;
+        border-radius: 30px;
+        color: $black;
+    
+        &:hover {
+            @include easeOut;
+        }
+        &:focus {
+            box-shadow: $primary;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $primary;
+            outline: none;
+        }
+    }
+
+    &-rounded {
+        position: static;
+        padding: 10px 16px;
+        font-style: normal;
+        font-weight: $regular-weight;
+        text-align: center;
+        color: $black;
+        background-color: $danger;
+        border-radius: 30px;
+
+        &:hover {
+            @include easeOut;
+            // border: 1px solid $primary;
+        }
+        &:focus {
+            box-shadow: $danger;
+            outline: none;
+        }
+        &:active {
+            box-shadow: $danger;
+            outline: none;
+        }
+    }
+}
+
