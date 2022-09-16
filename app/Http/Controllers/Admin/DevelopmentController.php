@@ -9,11 +9,11 @@ use App\Models\Sensorunit;
 use App\Models\Treespecies;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
-use DB, DateTime, DateTimeZone;
+use DB, DateTime, DateTimeZone, Log;
 use App\Models\Api;
 use App\Models\Irrigationrun;
 use App\Models\Customer;
-class DevelopmentController
+class DevelopmentController extends Controller
 {
     
     public function compass() {
@@ -101,28 +101,36 @@ class DevelopmentController
     public static function convertWM($value, $temperature, $a, $b) {
         if (($value != -10) && ($value > - 100)) {
             $woodtemp = $temperature;
+            if($value < 100300) {
+                $woodmoisture = 101;
+            }
             $M_ohm = $value / 1000000.0;
             $temporary = (log10(log10($M_ohm) + 1) - $b) / $a;
             $woodmoisture = ($temporary + 0.567 - 0.026 * ($woodtemp + 2.8) + 0.000051 * (pow(($woodtemp + 2.8),2))) / (0.881 * (pow((1.0056),($woodtemp  + 2.8))));
+            $woodmoisture_1 = ($temporary + 0.567 - 0.026 * ($woodtemp + 2.8) + 0.000051 * (pow(($woodtemp + 2.8),2))) / (0.881 * (pow((1.0056),($woodtemp  + 2.8))));
+            
         } else {
             $woodmoisture = 0;
         }
         // LIMIT 101000 for 90
-        if ($woodmoisture > 90) {
-            $woodmoisture = 90;
+        if ($woodmoisture > 100) {
+            return '> 100';
         } else if ($woodmoisture < 6) {
-            $woodmoisture = 6;
+            return '< 6';
         }
         round($woodmoisture,2);
-        return $woodmoisture;
+        Log::info('Woodmoisture content: ' .round($woodmoisture,2). ' By user: '.Auth::user()->user_name);
+        return round($woodmoisture,2);
     }
 
     public function developmentWoodMoisture($id, $temperature, $ohm){
         $treespecie = Treespecies::find($id);
         $mohm = $ohm / 1000000.0;
         $result = self::convertWM($ohm, $temperature, $treespecie->specie_value_a, $treespecie->specie_value_b);
-        $text = '<div class="rcorners3 bg-white"><div class="m-2"><b>Calculations of '.$treespecie->specie_name.'</b> <hr><div class="row"><div class="col-md-6">Ohm ' .$ohm. '</div><div class="col-md-6">M Ohm ' .$mohm.' </div></div><hr><div class="row"><div class="col-md-6">Temperature ' .$temperature. '</div></div><hr><div class="row"><div class="col-md-6 mb-1">Wood Moisture ' .round($result,4). ' %</div></div></div></div>';
-        
+        $result_2 = self::convertWM($ohm, ($temperature+10), $treespecie->specie_value_a, $treespecie->specie_value_b);
+        $result_3 = self::convertWM($ohm, ($temperature-10), $treespecie->specie_value_a, $treespecie->specie_value_b);
+
+        $text = '<div class="rcorners3 bg-white"><div class="m-2"><b>Calculations of WMC: </b>'.$treespecie->specie_name.' at ' .$mohm. ' MΩ <hr><div class="row"><div class="col-md-4 text-center">' .($temperature-10). '°C</div><div class="col-md-4 text-center">' .$temperature.'°C </div><div class="col-md-4 text-center">' .($temperature+10).'°C </div></div><hr><div class="row"><div class="col-md-4 mb-1 text-center">' .$result_3. '%</div><div class="col-md-4 mb-1 text-center">' .$result. '%</div><div class="col-md-4 mb-1 text-center">' .$result_2. '%</div></div></div></div>';
         return json_encode($text);
     }
 
