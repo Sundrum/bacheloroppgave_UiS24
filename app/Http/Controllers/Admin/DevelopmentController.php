@@ -107,7 +107,6 @@ class DevelopmentController extends Controller
             $M_ohm = $value / 1000000.0;
             $temporary = (log10(log10($M_ohm) + 1) - $b) / $a;
             $woodmoisture = ($temporary + 0.567 - 0.026 * ($woodtemp + 2.8) + 0.000051 * (pow(($woodtemp + 2.8),2))) / (0.881 * (pow((1.0056),($woodtemp  + 2.8))));
-            $woodmoisture_1 = ($temporary + 0.567 - 0.026 * ($woodtemp + 2.8) + 0.000051 * (pow(($woodtemp + 2.8),2))) / (0.881 * (pow((1.0056),($woodtemp  + 2.8))));
             
         } else {
             $woodmoisture = 0;
