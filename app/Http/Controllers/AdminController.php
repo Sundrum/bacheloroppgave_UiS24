@@ -92,8 +92,11 @@ class AdminController extends Controller {
 
         foreach ($data as &$unit) {
             if (isset($unit['serialnumber'])) {
+                if($unit['customer_id_ref'] == 1 || $unit['customer_id_ref'] == 18 || $unit['customer_id_ref'] == 3 || $unit['customer_id_ref'] == 285) continue;
                 $serial = trim($unit['serialnumber']);
                 $status = Status::where('serialnumber', $serial)->where('variable', 'swversion')->first();
+                $imei = Status::where('serialnumber', $serial)->where('variable', 'imei')->first();
+
                 if (isset($unit['sensorunit_lastconnect'])) {
                     if(!in_array(trim($unit['serialnumber']),$sorted)){
                         $variables = Unit::getVariables($serial);
@@ -103,6 +106,9 @@ class AdminController extends Controller {
                                     array_push($sorted, trim($unit['serialnumber']));
                                     $unit['irrigation_state'] = trim($variable['value']);
                                     $unit['swversion'] = $status;
+                                    if(isset($imei)) {
+                                        $unit['imei'] = $imei['value'];
+                                    }
                                     $result[] = $unit;
                                 }
                             }
@@ -155,8 +161,9 @@ class AdminController extends Controller {
             } else { 
                 $dataset[$i][4] = null; 
             }
-            if($row['sensorunit_lastconnect']) { $dataset[$i][5]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][4] = null; }
-            $dataset[$i][6] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-primary-filled">Open</button></a>';
+            if($row['imei']) { $dataset[$i][5]=$row['imei']; } else { $dataset[$i][5] = null; }
+            if($row['sensorunit_lastconnect']) { $dataset[$i][6]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][6] = null; }
+            $dataset[$i][7] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-primary-filled">Open</button></a>';
 
             $i++;
         }

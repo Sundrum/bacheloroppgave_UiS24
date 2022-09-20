@@ -22,39 +22,20 @@ class IrrigationController extends Controller
     // admin/irrigationstatus/+id
     public function get($serial){
         $data = Status::where('serialnumber',$serial)->get();
-        // $latest_data = Sensorlatestvalues::where('serialnumber',$serial)->where('probenumber', 5)->latest('timestamp')->first();
         $latest_data = Sensorlatestvalues::where('serialnumber',$serial)->latest('timestamp')->get();
-        // dd(  $latest_data1);
         $variable = array();
         $variable['unit'] = Sensorunit::where('serialnumber', $serial)->first();
-        // dd($variable);
-        // dd($variable['unit']);
+
 
         $variable['unit']['last_time'] = self::convertToSortableDate($variable['unit']['sensorunit_lastconnect']);
 
-        // $movetime = date('Y-m-d h:m:s', strtotime("-10 days", strtotime(now())));
-        // $now = date('Y-m-d h:m:s', strtotime("-2 days", strtotime(now())));
-        // $mytime = now();
-        // $now = $mytime->toDateTimeString();
-        // if(strtotime($movetime) < strtotime('-3 days')){
-        //     dd('older' , $movetime, $now);
-        // } else {
-        //     $unitinformation = Api::getApi('sensorunits/data?serialnumber='.$serial.'&timestart='.$movetime.'&timestop='.$now);
-
-        //     // $currentRun = Unit::getCurrentRun($serial);
-        //     dd('newer', $movetime,$unitinformation, $now);
-        // }
         foreach ($data as $row) {
             $name = trim($row->variable);
             $variable[$name]['value'] = $row->value;
             $variable[$name]['time'] = $row->dateupdated;
-            // $result->$name->time = trim($row->dateupdated);
-            // $result[trim($variable->variable)]->time = trim($variable->dateupdated);
         }
-        // dd($data);
         $queue = CommandController::queueList($serial);
         $variable['firmware'] = CommandController::firmwareList($serial);
-        // dd($variable);
         return view('admin.sensorunit.irrigationstatus',compact('variable', 'queue', 'latest_data')); // admin/irrigationstatus/+id
     }
 

@@ -38,24 +38,26 @@ class CommandController extends Controller
         $data = Api::getQueue('queue/list?serialnumber='.$serial);
         $result = array();
         $i = 0;
-        foreach ($data['result'] as $row) {
-            $result[$i][0] = trim($row['queue_id']);
-            if ($row['statusid'] == 1) {
-                $result[$i][1] = '<div class="ml-2 spinner-border text-secondary" role="status"><span class="sr-only">Loading...</span></div>';
-            } else if($row['statusid'] == 2){
-                $result[$i][1] = '<i class="ml-3 fas fa-lg fa-arrow-right text-secondary"></i>';
-            } else if($row['statusid'] == 3){
-                $result[$i][1] = '<div class="ml-2 spinner-grow text-success" role="status"><span class="sr-only">Loading...</span></div>';
-            } else if($row['statusid'] == 4){
-                $result[$i][1] = '<i class="ml-3 fa fa-lg fa-check text-success" aria-hidden="true"></i>';
-            } else if($row['statusid'] == 5){
-                $result[$i][1] = '<i class="ml-3 fas fa-lg fa-times text-danger"></i>';
-            } else {
-                $result[$i][1] = $row['statusid'];
+        if(isset($data['result'])) {
+            foreach ($data['result'] as $row) {
+                $result[$i][0] = trim($row['queue_id']);
+                if ($row['statusid'] == 1) {
+                    $result[$i][1] = '<div class="ml-2 spinner-border text-secondary" role="status"><span class="sr-only">Loading...</span></div>';
+                } else if($row['statusid'] == 2){
+                    $result[$i][1] = '<i class="ml-3 fas fa-lg fa-arrow-right text-secondary"></i>';
+                } else if($row['statusid'] == 3){
+                    $result[$i][1] = '<div class="ml-2 spinner-grow text-success" role="status"><span class="sr-only">Loading...</span></div>';
+                } else if($row['statusid'] == 4){
+                    $result[$i][1] = '<i class="ml-3 fa fa-lg fa-check text-success" aria-hidden="true"></i>';
+                } else if($row['statusid'] == 5){
+                    $result[$i][1] = '<i class="ml-3 fas fa-lg fa-times text-danger"></i>';
+                } else {
+                    $result[$i][1] = $row['statusid'];
+                }
+                $result[$i][2] = trim($row['comment']).' - '.trim($row['data']);
+                $result[$i][3] = self::convertToDate($row['dateadded']);
+                $i++;
             }
-            $result[$i][2] = trim($row['comment']).' - '.trim($row['data']);
-            $result[$i][3] = self::convertToDate($row['dateadded']);
-            $i++;
         }
         $data = json_encode($result);
         return $data;
@@ -64,15 +66,18 @@ class CommandController extends Controller
     public static function firmwareList($serial){
         $data = Api::getQueue('firmware/list?serialnumber='.$serial);
         $result = array();
-        if (count($data) > 0 && isset($data['result'])) {
-            foreach ($data['result'] as $row) {
-                if($row['released']) {
-                    $result['released'][] = $row;
-                } else {
-                    $result['notreleased'][] = $row;
+        if(isset($data['result'])) {
+            if (count($data) > 0) {
+                foreach ($data['result'] as $row) {
+                    if($row['released']) {
+                        $result['released'][] = $row;
+                    } else {
+                        $result['notreleased'][] = $row;
+                    }
                 }
             }
         }
+
         return $result;
     }
     // GET VARIABLES

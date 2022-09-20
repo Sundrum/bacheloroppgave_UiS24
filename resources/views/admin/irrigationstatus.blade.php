@@ -108,11 +108,12 @@
             },
             columns: [
                 { title: "Status" },
-                { title: "Serienummer" },
-                { title: "Navn" },
-                { title: "Versjon" },
-                { title: "Kunde" },
-                { title: "Siste levert" },
+                { title: "Serialnumber" },
+                { title: "Name" },
+                { title: "Version" },
+                { title: "Customer" },
+                { title: "IMEI" },
+                { title: "Last Connected" },
                 { title: "" },
             ],
         });
