@@ -85,6 +85,10 @@ Route::post('/admin/update/product', [App\Http\Controllers\Admin\ProductControll
 
 Route::get('/admin/map/irrigationstatus', [App\Http\Controllers\Admin\IrrigationController::class, 'map']);
 Route::get('/admin/irrigationstatus/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'get']);
+Route::get('/admin/irrigationstatus/irrigationrun/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getRun']);
+Route::get('/admin/irrigationstatus/irrigation/run/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getIrrigationRun']);
+Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateRun'])->name('runupdate');
+
 Route::get('/admin/irrigationstatus/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);
 Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus']);

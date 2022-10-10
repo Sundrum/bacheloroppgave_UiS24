@@ -296,6 +296,24 @@
             </div>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-12 card card-rounded">
+            <div class="row mt-4 mb-2">
+                <div class="col-8">
+                    <h3>Runtable</h3>
+                </div>
+                <div class="col-4 my-auto">
+                </div>
+                <div class="col">
+                    <p class="mb-0">To select multiple rows use shift and click.</p>
+                    <p class="mt-0">Select all - will select all entries. Notice that you might not see every entrie.</p>
+                </div>
+            </div>
+            <table id="runtable" class="display" width="100%"></table>
+            <div class="row  justify-content-center mb-3">
+            </div>
+        </div>
+    </div>
     @include('admin.sensorunit.changeserialnumber')
     @include('admin.firmware.upload')
 
@@ -483,6 +501,36 @@ function variables(serial){
             } else {
                 alert('Marker rader du ønsker å slette.');
             }
+        });
+
+        var dataSet_2 = @php echo $variable['runtable']; @endphp;
+        var runtable = $('#runtable').DataTable({
+            data: dataSet_2,
+            pageLength: 10, // Number of entries
+            responsive: true, // For mobile devices
+            deferRender: true,
+            select: true,
+            columnDefs : [{ 
+                responsivePriority: 1, targets: 4,
+                'targets': 0,
+                'checboxes': {
+                    'selectRow': true
+                },
+            }],
+            sorting: [ [3,'ASC']],
+            columns: [
+                { title: "#" },
+                { title: "Run ID" },
+                { title: "Start" },
+                { title: "End" },
+                { title: "Start Time" },
+                { title: "End Time" },
+            ],
+        });
+        $('#runtable tbody').on( 'click', 'tr', function () {
+            var datarow = runtable.row(this).data();
+            var id = datarow[0];
+            window.location='irrigationrun/'+id;
         });
     });
     

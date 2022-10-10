@@ -9,6 +9,7 @@ use App\Models\Sensorlatestvalues;
 use App\Models\Unit;
 use App\Models\Status;
 use App\Models\Api;
+use App\Models\Irrigationrun;
 use App\Models\SensorunitVariable;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CommandController;
@@ -36,7 +37,39 @@ class IrrigationController extends Controller
         }
         $queue = CommandController::queueList($serial);
         $variable['firmware'] = CommandController::firmwareList($serial);
+        $variable['runtable'] = self::runtable($serial);
         return view('admin.sensorunit.irrigationstatus',compact('variable', 'queue', 'latest_data')); // admin/irrigationstatus/+id
+    }
+
+    public static function getRun($id) {
+        $run = Irrigationrun::find($id);
+        return view('admin.sensorunit.irrigationrun', compact('run'));
+    }
+
+    public static function getIrrigationRun ($id) {
+        $run = Irrigationrun::find($id);
+        $result = array();
+        $result = $run;
+        $url = 'sensorunits/data?serialnumber='.$run->serialnumber.'%26timestart='.substr($run->irrigation_starttime, 0, 19).'%26timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp';
+        $data = Api::getApi($url);
+        return $data;
+        return $result;
+    }
+
+    public static function runtable($serial) {
+        $runtable = Irrigationrun::where('serialnumber', $serial)->get();
+        $result = array();
+        $i = 0;
+        foreach($runtable as $run) {
+            $result[$i][0] = $run->log_id;
+            $result[$i][1] = $run->irrigation_run_id;
+            $result[$i][2] = $run->irrigation_startpoint;
+            $result[$i][3] = $run->irrigation_endpoint;
+            $result[$i][4] = self::convertToSortableDate($run->irrigation_starttime);
+            $result[$i][5] = self::convertToSortableDate($run->irrigation_endtime);
+            $i++;
+        }
+        return json_encode($result);
     }
 
     public function updateStatusPage(){
