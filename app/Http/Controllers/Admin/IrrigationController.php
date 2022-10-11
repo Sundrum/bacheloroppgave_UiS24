@@ -41,21 +41,6 @@ class IrrigationController extends Controller
         return view('admin.sensorunit.irrigationstatus',compact('variable', 'queue', 'latest_data')); // admin/irrigationstatus/+id
     }
 
-    public static function getRun($id) {
-        $run = Irrigationrun::find($id);
-        return view('admin.sensorunit.irrigationrun', compact('run'));
-    }
-
-    public static function getIrrigationRun ($id) {
-        $run = Irrigationrun::find($id);
-        $result = array();
-        $result = $run;
-        $url = 'sensorunits/data?serialnumber='.$run->serialnumber.'%26timestart='.substr($run->irrigation_starttime, 0, 19).'%26timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp';
-        $data = Api::getApi($url);
-        return $data;
-        return $result;
-    }
-
     public static function runtable($serial) {
         $runtable = Irrigationrun::where('serialnumber', $serial)->get();
         $result = array();
@@ -71,6 +56,55 @@ class IrrigationController extends Controller
         }
         return json_encode($result);
     }
+
+    public static function getRun($id) {
+        $run = Irrigationrun::find($id);
+        $url_1 = 'sensorunits/data?serialnumber='.trim($run->serialnumber).'&timestart='.substr($run->irrigation_starttime, 0, 19).'&timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp';
+        $data = Api::getApi($url_1);
+        $i = 0;
+        $temp = array();
+        if (isset($data) && is_array($data['result'])) {
+            foreach ($data['result'] as $row) {
+                $temp[$row['timestamp']][0] =$row['timestamp'];
+                $temp[$row['timestamp']][$row['probenumber']] = (float)$row['value'];
+            }
+        }
+        $log = json_encode(array_values($temp));
+        return view('admin.sensorunit.runtable', compact('run', 'log'));
+    }
+
+    public static function getIrrigationRun($id) {
+        $run = Irrigationrun::find($id);
+        $result = array();
+        $result = $run;
+        $url_1 = 'sensorunits/data?serialnumber='.trim($run->serialnumber).'&timestart='.substr($run->irrigation_starttime, 0, 19).'&timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp';
+        $data = Api::getApi($url_1);
+        $i = 0;
+        $temp = array();
+        if (isset($data) && is_array($data['result'])) {
+            foreach ($data['result'] as $row) {
+                $temp[$row['timestamp']][0] = self::convertToSortableDate($row['timestamp']);
+                $temp[$row['timestamp']][$row['probenumber']] = (float)$row['value'];
+            }
+        }
+        $result['data'] = array_values($temp);
+        return json_encode($result);
+    }
+
+    public static function updateRun(Request $req) {
+        $run = Irrigationrun::find($req->log_id); // Get the log_id in runtable
+        $latlng = $req->lat.','.$req->lng; // Combind lat and lng before storing the value.
+        if($req->point_id == 1) {
+            // Update Startmarker
+            $run->irrigation_startpoint = $latlng;
+        } else if ($req->point_id == 2) {
+            // Update Endmarker
+            $run->irrigation_endpoint = $latlng;
+        }
+        $result = $run->save(); // Save the data
+        return json_encode($result);
+    }
+
 
     public function updateStatusPage(){
         $data = Sensorunit::where('serialnumber', 'LIKE', '%21-1020%' )->get();
