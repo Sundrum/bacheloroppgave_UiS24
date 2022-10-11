@@ -1,0 +1,15 @@
+.btn-flag {
+    width: 50px;
+    opacity: 0.5;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-flag-active {
+    width: 50px;
+    opacity: 1;}
+
+.btn-flag:hover {
+    opacity: 1;
+    transform: scale(1.5, 1.5);
+}
