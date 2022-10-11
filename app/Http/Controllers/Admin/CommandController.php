@@ -21,15 +21,18 @@ class CommandController extends Controller
         $data = Api::getQueue('queue/list');
         $result = array();
         $i = 0;
-        foreach ($data['result'] as $row) {
-            $result[$i][0] = $row['queue_id'];
-            $result[$i][1] = $row['serialnumber'];
-            $result[$i][2] = $row['data'];
-            $result[$i][3] = $row['statustext'];
-            $result[$i][4] = self::convertToDate($row['dateupdated']);
-            $result[$i][5] = self::convertToDate($row['dateadded']);
-            $i++;
+        if(isset($data['result']) && is_array($data['result'])) {
+            foreach ($data['result'] as $row) {
+                $result[$i][0] = $row['queue_id'];
+                $result[$i][1] = $row['serialnumber'];
+                $result[$i][2] = $row['data'];
+                $result[$i][3] = $row['statustext'];
+                $result[$i][4] = self::convertToDate($row['dateupdated']);
+                $result[$i][5] = self::convertToDate($row['dateadded']);
+                $i++;
+            }
         }
+        
         $data = json_encode($result);
         return view('admin.firmware.view', compact('data'));
     }
