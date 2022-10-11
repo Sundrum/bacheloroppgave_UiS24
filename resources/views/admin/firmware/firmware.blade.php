@@ -38,6 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                @if(isset($firmware['result']))
                     @foreach ($firmware['result'] as $row)
                         <tr>
                             <td></td>
@@ -52,6 +53,7 @@
                             @endif
                         </tr>
                     @endforeach
+                @endif
                 </tbody>
                 <tfoot>
                     <tr>
