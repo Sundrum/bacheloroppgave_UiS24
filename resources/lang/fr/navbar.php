@@ -18,5 +18,6 @@ return [
     'logout' => 'Déconnexion',
     'selectuser' => 'Select user',
     'admin' => 'Admin',
+    'demo' => 'Demo',
 
 ];

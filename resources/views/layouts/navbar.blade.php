@@ -55,6 +55,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="/myaccount"><i class="fas fa-lg fa-user"></i> @lang('navbar.myaccount')</a>
+                  <a class="dropdown-item" href="/demo_uk"><i class="fas fa fa-laptop"></i> @lang('navbar.demo')</a>
                   <a class="dropdown-item" href="/support"><i class="fas fa-lg fa-wrench"></i>  @lang('navbar.support')</a>
 
                   <a class="dropdown-item" href="/logout"

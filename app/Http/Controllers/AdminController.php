@@ -26,7 +26,6 @@ class AdminController extends Controller {
     }
 
     public function dashboard() {
-
         $units = Sensorunit::all();
         $products = Product::all();
         $customers = Customer::all();
