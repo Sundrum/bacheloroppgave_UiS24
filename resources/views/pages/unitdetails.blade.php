@@ -222,7 +222,7 @@ function getProbes(serialnumber) {
       "_token": token,
     },
     success: function (data) {
-      // console.log(data);
+      console.log(data[1]);
       for (var i in data) {
         var unittype_id = data[i].unittype_id;
         var probenr = data[i].sensorprobes_number;

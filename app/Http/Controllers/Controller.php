@@ -35,6 +35,8 @@ class Controller extends BaseController
     public function dashboard() 
     {
         if(self::checkSubscription() == 0) return view('pages.subscriptionfailed');
+        if(self::checkCustomer() == 287) return view('test_folder.demo_uk');
+
         $irrigationunits = Unit::getLatestIrrigation();
         // dd($irrigationunits);
         $irrigationunits = DashboardController::processIrrigationArray($irrigationunits);
@@ -359,6 +361,16 @@ class Controller extends BaseController
         } else {
             return 0;
         } 
+    }
+
+    public function checkCustomer() {
+        if (Session::get('user_id')) {
+            $user_id = Session::get('user_id');
+        } else {
+            $user_id = Auth::user()->user_id;
+        }
+        $user = User::find($user_id);
+        return $user->customer_id_ref;
     }
 
 }
