@@ -134,7 +134,7 @@ Route::post('/sensorsettings', [App\Http\Controllers\SettingsController::class, 
 
 Route::post('/customeradmin/user/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteUser']);
 Route::post('/customeradmin/user/update', [App\Http\Controllers\CustomerAdminController::class, 'updateUser']);
-Route::post('/customeradmin/access/update', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
+Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
 
 /***
  * Support routes 
