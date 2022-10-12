@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Sensorunit;
 use App\Models\Customervariables;
 use App\Mail\InfoMail;
-use Redirect, Log, Mail, DB;
+use Redirect, Log, Mail, DB, Config;
 
 
 class CustomerController extends Controller
@@ -101,14 +101,15 @@ class CustomerController extends Controller
             $customernumber = $req->customernumber;
             
             $create_db = self::createDB($customernumber);
-            $feedback_string= 'Feedback';
             if($create_db) {
+                $subject_mail = 'New customer database';
                 $feedback_string = 'New database created for '.$customernumber;
-                Log::info('New database created for '.$customernumber);
+                Log::info($feedback_string);
                 Log::info($create_db);
             } else {
-                $feedback_string = 'Failed to create new database for '.$customernumber;
-                Log::info('Failed to create new database for '.$customernumber);
+                $subject_mail = 'Error - Creating new customer database';
+                $feedback_string = 'According to a system problem, a new database for '.$customernumber.' could not be created. You should examine the Laravel log to see what caused the issue.';
+                Log::info($feedback_string);
                 Log::info($create_db);
             }
 
@@ -118,11 +119,13 @@ class CustomerController extends Controller
                 'string'=>$feedback_string
             );
 
-            $admin_email = 'vegard@7sense.no';
-            $admin_name = 'Vegard Steinstø';
-            Mail::to($admin_email)->send(new InfoMail($data));
-            dd('s');
-
+            $admin_email = env('ADMIN_EMAIL', 'vegard@7sense.no');
+            $admin_name = env('ADMIN_NAME', 'Vegard L. Steinstø');
+            Log::info('Sent mail to admin: '.$admin_name.' - '.$admin_email);
+            Mail::send(['html' => 'email.admin.newcustomer'], $data, function($message) use ($admin_email, $admin_name) {
+                $message->from('portal@7sense.no', '7Sense Portal');
+                $message->to($admin_email, $admin_name)->subject('New Customer Database');
+            });
             $variable = 'customer_variables_irrigation_email';
             $value = $req->customer_variables_irrigation_email;
             Customer::updateAlertSettings($customernumber, $variable, $value);
@@ -202,14 +205,26 @@ class CustomerController extends Controller
     public function createDB($customernumber) {
         $temp = explode('-',$customernumber);
         $number = $temp[1];
-        
-        $string = 'CREATE DATABASE sensordata_'.$number.' WITH TEMPLATE=sensordata_template';
-        //$result = DB::statement($string);
-        $result = false;
-        if($result) {
+
+        self::changeDBConnection("sensordata_".$number);
+        try { 
+            $result = DB::connection('7sensor')->select('SELECT * FROM messages'); 
+        } catch(\Illuminate\Database\QueryException $ex){ 
+            Log::info($ex->getMessage()); 
+            // Note any method of class PDOException can be called on $ex.
+        }
+
+        if(isset($result)) {
             return 1;
         } else {
             return 0;
         }
+    }
+
+    // Function to change database connection for database.php -> 7sensor.
+    // Config 7sensor is used for customer databases (sensordata_xxxx), and needs to be change before obtaining data from DB.
+    // The function use $db_name as input, and needs to be the fullname of the database you are trying to connect to.
+    public function changeDBConnection($db_name) {
+        Config::set('database.connections.7sensor.database', $db_name);
     }
 }

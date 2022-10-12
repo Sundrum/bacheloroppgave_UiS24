@@ -79,6 +79,21 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        '7sensor' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => '7portal',
+            'username' => env('DB_USERNAME', 'admin_db'),
+            'password' => env('DB_PASSWORD', 'onesnes78'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
     ],
 
     /*

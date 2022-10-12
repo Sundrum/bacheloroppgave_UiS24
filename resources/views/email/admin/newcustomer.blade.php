@@ -7,9 +7,8 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <h1>{{$mailData['string']}}</h1>
-    <p>This might need your immediate attention.</p>
-    <p>Best regards</p>
-    <p>7Sense Portal</p>
+    <p>{{$string}}</p>
+    <br>
+    <p>7Sense Portal @ Laravel</p>
 </body>
 </html>
