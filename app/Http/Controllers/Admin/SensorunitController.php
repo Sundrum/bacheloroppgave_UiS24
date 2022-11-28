@@ -13,7 +13,7 @@ use App\Models\User;
 use App\Models\Sensoraccess;
 use App\Models\Cases;
 use App\Models\Servicepersons;
-use App\Models\Service_status;
+use App\Models\Servicestatus;
 use Redirect, DB;
 
 class SensorunitController extends Controller
@@ -97,7 +97,7 @@ class SensorunitController extends Controller
     public function oneCase($id) {
         $data = Cases::find($id);
         $customer = Customer::find($data->customer_id_ref);
-        $service_status = Service_status::get();
+        $service_status = Servicestatus::get();
         $service_persons = Servicepersons::get();
 
         return view('admin.sensorunit.cases', compact('data', 'customer', 'service_status', 'service_persons'));
@@ -110,7 +110,7 @@ class SensorunitController extends Controller
             $customer->sensorunits = Sensorunit::orderBy("serialnumber")->where("customer_id_ref", $customer->customer_id)->get();
         }
         // dd($customers[1]);
-        $service_status = Service_status::get();
+        $service_status = Servicestatus::get();
         $service_persons = Servicepersons::get();
 
         return view('admin.sensorunit.cases', compact( 'customers', 'service_status', 'service_persons'));
