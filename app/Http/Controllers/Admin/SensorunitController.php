@@ -12,7 +12,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\Sensoraccess;
 use App\Models\Cases;
-use App\Models\Service_persons;
+use App\Models\Servicepersons;
 use App\Models\Service_status;
 use Redirect, DB;
 
@@ -56,13 +56,13 @@ class SensorunitController extends Controller
 
     // cases list
     public function casesIndex() {
-        $data = Cases::getCases();
+        $data = Cases::all();
         // dd($data);
         $result = array();
         $i = 0;
         foreach ($data as $row) {
             $customer = Customer::find($row->customer_id_ref);
-            $service_person = Service_persons::find($row->case_manager);
+            $service_person = Servicepersons::find($row->case_manager);
             $result[$i][0] = $row->case_id;
             $result[$i][1] = $row->serialnumber;
             if(isset($customer->customer_name)){
@@ -98,7 +98,7 @@ class SensorunitController extends Controller
         $data = Cases::find($id);
         $customer = Customer::find($data->customer_id_ref);
         $service_status = Service_status::get();
-        $service_persons = Service_persons::get();
+        $service_persons = Servicepersons::get();
 
         return view('admin.sensorunit.cases', compact('data', 'customer', 'service_status', 'service_persons'));
     }
@@ -111,7 +111,7 @@ class SensorunitController extends Controller
         }
         // dd($customers[1]);
         $service_status = Service_status::get();
-        $service_persons = Service_persons::get();
+        $service_persons = Servicepersons::get();
 
         return view('admin.sensorunit.cases', compact( 'customers', 'service_status', 'service_persons'));
     }
