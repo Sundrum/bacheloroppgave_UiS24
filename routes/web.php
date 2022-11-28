@@ -28,6 +28,14 @@ Route::get('/admin/account', [App\Http\Controllers\Admin\UserController::class, 
 Route::post('/admin/user/update', [App\Http\Controllers\Admin\UserController::class, 'user'])->name('updateUser');
 // Route::post('/admin/user/delete', 'Admin\UserController@delete');
 
+// Admin cases
+Route::get('/admin/sensorunit/cases', [App\Http\Controllers\Admin\SensorunitController::class, 'casesIndex'])->name('cases');
+Route::get('/admin/sensorunit/cases/new', [App\Http\Controllers\Admin\SensorunitController::class, 'newCase'])->name('newcase');
+Route::post('/admin/sensorunit/cases/new', [App\Http\Controllers\Admin\SensorunitController::class, 'createCase']);
+Route::post('/admin/sensorunit/casesdelete', [App\Http\Controllers\Admin\SensorunitController::class, 'deleteCase']);
+Route::get('/admin/sensorunit/cases/{id}', [App\Http\Controllers\Admin\SensorunitController::class, 'oneCase']);
+Route::post('/admin/sensorunit/cases/{id}', [App\Http\Controllers\Admin\SensorunitController::class, 'updateCase']);
+
 // Admin sensorunit
 Route::get('/admin/sensorunit', [App\Http\Controllers\Admin\SensorunitController::class, 'index'])->name('sensorunit');
 Route::get('/admin/newsensorunit', [App\Http\Controllers\Admin\SensorunitController::class, 'new'])->name('adminaddunit');
@@ -88,6 +96,7 @@ Route::get('/admin/irrigationstatus/{serial}', [App\Http\Controllers\Admin\Irrig
 Route::get('/admin/irrigationstatus/irrigationrun/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getRun']);
 Route::get('/admin/irrigationstatus/irrigation/run/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getIrrigationRun']);
 Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateRun'])->name('runupdate');
+
 
 Route::get('/admin/irrigationstatus/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);

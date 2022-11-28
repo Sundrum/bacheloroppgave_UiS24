@@ -11,6 +11,9 @@ use App\Models\Product;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\Sensoraccess;
+use App\Models\Cases;
+use App\Models\Service_persons;
+use App\Models\Service_status;
 use Redirect, DB;
 
 class SensorunitController extends Controller
@@ -51,6 +54,124 @@ class SensorunitController extends Controller
         return $id;
     }
 
+    // cases list
+    public function casesIndex() {
+        $data = Cases::getCases();
+        // dd($data);
+        $result = array();
+        $i = 0;
+        foreach ($data as $row) {
+            $customer = Customer::find($row->customer_id_ref);
+            $service_person = Service_persons::find($row->case_manager);
+            $result[$i][0] = $row->case_id;
+            $result[$i][1] = $row->serialnumber;
+            if(isset($customer->customer_name)){
+                $result[$i][2] = $customer->customer_name;
+            }
+            else if(isset($row->customer_id_ref)){
+                $result[$i][2] = $row->customer_id_ref;
+            }
+            else {
+                $result[$i][2] = 'NaN';
+            }
+            $result[$i][3] = $service_person->service_person_name;
+            $result[$i][4] = $row->service_id;
+            $result[$i][6] = '<button onclick="deleteCase('.$row->case_id.')" class="btn btn-danger">Slett</button>';
+            if($row->status == 2){
+                $result[$i][5] = '<span class="align-top ml-1" style="color:yellow">Under arbeid</span></div>';
+            }
+            elseif($row->status == 3){
+                $result[$i][5] = '<span class="align-top ml-1" style="color:green">Ferdig</span></div>';
+            }
+            else{
+                $result[$i][5] = '<span class="align-top ml-1" style="color:red">Ikke påbegynt</span></div>';
+            }
+            $i++;
+        }
+        $data = json_encode($result);
+        return view('admin.sensorunit.casesindex', compact('data'));
+
+    }
+
+    // exsisting case
+    public function oneCase($id) {
+        $data = Cases::find($id);
+        $customer = Customer::find($data->customer_id_ref);
+        $service_status = Service_status::get();
+        $service_persons = Service_persons::get();
+
+        return view('admin.sensorunit.cases', compact('data', 'customer', 'service_status', 'service_persons'));
+    }
+
+    // create new case
+    public function newCase() {
+        $customers = Customer::orderBy("customer_name")->get();
+        foreach($customers as $customer){
+            $customer->sensorunits = Sensorunit::orderBy("serialnumber")->where("customer_id_ref", $customer->customer_id)->get();
+        }
+        // dd($customers[1]);
+        $service_status = Service_status::get();
+        $service_persons = Service_persons::get();
+
+        return view('admin.sensorunit.cases', compact( 'customers', 'service_status', 'service_persons'));
+    }
+
+    // create new case (post)
+    public function createCase(Request $req) {
+        $case = new Cases();
+        $customer = Customer::find($req["customer_id_ref"]);
+        $case->serialnumber = $req["serialnumber"];
+        $case->serialnumber_2 = $req["serialnumber_2"];
+        $case->customer_id_ref = $req["customer_id_ref"];
+        $case->date_recived = $req["date_recived"];
+        $case->service_id = $req["service_id"];
+        $case->fault_description = $req["fault_comment"];
+        $case->repair_description = $req["rep_comment"];
+        $case->test_ok = $req["test_ok"] == "1" ? true : false;
+        $case->case_manager = $req["service_person"];
+        $case->status = $req["service_status"];
+        // dd($req);
+        $case->save();
+        
+        $customer->customer_visitaddr1 = $req["customer_address"];
+        $customer->customer_visitpostcode = $req["customer_postcode"];
+        $customer->customer_visitcity = $req["customer_city"];
+        
+        $customer->save();
+        return 1;
+    }
+
+    // update exisiting case
+    public function updateCase($id, Request $req) {
+        // return $req;
+        $case = Cases::find($id);
+        $customer = Customer::find($req["customer_id_ref"]);
+        $case->service_id = $req["service_id"];
+        $case->fault_description = $req["fault_comment"];
+        $case->repair_description = $req["rep_comment"];
+        $case->test_ok = $req["test_ok"] == "1" ? true : false;
+        $case->case_manager = $req["service_person"];
+        $case->status = $req["service_status"];
+        $case->save();
+        // dd($req);
+
+        $customer->customer_visitaddr1 = $req["customer_address"];
+        $customer->customer_visitpostcode = $req["customer_postcode"];
+        $customer->customer_visitcity = $req["customer_city"];
+
+        $customer->save();
+        return 1;
+    }
+
+       // delete case
+    public function deleteCase(Request $req) {
+        $case = Cases::find($req->case_id)->delete();
+   
+        return 1;
+
+    }
+
+// add new sensorunit
     public function add(Request $req) {
         $product = Product::find($req->product);
         $serial = $product->productnumber.'-'.$req->serialnumber;
@@ -98,6 +219,7 @@ class SensorunitController extends Controller
     }
 
     public function get($id) {
+        // dd($id);
         $unit = Sensorunit::find($id);
         $unit->access = Sensoraccess::where('serialnumber', $unit->serialnumber)->join('users', 'sensoraccess.user_id','users.user_id')->get();
         $table['customer'] = Customer::all();
@@ -170,7 +292,7 @@ class SensorunitController extends Controller
         } else {
             return 'error';
         }
-    }
+    } 
 
     public function updateSensorunitCustomer(Request $req) {
         if($req->sensorunit_id) {

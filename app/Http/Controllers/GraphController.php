@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\SensorunitVariable;
 use App\Models\Treespecies;
-use DateTimeZone, DateTime, date, Session;
+use DateTimeZone, DateTime, date, Session, Auth;
 
 class GraphController extends Controller {
     /**
@@ -60,7 +60,6 @@ class GraphController extends Controller {
     if ((strpos($serialnumber, '21-1057-') !== false) || (strpos($serialnumber, '21-1058-') !== false) || (strpos($serialnumber, '21-9031-') !== false)) {
       $sensortemp = Unit::getSensorData($serialnumber,$days,0);
     }
-
     foreach($data['result'] as $item) {
       if ((strpos($serialnumber, '21-1046-') !== false)) {
         if ($unittype_id == 24) {

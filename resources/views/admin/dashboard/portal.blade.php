@@ -105,6 +105,13 @@
                     </div>
                 </div>
             </div>
+            <div class="row m-1 mt-1 mb-3">
+                <div class="col-12">
+                    <div class="btn-primary-filled" onclick="window.location='{{ route('cases') }}'">
+                        Cases ({{$count['cases'] ?? ''}})
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-4">

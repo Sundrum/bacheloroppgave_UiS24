@@ -118,7 +118,7 @@ class Api extends Model {
         $client = new Client();
 
         try {
-            $response = $client->get('http://localhost:46001/v1/'.$url, [
+            $response = $client->get(env('API_URL').$url, [
                 'timeout' => 10,
             ]);
             $data = $response->getBody()->getContents();
@@ -137,7 +137,7 @@ class Api extends Model {
         $client = new Client();
 
         try {
-            $response = $client->post('http://localhost:46001/v1/'.$url, [
+            $response = $client->post(env('API_URL').$url, [
                 'timeout' => 10,
             ]);
             $data = $response->getBody()->getContents();
@@ -156,7 +156,7 @@ class Api extends Model {
         $client = new Client();
 
         try {
-            $response = $client->patch('http://localhost:46001/v1/'.$url, [
+            $response = $client->patch(env('API_URL').$url, [
                 'timeout' => 10,
             ]);
             $data = $response->getBody()->getContents();
@@ -177,7 +177,7 @@ class Api extends Model {
         $client = new Client();
 
         try {
-            $response = $client->delete('http://localhost:46001/v1/'.$url, [
+            $response = $client->delete(env('API_URL').$url, [
                 'timeout' => 10,
             ]);
             $data = $response->getBody()->getContents();

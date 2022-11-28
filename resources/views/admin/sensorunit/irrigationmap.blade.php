@@ -13,20 +13,37 @@
 </div>
 <div id="map"></div>
 <script>
-var activeIcon =  new google.maps.MarkerImage("../../img/irr_irrigation_green.png", null, null, null, new google.maps.Size(30,30));
+const parser = new DOMParser();
+const sleepIcon = "../../img/idle_green_marker.svg";
+const sleepIconElement = parser.parseFromString(
+    sleepIcon,
+  "image/svg+xml"
+).documentElement;
+var activeIcon =  new google.maps.MarkerImage("../../img/idle_green_marker.svg", null, null, null, new google.maps.Size(40,40));
+var irrigationIcon =  new google.maps.MarkerImage("../../img/irrigation_blue_marker.svg", null, null, null, new google.maps.Size(40,40));
+
 var activeLatLng, arrayLength;
 var bounds = new google.maps.LatLngBounds();
-
+var myStyles =[
+    {
+        featureType: "poi",
+        elementType: "labels",
+        stylers: [
+              { visibility: "off" }
+        ]
+    }
+];
 
 function initMap() {
 var mapDiv = document.getElementById('map');
     map = new google.maps.Map(mapDiv, {
         center: {lat: 59.390982, lng: 10.460590},
-        // mapTypeId: 'satellite',
+        mapTypeId: 'satellite',
         mapTypeControl: true,
         zoom: 16,
         streetViewControl: false,
-        tilt: 0
+        tilt: 0,
+        styles: myStyles 
     });
     getActive();
     addMarkers();
@@ -45,6 +62,34 @@ function getActive() {
 }
 
 function addMarkers(){
+    marker = new google.maps.Marker({
+        position: new google.maps.LatLng(59.409994,10.448804),
+        icon: activeIcon,
+        map: map
+        
+    });
+
+    // marker = new google.maps.Marker({
+    //         position: new google.maps.LatLng(59.409994,10.448804),
+    //         icon: activeIcon,
+    //         map: map
+    // });
+    bounds.extend(marker.position);
+
+    marker = new google.maps.Marker({
+            position: new google.maps.LatLng(59.433838,10.410157),
+            icon: irrigationIcon,
+            map: map
+    });
+    bounds.extend(marker.position);
+
+    marker = new google.maps.Marker({
+            position: new google.maps.LatLng(59.385768,10.438389),
+            icon: irrigationIcon,
+            map: map
+    });
+    bounds.extend(marker.position);
+
     for (i = 0; i < activeLatLng.length; i++) {
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(activeLatLng[i]['lat'], activeLatLng[i]['lng']),

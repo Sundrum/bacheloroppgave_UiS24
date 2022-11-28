@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Api;
 use App\Models\Product;
 use App\Models\Status;
+use App\Models\Cases;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorunitController;
 use App\Http\Controllers\CustomerController;
@@ -30,11 +31,13 @@ class AdminController extends Controller {
         $products = Product::all();
         $customers = Customer::all();
         $users = User::all();
+        $cases = Cases::all();
 
         $count['units'] = $units->count();
         $count['products'] = $products->count();
         $count['customers'] = $customers->count();
         $count['users'] = $users->count();
+        $count['cases'] = $cases->count();
 
         return view('admin.dashboard', compact('count'));
     }

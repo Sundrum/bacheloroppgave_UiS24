@@ -8,7 +8,7 @@
             <span class="text-muted">Management</span>
         </div>
         <div class="col-sm-7">
-            <a onclick="window.location='newunit'" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a>
+            <a onclick="window.location='newsensorunit'" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a>
         </div>
     </div>
     <table id="unittable" class="display" width="100%"></table>
