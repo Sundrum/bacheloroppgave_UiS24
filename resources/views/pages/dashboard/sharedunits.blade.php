@@ -80,7 +80,7 @@
                                         @endisset
                                         
                                         @isset($sensor['probe'])
-                                            <table align="center" style="position: static; text-align:center; width:60%;">
+                                            <table class="center" style="position: static; text-align:center; width:60%;">
                                                 <tr>
                                                     @foreach ($sensor['probe'] as $probe)
                                                         @isset($probe['header'])
@@ -109,7 +109,7 @@
                                     <div class="collapse" id="collapse{{$sensor['serialnumber']}}">
                                         <div class="card-body bg-light">
                                             <br>
-                                            <table align="center" style="position: static; text-align:center; width:100%;">
+                                            <table class="center" style="position: static; text-align:center; width:100%;">
                                                 <tr>
                                                     @foreach ($sensor['probe'] as $probe)
                                                         @isset($probe['body'])

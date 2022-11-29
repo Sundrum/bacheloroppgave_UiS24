@@ -20,6 +20,10 @@ class DevelopmentController extends Controller
         return view('admin.development.compass');
     }
 
+    public function fleetmanagement() {
+        return view('admin.development.fleetmanagement');
+    }
+
     public function farmfield($serial) {
         $token = request()->token;
         if ($token == '2ablEKS3MT51') {
