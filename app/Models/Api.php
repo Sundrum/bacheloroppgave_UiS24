@@ -192,6 +192,75 @@ class Api extends Model {
         }
     }
 
+    public static function getProxy($url) {
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'Bearer 39792997464529572645497315286824',
+        ];
+
+        try {
+            $response = $client->get(env('API_PROXY').$url, [
+                // 'headers' => $headers,
+                'timeout' => 10,
+            ]);
+            $data = $response->getBody()->getContents();
+            $data = json_decode($data,true);
+            return $data;
+        } catch (RequestException $e) {
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            }
+        }
+    }
+
+    public static function postProxy($url) {
+        $client = new Client();
+        // $headers = [
+        //     'Authorization' => 'Bearer 39792997464529572645497315286824',
+        // ];
+
+        try {
+            $response = $client->post(env('API_PROXY').$url, [
+                // 'headers' => $headers,
+                'timeout' => 10,
+            ]);
+            $data = $response->getBody()->getContents();
+            $data = json_decode($data,true);
+            return $data;
+        } catch (RequestException $e) {
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            }
+        }
+    }
+
+    public static function deleteProxy($url) {
+        $client = new Client();
+        // $headers = [
+        //     'Authorization' => 'Bearer 39792997464529572645497315286824',
+        // ];
+
+        try {
+            $response = $client->delete(env('API_PROXY').$url, [
+                // 'headers' => $headers,
+                'timeout' => 10,
+            ]);
+            $data = $response->getBody()->getContents();
+            $data = json_decode($data,true);
+            return $data;
+        } catch (RequestException $e) {
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            }
+        }
+    }
+
     public static function getDummy($url) {
         $client = new Client();
 
