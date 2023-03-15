@@ -211,110 +211,31 @@ class Unit extends Model
             $result = array();
             $variables = Unit::getVariables($unit['serialnumber']);
             $data = Api::getApi('sensorunits/data/latest?serialnumber='.$unit['serialnumber']);
+            if(strcmp($unit['serialnumber'], '21-1020-AC-00510') == 0) {
+                // dd($unit['serialnumber'], $data);
+            }
             foreach ($data['result'] as $probe) {
                 if ($probe['probenumber'] == '0'); // ??
-                else if ($probe['probenumber'] == '1') ; // ??
-                else if ($probe['probenumber'] == '2') $result['lat'] = trim($probe['value']); // LAT
-                else if ($probe['probenumber'] == '3') $result['lng'] = trim($probe['value']); // LNG
-                else if ($probe['probenumber'] == '4') ; // ??
-                else if ($probe['probenumber'] == '5') ; // ??
-                else if ($probe['probenumber'] == '6') ; // ??
-                else if ($probe['probenumber'] == '7') ; // ??
-                else if ($probe['probenumber'] == '8') ; // ??
-                    // $result['tilt'] = trim($probe['value']); // tilt Z-axis
-                    // $tilt = trim($probe['value']);
-                    // dd($tilt);
-                    // $result['tilt'] =  round(((($tilt*90.0)-90.0)*-1.0),0); // Z-axis
-                /*
-
-                IRRIGATION_STATE_IDLE = 0,                                                                      // Normal IDLE
-                IRRIGATION_STATE_IDLE_CLOCK_WAIT,                                                // IDLE, and waiting for pre-defined (ACK) clock to occur
-                IRRIGATION_STATE_IDLE_ACTIVITY_SENSE,                                         // IDLE and monitor the accellerometer INT signal
-                IRRIGATION_STATE_PRE_SETTLING,                                                        // We are now in STATE settling and monitor the vibrations
-                IRRIGATION_STATE_IRRIGATION,                                                             // We are now in STATE active irrigation
-                IRRIGATION_STATE_POST_SETTLING,                                                     // We are now in STATE SETTLING, after WATER LOST detected
-                IRRIGATION_STATE_IDLE_OFF_SEASON                                                 // We are now in STATE OFF SEASON, report only once per day?
-                
-                <vibr_pressure>,<pressure>,<gnss_time>,<gnss_lat>,<gnss_lng>,<vbat>,<unit_t>,<unit_rh>,<unit_pressure>,<cell_id>,<lac>,<rssi>,<lte_type>
-                4                   5           6           7          8        9       10       11         12             13       14  15      16
-        {
-            "value": "13.13",
-            "probenumber": 18,
-            "timestamp": "2022-08-15 07:25:00.913438+00"
-        },
-        {
-            "timestamp": "2022-08-15 07:24:47.572305+00",
-            "probenumber": 0,
-            event
-            "value": "28.25"
-        },
-        {
-            "probenumber": 1,
-            state
-            "timestamp": "2022-08-15 07:24:47.603144+00",
-            "value": "8"
-        },
-        {
-            "value": "0",
-            "probenumber": 2,
-            tilt_absolute
-            "timestamp": "2022-08-15 07:24:47.628282+00"
-        },
-        {
-            "value": "0",
-            "probenumber": 3,
-            tilt_relative
-            "timestamp": "2022-08-15 07:24:47.654675+00"
-        },
-        {
-            "probenumber": 5,
-            "timestamp": "2022-08-15 07:24:47.717009+00",
-            "value": "2254"
-        },
-        {
-            "probenumber": 9,
-            "timestamp": "2022-08-12 13:58:43.367652+00",
-            "value": "1.54"
-        },
-        {
-            "probenumber": 12,
-            "timestamp": "2022-08-15 07:24:47.919802+00",
-            "value": "3.563"
-        },
-        {
-            "probenumber": 13,
-            "timestamp": "2022-08-15 07:24:47.947308+00",
-            "value": "2"
-        },
-        {
-            "timestamp": "2022-08-15 07:24:47.970157+00",
-            "probenumber": 14,
-            "value": "-1"
-        },
-        {
-            "timestamp": "2022-08-15 07:24:47.997901+00",
-            "probenumber": 15,
-            "value": "0"
-        },
-        {
-            "value": "0.85",
-            "timestamp": "2022-08-15 07:24:48.024384+00",
-            "probenumber": 16
-        }
-
-
-                */
-
-                else if ($probe['probenumber'] == '9') $result['vibration'] = trim($probe['value']); // Vibration
-                else if ($probe['probenumber'] == '10') $result['status'] = trim($probe['value']); // Status
-                else if ($probe['probenumber'] == '11') $result['counter'] = trim($probe['value']); // Counter
-                else if ($probe['probenumber'] == '12') ; // ??
-                else if ($probe['probenumber'] == '13') $result['runid'] = trim($probe['value']); // Run id
-                else if ($probe['probenumber'] == '14') $result['pressure'] = trim($probe['value']); // Pressure
-                else if ($probe['probenumber'] == '15') $result['flowrate'] = trim($probe['value']); // Flow rate
-                else if ($probe['probenumber'] == '16') $result['tilt_relative'] = trim($probe['value']); // tilt relative
-                else if ($probe['probenumber'] == '17') $result['tilt'] = trim($probe['value']); // tilt abs
-                else if ($probe['probenumber'] == '18') $result['flow_velocity'] = trim($probe['value']); // Flow Velocity
+                else if ($probe['probenumber'] == '1') $result['vibration'] = trim($probe['value']); // Vibration
+                else if ($probe['probenumber'] == '2') $result['water_lost'] = trim($probe['value']); // Water Lost
+                else if ($probe['probenumber'] == '3') $result['tilt_alert'] = trim($probe['value']); // Tilt alert
+                else if ($probe['probenumber'] == '4') $result['tilt'] = trim($probe['value']); // tilt abs
+                else if ($probe['probenumber'] == '5') $result['tilt_relative'] = trim($probe['value']); // tilt relative
+                else if ($probe['probenumber'] == '6') ; // ACC X
+                else if ($probe['probenumber'] == '7') ; // ACC Y
+                else if ($probe['probenumber'] == '8') ; // ACC Z
+                else if ($probe['probenumber'] == '9') $result['button_pressed'] = trim($probe['value']); // Button Pressed
+                else if ($probe['probenumber'] == '10') $result['temperature'] = trim($probe['value']); // Temperature
+                else if ($probe['probenumber'] == '11') $result['rh'] = trim($probe['value']); // Relative Humidity
+                else if ($probe['probenumber'] == '12') ; // Unit Barro
+                else if ($probe['probenumber'] == '13') $result['lat'] = trim($probe['value']); // LAT
+                else if ($probe['probenumber'] == '14') $result['lng'] = trim($probe['value']); // LNG
+                else if ($probe['probenumber'] == '15') $result['vbat'] = trim($probe['value']); // Vbat
+                // else if ($probe['probenumber'] == '16') $result['tilt_relative'] = trim($probe['value']); // tilt relative
+                // else if ($probe['probenumber'] == '17') $result['tilt'] = trim($probe['value']); // tilt abs
+                else if ($probe['probenumber'] == '22') $result['pressure'] = trim($probe['value']); // Pressure
+                else if ($probe['probenumber'] == '23') $result['flow_velocity'] = trim($probe['value']); // Flow Velocity
+                //else if ($probe['probenumber'] == '21') $result['flowrate'] = trim($probe['value']); // Flow rate
             }
             
             foreach ($variables['result'] as $variable) {
@@ -338,7 +259,7 @@ class Unit extends Model
                 }
             }
             if (isset($result['irrigation_state'])){
-                if ($result['irrigation_state'] == 1 || $result['irrigation_state'] == 2 || $result['irrigation_state'] == 3 || $result['irrigation_state'] == 4) {
+                if ($result['irrigation_state'] == 4 || $result['irrigation_state'] == 5 || $result['irrigation_state'] == 6 ) {
                     $currentRun = Unit::getCurrentRun($unit['serialnumber']);
                     $coordinates = array();
                     if (is_array($currentRun)) {
@@ -357,6 +278,7 @@ class Unit extends Model
                             if (count($coordinates) > 15) {
                                 $distance_current = self::getDistance($coordinates[$coordinates_length-15]['lat'],$coordinates[$coordinates_length-15]['lng'], $coordinates[$coordinates_length-1]['lat'],$coordinates[$coordinates_length-1]['lng']);
                             }
+                            $result['starttime'] = self::hourMinuteUser($coordinates[0]['timestamp']);
                             $starttime = strtotime($coordinates[0]['timestamp']);
                             $currenttime = strtotime($coordinates[$coordinates_length-1]['timestamp']);
                             if (count($coordinates) > 15) {
@@ -370,14 +292,15 @@ class Unit extends Model
                             if (isset($result['irrigation_endpoint']) && $result['irrigation_endpoint'] !== '0,0') {
                                 $endpoint = explode(",",$result['irrigation_endpoint']);
                                 $distance_total = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $endpoint[0], $endpoint[1]);
+                                $result['total_meters'] = $distance_total;
                                 $distance_diff = round($distance_total - $distance_to_active, 1);
                                 $result['irrigation_meters'] = $distance_diff;
                                 $time_left = ( $distance_diff / $meter_time);
+                                $result['percent_done'] = (1 -  ($distance_diff / $distance_total)) * 100;
                                 $var = $time_left*3600;
                                 $eta = self::timestampUserTimezone($coordinates[$coordinates_length-1]['timestamp'], $var);
                                 $result['eta'] = $eta;
                             }
-    
                             $result['speed'] = round($meter_time,1);
                         }
                     }
@@ -389,7 +312,6 @@ class Unit extends Model
             $result['sensorname'] = $unit['sensorunit_location'];
             array_push($latestIrrgationReadings, $result);
         }
-
         return $latestIrrgationReadings;
     }
     
@@ -507,23 +429,26 @@ class Unit extends Model
         $unittypes = array();
         $allProbes = array();
         $result = array();
-        foreach ($units as $unit) {
-            if(!in_array(trim($unit['productnumber']),$unittypes)){
-
-                array_push($unittypes, $unit['productnumber']);   
-                $unittype = trim($unit['productnumber']);
-                $probeinformation = Api::getApi('sensorprobes/list?productnumber='.$unittype);
-                foreach($probeinformation['result'] as $probe) {
-                    if (count($probe) > 0) {
-                        //dd($probeinformation);
-                        if (!in_array($probe['unittype_id'],$allProbes)) {
-                            array_push($allProbes, $probe['unittype_id']);
-                            array_push($result,$probe);
+        if($units) {
+            foreach ($units as $unit) {
+                if(!in_array(trim($unit['productnumber']),$unittypes)){
+    
+                    array_push($unittypes, $unit['productnumber']);   
+                    $unittype = trim($unit['productnumber']);
+                    $probeinformation = Api::getApi('sensorprobes/list?productnumber='.$unittype);
+                    foreach($probeinformation['result'] as $probe) {
+                        if (count($probe) > 0) {
+                            //dd($probeinformation);
+                            if (!in_array($probe['unittype_id'],$allProbes)) {
+                                array_push($allProbes, $probe['unittype_id']);
+                                array_push($result,$probe);
+                            }
                         }
                     }
                 }
             }
         }
+
         usort($result, function($a, $b) {
             return $a['unittype_id'] <=> $b['unittype_id'];
         });
@@ -670,10 +595,10 @@ class Unit extends Model
                     $check = false;
                     for ($i=0; $i<$row_count; $i++){
                         if (in_array($row['timestamp'], $sorted[$i])) {
-                            if ($row['probenumber'] == 2) {
+                            if ($row['probenumber'] == 13) {
                                 $sorted[$i]['lat'] = $row['value'];
                                 $check = true;
-                            } else if ($row['probenumber'] == 3) {
+                            } else if ($row['probenumber'] == 14) {
                                 $sorted[$i]['lng'] = $row['value'];
                                 $check = true;
                             }
@@ -682,9 +607,9 @@ class Unit extends Model
         
                     if ($check) {
                         continue;
-                    } else if ($row['probenumber'] == 2) {
+                    } else if ($row['probenumber'] == 13) {
                         $sorted[] = ['timestamp' => $row['timestamp'], 'lat' =>$row['value'], 'sequencenumber' => $row['sequencenumber']];
-                    } else if ($row['probenumber'] == 3) {
+                    } else if ($row['probenumber'] == 14) {
                         $sorted[] = ['timestamp' => $row['timestamp'], 'lng' =>$row['value'] , 'sequencenumber' => $row['sequencenumber']];
                     }
                 }
@@ -984,6 +909,21 @@ class Unit extends Model
         $datetime->setTimezone(new DateTimeZone($timezone));
         $manipulatedTimestamp = $datetime->format('Y-m-d H:i:s');
         $seconds = strtotime($manipulatedTimestamp) + $var;
+        $time = date('H:i', $seconds);
+        return $time;
+    }
+
+    public static function hourMinuteUser($timestamp) {
+        if (Session::get('timezone')) {
+            $timezone = Session::get('timezone');
+        } else {
+            $timezone = 'Europe/London';
+        }
+        
+        $datetime = new DateTime($timestamp);
+        $datetime->setTimezone(new DateTimeZone($timezone));
+        $manipulatedTimestamp = $datetime->format('Y-m-d H:i:s');
+        $seconds = strtotime($manipulatedTimestamp);
         $time = date('H:i', $seconds);
         return $time;
     }

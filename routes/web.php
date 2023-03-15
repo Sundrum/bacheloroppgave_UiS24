@@ -135,7 +135,7 @@ Route::post('/timezone', [App\Http\Controllers\DashboardController::class, 'setT
 ***/
 Route::get('/settings', [App\Http\Controllers\Controller::class, 'settings']);
 Route::get('/settings/{id}', [App\Http\Controllers\Controller::class, 'settingsid']);
-Route::get('/myaccount', [App\Http\Controllers\Controller::class, 'myaccount']);
+Route::get('/myaccount', [App\Http\Controllers\Controller::class, 'myaccount'])->name('myaccount');
 Route::post('/myaccount', [App\Http\Controllers\SettingsController::class, 'changeaccount'])->name('changeaccount');
 Route::post('/connect', [App\Http\Controllers\SettingsController::class, 'shareunit'])->name('shareunit');
 Route::post('/customersettings', [App\Http\Controllers\SettingsController::class, 'updateCustomerSettings'])->name('updatecustomersettings');

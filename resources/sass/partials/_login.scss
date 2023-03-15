@@ -1,0 +1,52 @@
+.bg-img {
+  background: linear-gradient(0deg, rgba(0, 38, 90, 0.6), rgba(0, 38, 90, 0.5)),
+    url(img/bg_login.jpg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  min-height: 120vh;
+}
+
+.logo {
+  max-height: 80px;
+  width: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.my-login {
+  margin-top: 8rem;
+}
+
+.checkbox-7s {
+  accent-color: $primary;
+}
+
+.bg-login-opacity {
+  background-color: rgb(0, 38, 90, 0.8);
+}
+
+.form-control {
+  background-color: rgb(0, 38, 90, 0.7) !important;
+  color: white !important;
+  outline: none;
+}
+
+.form-check-input:checked {
+  background-color: $primary !important;
+  border-color: darken$primary !important;
+}
+
+#email_helptext #password_helptext {
+  color: $primary;
+}
+
+.form-check-label {
+  color: $primary;
+}
+
+#email_helptext #password_helptext {
+  color: #00265a;
+}

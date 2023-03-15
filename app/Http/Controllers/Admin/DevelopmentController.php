@@ -13,6 +13,9 @@ use DB, DateTime, DateTimeZone, Log;
 use App\Models\Api;
 use App\Models\Irrigationrun;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Http;
+
+
 class DevelopmentController extends Controller
 {
     
@@ -21,6 +24,7 @@ class DevelopmentController extends Controller
     }
 
     public function fleetmanagement() {
+
         return view('admin.development.fleetmanagement');
     }
 

@@ -1,0 +1,43 @@
+%btn-style {
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 410;
+  margin: 4px 2px;
+  border-radius: 24px;
+  &:hover {
+    box-shadow: 0px 0px 8px #00265a;
+  }
+}
+
+.btn-7 {
+  &s {
+    background-color: $primary;
+    color: $white;
+    @extend %btn-style;
+    @include btn-style($primary);
+  }
+
+  &g {
+    background-color: $secondary;
+    color: $black;
+    @extend %btn-style;
+    @include btn-style($secondary);
+  }
+
+  &r {
+    background-color: $danger;
+    color: $black;
+    @extend %btn-style;
+    @include btn-style($danger);
+  }
+  &y {
+    background-color: $yellow;
+    color: $black;
+    @extend %btn-style;
+    @include btn-style($yellow);
+  }
+}

@@ -1,0 +1,15 @@
+.progress-bar {
+    width: 100%;
+    background-color: $warm-grey;
+    border-radius: 40px;
+    padding: 4px;
+}
+
+.progress-line {
+    width: 35%;
+    height: 10px;
+    background-color: $primary;
+    animation: 1s ease-in;
+    border-radius: 40px;
+    padding: 1px;
+}

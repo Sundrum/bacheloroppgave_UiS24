@@ -1,0 +1,65 @@
+// Body
+$body-bg: #e5e5e5;
+$white: #ffff;
+$primary: #00265a;
+$secondary: #a7c49d;
+$black: #333132;
+$grey: #f3f2f1;
+$warm-grey: #e5e5e5;
+$danger: #efa6a5;
+
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #fed16d;
+$green: #a7c49d;
+$dark-green: #335211;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+
+// Weights
+$hairline-weight: 100;
+$thin-weight: 200;
+$light-weight: 300;
+$normal-weight: 400;
+$medium-weight: 500;
+$semibold-weight: 600;
+$bold-weight: 700;
+$xbold-weight: 800;
+$black-weight: 900;
+
+// Synonyms
+$regular-weight: $normal-weight;
+$book-weight: $light-weight;
+$xlight-weight: $hairline-weight;
+$ultralight-weight: $hairline-weight;
+$heavy-weight: $xbold-weight;
+
+@mixin easeOut {
+  transition: all 0.3s ease-out;
+}
+
+@mixin easeIn {
+  transition: all 0.3s ease-in;
+}
+
+@mixin btn-style($color) {
+  &:hover {
+    @include easeOut;
+    font-weight: 450;
+    background-color: darken($color, 10%);
+  }
+  &:focus {
+    font-weight: 450;
+    background-color: darken($color, 15%);
+  }
+  &:hover {
+    @include easeOut;
+    font-weight: 450;
+    background-color: darken($color, 10%);
+  }
+}

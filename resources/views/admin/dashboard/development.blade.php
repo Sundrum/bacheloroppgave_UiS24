@@ -66,3 +66,21 @@
         </div>
     </div>
 </div>
+<div class="row mt-3 mb-3">
+    <div class="col-md-6">
+        <div class="col-md-12 card card-rounded">
+            <div class="row m-1 mt-3 mb-2">
+                <div class="col-md-12 text-center">
+                    <h4>Fleet management</h4>
+                </div>           
+            </div>
+            <div class="row m-1 mt-1 mb-3 justify-content-center">
+                <div class="col-md-6">
+                    <div class="btn-primary-filled" onclick="window.location='/admin/development/fleetmanagement'">
+                        Open Test
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

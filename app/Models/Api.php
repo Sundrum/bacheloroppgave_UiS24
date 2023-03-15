@@ -191,4 +191,23 @@ class Api extends Model {
             }
         }
     }
+
+    public static function getDummy($url) {
+        $client = new Client();
+
+        try {
+            $response = $client->get('https://dummyjson.com/'.$url, [
+                'timeout' => 10,
+            ]);
+            $data = $response->getBody()->getContents();
+            $data = json_decode($data,true);
+            return $data;
+        } catch (RequestException $e) {
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            }
+        }
+    }
 }

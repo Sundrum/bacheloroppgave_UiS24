@@ -15,21 +15,40 @@ use Session, Redirect, DateTime, DateTimeZone;
 class DashboardController extends Controller
 {
     public static function processIrrigationArray($irrigationunits) {
-        //dd($irrigationunits);
+        // dd($irrigationunits);
         foreach ($irrigationunits as &$irrUnit) {
             $irrUnit['manipulatedTimestamp'] = self::convertTimestampToUserTimezone($irrUnit['timestamp']);
             $irrUnit['timestampDifference'] = self::getTimestampDifference($irrUnit['timestamp']);
             $irrUnit['timestampComment'] = self::getTimestampComment($irrUnit['timestampDifference'], $irrUnit['manipulatedTimestamp']);
-            if (isset($irrUnit['vibration']) && $irrUnit['vibration'] !== 0) {
-                $irrUnit['vibration'] = ($irrUnit['vibration']/1)*100; // ?
+            $irrUnit = self::setIrrigationStatus($irrUnit);
+        }
+        // dd($irrigationunits);
+        return $irrigationunits;
+    }
+
+    public static function setIrrigationStatus ($irrUnit) {
+        if($irrUnit['timestampDifference'] < 5400) {
+            if(isset($irrUnit['irrigation_state'])) {
+                $irrUnit['img'] = '../img/irrigation/state_'.$irrUnit['irrigation_state'].'.png';
+            } else {
+                $irrUnit['img'] = '../img/irrigation/state_1.png';
             }
-            // if exactly 90 degrees tilt = 0
-            if (isset($irrUnit['tilt']) && $irrUnit['tilt'] == 90) {
-                $irrUnit['tilt'] = 90; // ?
+        } else {
+            if(isset($irrUnit['irrigation_state'])) {
+                $irrUnit['img'] = '../img/irrigation/state_0.png';
+            } else {
+                $irrUnit['img'] = '../img/irrigation/state.png';
             }
         }
-        
-        return $irrigationunits;
+        if (isset($irrUnit['vibration']) && $irrUnit['vibration'] !== 0) {
+            $irrUnit['vibration'] = ($irrUnit['vibration']/1)*100; // ?
+        }
+        // if exactly 90 degrees tilt = 0
+        if (isset($irrUnit['tilt']) && $irrUnit['tilt'] == 90) {
+            $irrUnit['tilt'] = 90; // ?
+        }
+
+        return $irrUnit;
     }
 
     public static function processSensorArray($sensorunits) {

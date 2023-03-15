@@ -1,5 +1,4 @@
-@extends('layouts.admin')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
+@extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -11,6 +10,8 @@
         </div>
     </div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
+
 
 <div class="container">
     <div class="row">
@@ -65,11 +66,7 @@
                                 </div>
                                 <div class="row m-1 mt-1 mb-3 justify-content-center">
                                     <div class="col-md-8">
-                                        {{-- <a href="https://minside.ice.no/minbedrift/3772189/abonnement">
-                                            <div class="btn-primary-filled">
-                                                Go to
-                                            </div>
-                                        </a> --}}
+                                        
                                         <p class="text-center">On @ "date/time"</p>
                                     </div>
                                 </div>
@@ -88,11 +85,7 @@
                                 </div>
                                 <div class="row m-1 mt-1 mb-3 justify-content-center">
                                     <div class="col-md-8">
-                                        {{-- <a href="https://minside.ice.no/minbedrift/3772189/abonnement">
-                                            <div class="btn-primary-filled">
-                                                Go to
-                                            </div>
-                                        </a> --}}
+
                                         <p class="text-center">On @ "date/time"</p>
                                     </div>
                                 </div>
@@ -111,12 +104,14 @@
                                 </div>
                                 <div class="row m-1 mt-1 mb-3 justify-content-center">
                                     <div class="col-md-8">
-                                        {{-- <a href="https://minside.ice.no/minbedrift/3772189/abonnement">
-                                            <div class="btn-primary-filled">
-                                                Go to
-                                            </div>
-                                        </a> --}}
-                                        <p class="text-center">On @ "date/time"</p>
+                                        <div class="pie-wrapper progress-75 style-2">
+                                            <span class="label">75<span class="smaller">%</span></span>
+                                        <div class="pie">
+                                            <div class="left-side half-circle"></div>
+                                            <div class="right-side half-circle"></div>
+                                        </div>
+                                        <div class="shadow"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -128,6 +123,7 @@
 
 
 <script>
+
 const parser = new DOMParser();
 const sleepIcon = "../../img/idle_green_marker.svg";
 const sleepIconElement = parser.parseFromString(

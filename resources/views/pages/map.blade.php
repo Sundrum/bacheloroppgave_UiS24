@@ -1,20 +1,14 @@
 @extends('layouts.app')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
-
-<script type="text/javascript" src="{{ asset('/js/map/utilities.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/snaptoroute.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/markers.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/oldruns.js') }}"></script>
-
 
 @section('content')
+
  <div class="container" style="position: relative;">
-    @if (isset($message))
+    {{-- @if (isset($message))
     <div class="alert alert-secondary">{{ $message }}</div>
     @endif
     @if (isset($errormessage))
     <div class="alert alert-danger">{{ $errormessage }}</div>
-    @endif
+    @endif --}}
 
     <div id="map"></div>
     @if(isset($irrigationrun['irrigation_startpoint']))
@@ -56,7 +50,6 @@
             </div>
     @endif
 </div>
-@endsection
 
 <script>
     var token = "{{ csrf_token() }}";
@@ -152,3 +145,4 @@
         }
     @endif
 </script>
+@endsection

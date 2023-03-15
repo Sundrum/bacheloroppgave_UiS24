@@ -1,0 +1,13 @@
+body {
+    font-family: $app-font;
+    font-weight: $normal-weight;
+    background-color: $warm-grey;
+    height:100%;
+    width: 100%;
+    // -webkit-print-color-adjust: exact;
+    // color-adjust: exact;
+}
+
+.bg-grey {
+    background-color: $warm-grey;
+}

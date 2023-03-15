@@ -1,14 +1,15 @@
-// Fonts
-// @import url('https://fonts.googleapis.com/css?family=Nunito');
-@import '~bootstrap/scss/bootstrap';
-
 // Variables
-@import 'variables';
-
-// Bootstrap
-// @import "node_modules/font-awesome/scss/font-awesome.scss";
-@import 'setup';
-@import 'custom';
-@import 'btn';
-@import 'card';
-
+@import "~bootstrap/scss/bootstrap";
+@import "partials/variables";
+@import "partials/typography";
+@import "partials/cookie";
+@import "partials/layout";
+@import "partials/reset";
+@import "partials/navbar";
+@import "partials/login";
+@import "partials/setup";
+@import "partials/custom";
+@import "partials/btn";
+@import "partials/card";
+@import "partials/dashboard";
+@import "partials/progressbar";

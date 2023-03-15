@@ -1,0 +1,45 @@
+.card-rounded{
+  border-radius: 25px;
+}
+
+.card-a-header{
+  color: $black;
+  background: $primary;
+  text-align: center;
+  border-radius: 15px 15px 0px 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.card-a-info{
+  color: $dark-green;
+  background: $green;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  align-items: center;
+  font-weight: $book-weight;
+  border-radius: 4px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.rcorners1 {
+  border-radius: 15px 50px 30px 5px;
+  padding: 20px;
+}
+  
+.rcorners2 {
+  border-radius: 15px 50px 30px;
+  padding: 20px;
+}
+
+.rcorners3 {
+  border-radius: 15px 50px;
+  padding: 20px;
+}
+
+.rcorners4 {
+  border-radius: 15px;
+  padding: 20px;
+}

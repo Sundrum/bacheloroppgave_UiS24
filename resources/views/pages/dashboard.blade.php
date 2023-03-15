@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-{{-- Sortable CDN --}}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" SameSite="none Secure"></script>
-{{-- CSS for irrigation slider --}}
-<link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}">
-{{-- CSS for sensorunit live dot (circle) --}}
-<link rel="stylesheet" type="text/css" href="{{ url('/css/dot.css') }}">
-
 @section('content')
+{{-- Sortable CDN --}}
+{{-- <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" SameSite="none Secure"></script> --}}
+{{-- CSS for irrigation slider --}}
+{{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}"> --}}
+{{-- CSS for sensorunit live dot (circle) --}}
+{{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/dot.css') }}"> --}}
+
     @if (Session::has('settingserror') && Session::get('settingserror') == 1)
         <div class="alert alert-danger">
             Your account has no alarms defined <a href="/settings/1"> Click here to update</a>
@@ -37,36 +37,20 @@
         <br>
         @include('pages.dashboard.sharedunits')
     @endif
+
+    <script>
+        function caretRotation(obj) {
+            var id = obj.id;
+            var element = document.getElementById(id);
+            if (element.classList.contains("fa-caret-down")) {
+                element.classList.remove("fa-caret-down");
+                element.classList.add("fa-caret-left");
+            } else {
+                element.classList.remove("fa-caret-left");
+                element.classList.add("fa-caret-down");
+            }
+        }
+        
+        </script>
 @endsection
 
-<script>
-function caretRotation(obj) {
-    var id = obj.id;
-    var element = document.getElementById(id);
-    if (element.classList.contains("fa-caret-down")) {
-        element.classList.remove("fa-caret-down");
-        element.classList.add("fa-caret-left");
-    } else {
-        element.classList.remove("fa-caret-left");
-        element.classList.add("fa-caret-down");
-    }
-}
-
-// $(document).ready(function () {
-//     if (sessionStorage.scrollTop != "undefined") {
-//         $(window).scrollTop(sessionStorage.scrollTop);
-//     }
-//     setInterval(function() {
-//     cache_clear()
-//   }, 10000);
-// });
-
-// $(window).scroll(function () {
-//     sessionStorage.scrollTop = $(this).scrollTop();
-// });
-
-// function cache_clear() {
-//   window.location.reload(true);
-//   // window.location.reload(); use this if you do not remove cache
-// }
-</script>
