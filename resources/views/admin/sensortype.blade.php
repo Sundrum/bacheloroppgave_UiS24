@@ -1,11 +1,8 @@
-@extends('layouts.admin')
-
-@section('content')
 @extends('layouts.app')
 
 @section('content')
-
-<div class="container mt-3"> 
+<script>setTitle('Sensortype')</script>
+<div class="mt-3"> 
    <h2>Sensorunit</h2>
       <form>
          <div class="row">

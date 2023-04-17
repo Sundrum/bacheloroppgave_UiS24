@@ -28,17 +28,6 @@
   background-color: rgb(0, 38, 90, 0.8);
 }
 
-.form-control {
-  background-color: rgb(0, 38, 90, 0.7) !important;
-  color: white !important;
-  outline: none;
-}
-
-.form-check-input:checked {
-  background-color: $primary !important;
-  border-color: darken$primary !important;
-}
-
 #email_helptext #password_helptext {
   color: $primary;
 }

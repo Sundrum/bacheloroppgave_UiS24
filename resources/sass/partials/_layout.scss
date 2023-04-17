@@ -22,6 +22,15 @@ body {
   color: rgb(255, 255, 255, 0.8) !important;
 }
 
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover, 
+.form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgb(0, 38, 90, 0.75) inset !important;
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 40rem #ffff inset;
+}
+
+
 .text {
   &-g {
     color: $secondary;

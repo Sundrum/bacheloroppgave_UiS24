@@ -20,16 +20,16 @@ var coordinates = Array();
 var irrigationpath = new google.maps.Polyline({
 	path: latlngs,
 	geodesic: true,
-	strokeColor: '#004079',
-	strokeOpacity: 0.9,
+	strokeColor: '#214466',
+	strokeOpacity: 0.8,
 	strokeWeight: 2
 });
 
 var irrigationpath2 = new google.maps.Polyline({
 	path: activelngs,
 	geodesic: true,
-	strokeColor: '#004079',
-	strokeOpacity: 0.9,
+	strokeColor: '#00265a',
+	strokeOpacity: 0.8,
 	strokeWeight: 33
 });
 

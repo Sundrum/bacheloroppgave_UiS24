@@ -27,19 +27,19 @@ class AdminController extends Controller {
     }
 
     public function dashboard() {
+
         $units = Sensorunit::all();
+        $variable['products'] = Product::all();
         $products = Product::all();
         $customers = Customer::all();
         $users = User::all();
-        $cases = Cases::all();
 
         $count['units'] = $units->count();
         $count['products'] = $products->count();
         $count['customers'] = $customers->count();
         $count['users'] = $users->count();
-        $count['cases'] = $cases->count();
 
-        return view('admin.dashboard', compact('count'));
+        return view('admin.dashboard', compact('count', 'variable'));
     }
 
     public function setUser($userid, $customernumber) {
@@ -87,17 +87,22 @@ class AdminController extends Controller {
     }
 
     public function irrigationStatus() {
-        $data = Sensorunit::where('serialnumber', 'LIKE', '%21-1020%' )->get();
-        // dd($data);
+        $data = Sensorunit::select('sensorunits.*', 'customer.customer_name')->where('serialnumber', 'LIKE', '%21-1020-AC%' )->join('customer', 'customer.customer_id', 'sensorunits.customer_id_ref')->get();
         $sorted = array();
         $result = array();
 
         foreach ($data as &$unit) {
             if (isset($unit['serialnumber'])) {
-                if($unit['customer_id_ref'] == 1 || $unit['customer_id_ref'] == 18 || $unit['customer_id_ref'] == 3 || $unit['customer_id_ref'] == 285) continue;
                 $serial = trim($unit['serialnumber']);
-                $status = Status::where('serialnumber', $serial)->where('variable', 'swversion')->first();
-                $imei = Status::where('serialnumber', $serial)->where('variable', 'imei')->first();
+                // if( substr($unit['serialnumber'], 0,10) == "21-1020-AA" ||  substr($unit['serialnumber'], 0,10) == "21-1020-AB") {
+                //     $status = Status::where('serialnumber', $serial)->where('variable', 'swversion')->first();
+                //     $status = $status->value ?? '';
+                // } else {
+                
+                // $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
+                $status = $record[0]->value ?? '';
+                // $record_2 = DB::connection('sensordata')->select('SELECT value FROM config WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'vib_calibration']);
+                $vib_cal = $record_2[0]->value ?? '';
 
                 if (isset($unit['sensorunit_lastconnect'])) {
                     if(!in_array(trim($unit['serialnumber']),$sorted)){
@@ -107,30 +112,30 @@ class AdminController extends Controller {
                                 if (trim($variable['variable']) == 'irrigation_state') {
                                     array_push($sorted, trim($unit['serialnumber']));
                                     $unit['irrigation_state'] = trim($variable['value']);
-                                    $unit['swversion'] = $status;
-                                    if(isset($imei)) {
-                                        $unit['imei'] = $imei['value'];
-                                    }
+                                    $unit['swversion'] = $status ?? null;
+                                    $unit['vib_calibration'] = $vib_cal ?? null;
                                     $result[] = $unit;
                                 }
                             }
                             if(!isset($unit['irrigation_state'])) {
                                 array_push($sorted, trim($unit['serialnumber']));
                                 $unit['irrigation_state'] = -1;
-                                $unit['swversion'] = $status;
+                                $unit['swversion'] = $status  ?? null;
+                                $unit['vib_calibration'] = $vib_cal ?? null;
                                 $result[] = $unit;
                             }
                         } else {
                             array_push($sorted, trim($unit['serialnumber']));
                             $unit['irrigation_state'] = -1;
-                            $unit['swversion'] = $status;
+                            $unit['swversion'] = $status ?? null;
+                            $unit['vib_calibration'] = $vib_cal ?? null;
                             $result[] = $unit;
                         }
                     }
                 }
             }
         }
-
+        
         $allirrigation = self::processIrrigationArray($result);
 
         $dataset = array();
@@ -140,32 +145,42 @@ class AdminController extends Controller {
         $variable['idle_green'] = 0;
         $variable['settling'] = 0;
         $variable['irrigation'] = 0;
+        $variable['idle_clock_wait'] = 0;
+        $variable['idle_activity'] = 0;
+        $variable['post_settling'] = 0;
+        $variable['off_season'] = 0;
+
         $i = 0;
         foreach ($result as $row) {
-            $dataset[$i][0] = '<a href="/unit/'.$row['serialnumber'].'"><img src="'.$row['img'].'"><span style="font-size:0px;">'.$row['sortstate'].'</span></a>';
-            if ($row['sortstate'] == 'state1') {
+            $dataset[$i][0] = '<a href="/unit/'.$row['serialnumber'].'"><img width="50" height="50" src="'.$row['img'].'"><span style="font-size:0px;">'.$row['sortstate'].'</span></a>';
+            if ($row['sortstate'] == 'state-1') {
                 $variable['notused'] += 1;
-            } else if ($row['sortstate'] == 'state2') {
+            } else if ($row['sortstate'] == 'state0') {
                 $variable['idle'] += 1;
-            } else if ($row['sortstate'] == 'state3') {
+            } else if ($row['sortstate'] == 'state1') {
                 $variable['idle_green'] += 1;
+            } else if ($row['sortstate'] == 'state2') {
+                $variable['idle_clock_wait'] += 1;
+            } else if ($row['sortstate'] == 'state3') {
+                $variable['idle_activity'] += 1;
             } else if ($row['sortstate'] == 'state4') {
                 $variable['settling'] += 1;
             } else if ($row['sortstate'] == 'state5') {
                 $variable['irrigation'] += 1;
+            } else if ($row['sortstate'] == 'state6') {
+                $variable['post_settling'] += 1;
+            } else if ($row['sortstate'] == 'state7') {
+                $variable['off_season'] += 1;
             }
             if($row['serialnumber']) { $dataset[$i][1]=$row['serialnumber']; } else { $dataset[$i][1] = null; }
             if($row['sensorunit_location']) { $dataset[$i][2]=$row['sensorunit_location']; } else { $dataset[$i][2] = null; }
-            if(isset($row->swversion->value)) { $dataset[$i][3]=$row['swversion']['value']; } else { $dataset[$i][3] = null; }
-            if($row['customer_id_ref']) { 
-                $customer = Customer::find($row['customer_id_ref']);
-                $dataset[$i][4]=$customer->customer_name; 
-            } else { 
-                $dataset[$i][4] = null; 
-            }
-            if($row['imei']) { $dataset[$i][5]=$row['imei']; } else { $dataset[$i][5] = null; }
+            if(isset($row['swversion'])) { $dataset[$i][3]=trim($row['swversion']) ?? null; } else { $dataset[$i][3] = null; }
+            if(isset($row['vib_calibration'])) { $dataset[$i][4]=trim($row['vib_calibration']) ?? null; } else { $dataset[$i][3] = null; }
+
+            $dataset[$i][5]=$row->customer_name; 
+    
             if($row['sensorunit_lastconnect']) { $dataset[$i][6]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][6] = null; }
-            $dataset[$i][7] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-primary-filled">Open</button></a>';
+            $dataset[$i][7] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
 
             $i++;
         }
@@ -244,7 +259,7 @@ class AdminController extends Controller {
                 $sorted[$i][4] = '-';
             }
             if ($action == 1) {
-                $sorted[$i][5] = '<button class="btn btn-primary"><a href="/select/'.$sorted[$i][0].'/'.$sorted[$i][4].'" style="color:#FFFFFF;">Login</a></button>';
+                $sorted[$i][5] = '<a href="/select/'.$sorted[$i][0].'/'.$sorted[$i][4].'" style="color:#FFFFFF;"><button class="btn-7s">Login</button></a>';
             } else if ($action == 2) {
                 $sorted[$i][5] = '<button class="btn btn-primary"><a href="/admin/connect/user/'.$sorted[$i][0].'" style="color:#FFFFFF;">Select</a></button>';
             }            
@@ -255,7 +270,6 @@ class AdminController extends Controller {
     }
 
     public static function processIrrigationArray($irrigationunits) {
-        //dd($irrigationunits);
         foreach ($irrigationunits as &$irrUnit) {
             if (isset($irrUnit['sensorunit_lastconnect'])) {
                 $irrUnit['manipulatedTimestamp'] = DashboardController::convertTimestampToUserTimezone($irrUnit['sensorunit_lastconnect']);
@@ -264,37 +278,69 @@ class AdminController extends Controller {
 
                 if ($irrUnit['timestampDifference'] < 5400) {
                     if ($irrUnit['irrigation_state'] === '-1') {
-                        $irrUnit['img'] = '../img/irr_notused.png';
-                        $irrUnit['sortstate'] = 'state1';
+                        $irrUnit['img'] = '../img/irrigation/state.png';
+                        $irrUnit['sortstate'] = 'state-1';
                         $irrUnit['display'] = 'none';
                         $irrUnit['class'] = 'all_units';
                     } else if ($irrUnit['irrigation_state'] === '0') {
-                        $irrUnit['img'] = '../img/irr_idle_green.png';
+                        $irrUnit['img'] = '../img/irrigation/state_0.png';
                         $irrUnit['display'] = 'none';
                         $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state3';
+                        $irrUnit['sortstate'] = 'state0';
                     } else if ($irrUnit['irrigation_state'] === '1') {
-                        $irrUnit['img'] = '../img/irr_settling_green.png';
+                        $irrUnit['img'] = '../img/irrigation/state_1.png';
+                        $irrUnit['display'] = '';
+                        $irrUnit['class'] = 'irrigation_units';
+                        $irrUnit['sortstate'] = 'state1';
+                    } else if ($irrUnit['irrigation_state'] === '2') {
+                        $irrUnit['img'] = '../img/irrigation/state_2.png';
+                        $irrUnit['display'] = '';
+                        $irrUnit['class'] = 'irrigation_units';
+                        $irrUnit['sortstate'] = 'state2';
+                    } else if ($irrUnit['irrigation_state'] === '3') {
+                        $irrUnit['img'] = '../img/irrigation/state_3.png';
+                        $irrUnit['display'] = '';
+                        $irrUnit['class'] = 'irrigation_units';
+                        $irrUnit['sortstate'] = 'state3';
+                    } else if ($irrUnit['irrigation_state'] === '4') {
+                        $irrUnit['img'] = '../img/irrigation/state_4.png';
                         $irrUnit['display'] = '';
                         $irrUnit['class'] = 'irrigation_units';
                         $irrUnit['sortstate'] = 'state4';
-                    } else if ($irrUnit['irrigation_state'] === '2') {
-                        $irrUnit['img'] = '../img/irr_irrigation_green.png';
+                    } else if ($irrUnit['irrigation_state'] === '5') {
+                        $irrUnit['img'] = '../img/irrigation/state_5.png';
                         $irrUnit['display'] = '';
                         $irrUnit['class'] = 'irrigation_units';
                         $irrUnit['sortstate'] = 'state5';
+                    } else if ($irrUnit['irrigation_state'] === '6') {
+                        $irrUnit['img'] = '../img/irrigation/state_6.png';
+                        $irrUnit['display'] = '';
+                        $irrUnit['class'] = 'irrigation_units';
+                        $irrUnit['sortstate'] = 'state6';
+                    } else if ($irrUnit['irrigation_state'] === '7') {
+                        $irrUnit['img'] = '../img/irrigation/state_7.png';
+                        $irrUnit['display'] = '';
+                        $irrUnit['class'] = 'irrigation_units';
+                        $irrUnit['sortstate'] = 'state7';
                     }
                 } else {
-                    if ($irrUnit['sensorunit_lastconnect'] < '2020-05-04 19:10:09.60511+00') {
-                        $irrUnit['img'] = '../img/irr_notused.png';
+                    if ($irrUnit['sensorunit_lastconnect'] > '2023-03-07 11:10:09.60511+00') {
+                        $irrUnit['img'] = '../img/irrigation/state_0.png';
                         $irrUnit['display'] = 'none';
                         $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state1';
+                        $irrUnit['sortstate'] = 'state0';
+                        
+                        if ($irrUnit['irrigation_state'] === '7') {
+                            $irrUnit['img'] = '../img/irrigation/state_7.png';
+                            $irrUnit['display'] = '';
+                            $irrUnit['class'] = 'irrigation_units';
+                            $irrUnit['sortstate'] = 'state7';
+                        }
                     } else {
-                        $irrUnit['img'] = '../img/irr_idle_yellow.png';
+                        $irrUnit['img'] = '../img/irrigation/state.png';
                         $irrUnit['display'] = 'none';
                         $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state2';
+                        $irrUnit['sortstate'] = 'state-1';
                     }
                 }
             }

@@ -7,7 +7,9 @@
 {{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}"> --}}
 {{-- CSS for sensorunit live dot (circle) --}}
 {{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/dot.css') }}"> --}}
-
+<script> 
+    setTitle(@json( __('navbar.dashboard')));
+</script>
     @if (Session::has('settingserror') && Session::get('settingserror') == 1)
         <div class="alert alert-danger">
             Your account has no alarms defined <a href="/settings/1"> Click here to update</a>
@@ -19,22 +21,17 @@
     <input type="hidden" id="customerNumber" value="{{ Session::get('customernumber') }}">
     @if(count(Session::get('irrigation')) > 0)
         @include('pages.dashboard.infobutton')
-        <br><br>
         @include('pages.dashboard.irrigationunits')
     @endif
 
     @if (count(Session::get('customerunits')) > 0)
-
         @include('pages.dashboard.sensorunits')
         @include('pages.dashboard.addgroup')
         @include('pages.dashboard.changegroup')
-        <br>
         @include('pages.dashboard.sensorsettings')
-        <br>
     @endif
 
     @if (count(Session::get('sharedunits')) > 0)
-        <br>
         @include('pages.dashboard.sharedunits')
     @endif
 

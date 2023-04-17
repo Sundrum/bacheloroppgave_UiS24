@@ -1,10 +1,9 @@
-var endIcon = new google.maps.MarkerImage("../img/irr_flag_destination.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var activeIcon = new google.maps.MarkerImage("../img/irr_flag_current.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var startIcon = new google.maps.MarkerImage("../img/irr_flag_start.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var poiIcon = new google.maps.MarkerImage("../img/irr_icon_poi.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(25,25));
-//var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 4, fillColor:'#FF0000' };
-var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 2, strokeColor:'#004079' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
-    
+var startIcon = new google.maps.MarkerImage("../img/irrigation/start.png", null, null, null, new google.maps.Size(54,85.5));
+var endIcon = new google.maps.MarkerImage("../img/irrigation/finish.png", null, null, null, new google.maps.Size(54,85.5));
+var poiIcon = new google.maps.MarkerImage("../img/irrigation/sms.png", null, null, null, new google.maps.Size(54,85.5));
+var activeIcon = new google.maps.MarkerImage("../img/irrigation/current.svg", null, null, new google.maps.Point(25, 25), new google.maps.Size(50,50));
+var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 2, strokeOpacity: 0.8, strokeColor:'#214466' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
+
 function getLatestRun(serialnumber) {
   $.ajax({
     url: "/irrigationrun/" + serialnumber,
@@ -14,6 +13,7 @@ function getLatestRun(serialnumber) {
     },
 
     success: function (data) {
+      console.log(data);
       if (data != -1) {
         for (var i in data) {
           positions.push({lat: data[i].lat, lng: data[i].lng, timestamp: data[i].timestamp});
@@ -58,7 +58,7 @@ function addEndMarker(currentLatLng) {
 
       var newdistance = google.maps.geometry.spherical.computeDistanceBetween(latlngs[1],latlngs[0]);
       console.log( newdistance.toFixed(0));
-      document.getElementById("meter").value = newdistance.toFixed(0);
+      document.getElementById("meter").innerHTML = newdistance.toFixed(0);
 
     }
     console.log("drag");
@@ -73,76 +73,76 @@ function addEndMarker(currentLatLng) {
 function addMarkers(){
   for (i = positions.length - 1; i >= 0; i--) {
     var check = 0;
-    if (i == (positions.length - 1)) {
+    if (i == 0) {
+      iconR = startIcon;
+    } else if (i == positions.length-1){
       activepoint = positions[i];
       iconR = activeIcon;
       map.setCenter(positions[i]);
-      
+      setIrrigationpath();
       activeMarker = new google.maps.Marker({
         position: new google.maps.LatLng(positions[i]),
-        icon: iconR,
+        icon: runIcon,
         map: map
       }); 
-      setIrrigationpath();
 
     } else {
-      if (i == 0) {
-        console.log(positions[i]);
-        iconR = startIcon;
-      } else {
-        iconR = runIcon;
-      }
-      check = 1;
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(positions[i]),
-        icon: iconR,
-        map: map
-      });
-      
-      google.maps.event.addListener(marker, 'click', (function(marker, i) {
-        return function() {
-        /*var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i]), new google.maps.LatLng(positions[positions.length-1]));
-        if (i > 0) var distance2 = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i]), new google.maps.LatLng(positions[i-1]));
-        var then = positions[positions.length-1].timestamp;
-        var now = positions[i].timestamp;
-        var diff = moment.duration(moment(now).diff(moment(then)));
-        var mt = (distance / (diff/1000))*3600;
-  
-  
-        var back;
-        if (count > 0) back = 0;
-        else back = positions.length;
-  
-        var distance2 = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i-back]), new google.maps.LatLng(positions[positions.length-1]));
-        var then2 = positions[positions.length-1].timestamp;
-        var now2 = positions[i-back].timestamp;
-        var diff2 = moment.duration(moment(now2).diff(moment(then2)));
-        var mt2 = (distance2 / (diff2/1000))*3600;*/
-  
-        infowindow.setContent(positions[i].timestamp);
-        
-        infowindow.open(map, marker);
-        }
-      })(marker, i));
+      iconR = runIcon;
     }
+    check = 1;
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(positions[i]),
+      icon: iconR,
+      map: map
+    });
+    
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+      return function() {
+      /*var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i]), new google.maps.LatLng(positions[positions.length-1]));
+      if (i > 0) var distance2 = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i]), new google.maps.LatLng(positions[i-1]));
+      var then = positions[positions.length-1].timestamp;
+      var now = positions[i].timestamp;
+      var diff = moment.duration(moment(now).diff(moment(then)));
+      var mt = (distance / (diff/1000))*3600;
+
+
+      var back;
+      if (count > 0) back = 0;
+      else back = positions.length;
+
+      var distance2 = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(positions[i-back]), new google.maps.LatLng(positions[positions.length-1]));
+      var then2 = positions[positions.length-1].timestamp;
+      var now2 = positions[i-back].timestamp;
+      var diff2 = moment.duration(moment(now2).diff(moment(then2)));
+      var mt2 = (distance2 / (diff2/1000))*3600;*/
+
+      infowindow.setContent(positions[i].timestamp);
+      
+      infowindow.open(map, marker);
+      }
+    })(marker, i));
   }
+  getPointOfInterest();
 }
   
   function addPOI(lat, lon, markerId) {
     if (!endMarker){
       return;
     }
-  
+    
     polypath = new Array(
-          new google.maps.LatLng(positions[0]),
-      endMarker.getPosition()
+      new google.maps.LatLng(positions[positions.length-1]),
+      endMarker.position
     );
+
+    console.log(polypath);
 
     var inBetween;
     if (lat != 0) {
       inBetween = new google.maps.LatLng(lat, lon);
     } else {
       inBetween = new google.maps.geometry.spherical.interpolate(polypath[0], polypath[1], 0.5);
+      console.log('inBetween = ' + inBetween);
     }
     console.log("Adding POI Marker");
     if (markerId == 1) {
@@ -202,9 +202,10 @@ function addMarkers(){
       polyline.setMap(null);
   
       polypath = new Array(
-        new google.maps.LatLng(positions[0]),
-        endMarker.getPosition()
+        new google.maps.LatLng(positions[positions.length-1]),
+        endMarker.position
       );
+  
   
       if (markerId == 1)
       {
@@ -271,7 +272,7 @@ function addMarkers(){
     if(firstpoint && endpoint) {
       var newdistance = google.maps.geometry.spherical.computeDistanceBetween(endpoint,firstpoint);
       if(newdistance.toFixed(0) < 2000) {
-        document.getElementById("meter").value = newdistance.toFixed(0);
+        document.getElementById("meter").innerHTML = newdistance.toFixed(0);
       }
     }
   }

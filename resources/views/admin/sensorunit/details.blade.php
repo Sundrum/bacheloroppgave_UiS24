@@ -1,12 +1,8 @@
-@extends('layouts.admin')
-
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+@extends('layouts.app')
 
 @section('content')
 
-<section class="container-fluid">
+<section class="">
     <div class="row">
         <div class="col-md-12">
           <div id="sensor-choose"></div>

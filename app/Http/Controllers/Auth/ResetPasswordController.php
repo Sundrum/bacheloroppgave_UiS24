@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use App\Models\User;
-use App\Models\PasswordReset;
+use App\User;
+use App\PasswordReset;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -29,7 +29,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -60,18 +60,22 @@ class ResetPasswordController extends Controller
                     $token = trim($passwordreset->token);
                     if (strcmp($token_input,$token) === 0){
                         User::updatePassword($email,md5($password));
-                        return view('auth.login'); //With succsessfull update of password
+                        return view('auth.login')->with('message', 'Your password is updated!'); //With succsessfull update of password
                     } else {
                         //Token not equal error
+                        return redirect('/password/reset')->with('errormessage', 'Your token is not equal - Please try again.');
                     }
                 } else {
                     // TTL over. Error
+                    return redirect('/password/reset')->with('errormessage', 'Your token has expired - Please try again.');
                 }
             } else {
                 // Email dosen't exsist
+                return back()->with('errormessage', 'This account has no request for new password')->withInput();
             }
         } else {
             // Password are not equal. Error
+            return back()->with('errormessage', 'The passwords is not equal')->withInput();
         }
     }
 }

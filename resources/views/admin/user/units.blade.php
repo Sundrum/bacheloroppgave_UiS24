@@ -1,14 +1,15 @@
 @if(isset($user))
 <div class="col-md-6">
     <div class="card card-rounded">
-        <h5 class="m-4 text-center">Enheter</h5>
+        <h5 class="m-4 text-center">@lang('admin.devices')</h5>
         <div id="sensorTable">
             @if(isset($user['sensorunits']) && count($user['sensorunits']) > 0)
                     <?php $counter = 1 ?>
                     @foreach($user['sensorunits'] as $unit)
                         <div class="object" id="{{$counter}}">
                             <div class="row m-2">
-                                <div class="input-group col-sm-8">
+
+                                <div class="col-sm-8">
                                     <input type="text" class="form-control" value="{{$unit->serialnumber}}" disabled>
                                 </div>
 
@@ -27,7 +28,7 @@
                     @endforeach
             @else
                 <div id="nounits" class="col-md-12 text-center">
-                    Ingen enheter knyttet til brukeren
+                    @lang('nounits')
                 </div>
             @endif
         </div>
@@ -122,7 +123,7 @@ function addNew(id){
 }
 
 function deleteRow(id, userid, serialnumber) {
-    var confirmed = confirm('Do you want remove this unit?');
+    var confirmed = confirm(@json( __('admin.removeunit')));
 
     if(confirmed) {
         $.ajax({

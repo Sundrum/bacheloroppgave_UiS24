@@ -1,11 +1,12 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-
-<div class="container">
+<script>
+setTitle('Customer');
+</script>
+<div class="">
     <div class="row justify-content-center">
       <div class="col-md-12">
-         <h3>Customer</h3>
          @if (request()->message)
                <div class="alert alert-success">{{ request()->message }}</div>
          @endif
@@ -14,7 +15,7 @@
          @endif
          <form  method="post" action="{{ route('detailedcustomer') }}">
             @csrf
-            <div class="card card-rounded">
+            <div class="bg-white card-rounded p-2">
                <div class="m-2">
                   <h5>General information</h5>
 
@@ -134,7 +135,7 @@
                   </div>
                </div>
             </div>
-            <div class="card card-rounded">
+            <div class="bg-white card-rounded p-2 mt-2">
                <div class="m-2">
                   <h5>Adress</h5>
                   <div class="row">
@@ -214,7 +215,7 @@
                   </div>
                </div>
             </div>
-            <div class="card card-rounded">
+            <div class="bg-white card-rounded p-2 mt-2">
                <div class="m-2">
                   <h5>Alerts</h5>
                   <div class="row">
@@ -296,7 +297,9 @@
             </div>
 
             <div class="row justify-content-center">
-               <button type="submit" class="mt-2 btn-primary-filled">Save information</button>
+               <div class="col text-center">
+                  <button type="submit" class="mt-2 btn-7s">Save information</button>
+               </div>
             </div>
 
          </form>

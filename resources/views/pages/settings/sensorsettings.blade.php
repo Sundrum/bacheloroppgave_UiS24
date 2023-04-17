@@ -1,80 +1,75 @@
-<p>
-    <button class="btn btn-secondary float-right" type="button" data-toggle="modal" data-target="#AllUnitsModal">
-        @lang('settings.shareallunits')
-    </button>
-</p>
-<br>
-<br>
+<div class="mb-3 mt-2 row">
+    <div class="col">
+        <button class="btn btn-7g float-end" type="button" data-toggle="modal" data-target="#AllUnitsModal">
+            @lang('settings.shareallunits')
+        </button>
+    </div>
+</div>
 <div id="list">
     @php
         $units = Session::get('units');
     @endphp
     @foreach ($units as $unit)
-        <div class="card bg-light mb-1">
-            <div class="card-header">
-                <table align="left" style="position: static; text-align:left; width:50%;">
-                    <tr>
-                        @if( trim($unit['sensorunit_location']))
-                            <td><h5>{{ trim($unit['sensorunit_location']) }}</h5></td>
+        <div class="row">
+            <div class="card card-rounded mb-1">
+                <div class="row">
+                    <div class="col-md-6 my-auto">
+                        @if(trim($unit['sensorunit_location']))
+                            <h5>{{ trim($unit['sensorunit_location']) }}</h5>
                         @else
-                            <td><h5>{{ trim($unit['serialnumber']) }}</h5></td>
+                            <h5>{{ trim($unit['serialnumber']) }}</h5>
                         @endif
-                {{-- <div class="float-right"> --}}
-                </table>
-                <table align="right" style="position: static; text-align:right; width:30%;">
-                    <tr>
+                    </div>
+                    <div class="col-md-6">
                         @if ($unit['changeallowed'] == 1)
-                            <td><i class="fas fa-2x fa-share-square" style="margin-right: 1em;" aria-hidden="true" aria-controls="collapse" data-toggle="collapse" data-target="#collapse{{trim($unit['serialnumber'])}}"></i></td>
+                            <i class="fas fa-2x fa-share-square mt-2" style="margin-right: 1em;" aria-hidden="true" aria-controls="collapse" data-toggle="collapse" data-target="#collapse{{trim($unit['serialnumber'])}}"></i>
                         @endif
-                        <td><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#changesettings{{trim($unit['serialnumber'])}}">
+                        <button class="btn btn-7s float-end" type="button" data-toggle="modal" data-target="#changesettings{{trim($unit['serialnumber'])}}">
                             @lang('settings.changesettings')
-                        </button></td>
-                    </tr>
-                </table>
-                {{-- </div> --}}
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="collapse collapse-local" id="collapse{{trim($unit['serialnumber'])}}">                        
-                <div class="card-body">
-                    @if ($unit['changeallowed'] == 1)
-                        <form method="POST" action="{{ route('shareunit') }}">
-                            @csrf
+            <div class="collapse collapse-local bg-white" id="collapse{{trim($unit['serialnumber'])}}">                        
+                @if ($unit['changeallowed'] == 1)
+                    <form method="POST" action="{{ route('shareunit') }}">
+                        @csrf
 
-                            <input type="hidden" name="serialnumber" value="{{ $unit['serialnumber'] }}">
+                        <input type="hidden" name="serialnumber" value="{{ $unit['serialnumber'] }}">
 
-                            <div class="form-group row">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">@lang('settings.email')</label>
-    
-                                <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="name@example.com" required autocomplete="email">
-    
-                                    @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">@lang('settings.email')</label>
+
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" placeholder="name@example.com" required autocomplete="email">
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
+                        </div>
 
-                            <div class="form-group row">
-                                <label for="access" class="col-md-4 col-form-label text-md-right">@lang('settings.premissions')</label>
-                                <select id="access" class="" name="access">
-                                    <option value="false">@lang('settings.no')</option>
-                                    <option value="true">@lang('settings.yes')</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label for="access" class="col-md-4 col-form-label text-md-right">@lang('settings.premissions')</label>
+                            <select id="access" class="" name="access">
+                                <option value="false">@lang('settings.no')</option>
+                                <option value="true">@lang('settings.yes')</option>
+                            </select>
+                        </div>
 
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        @lang('settings.share')
-                                    </button>
-                                </div>
+                        <div class="form-group mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-7s">
+                                    @lang('settings.share')
+                                </button>
                             </div>
-                        </form>
-                    @else
-                        <p> You don't have premissions to share this unit </p>
-                    @endif
-                </div> 
+                        </div>
+                    </form>
+                @else
+                    <p> You don't have premissions to share this unit </p>
+                @endif
             </div>
         </div>
 

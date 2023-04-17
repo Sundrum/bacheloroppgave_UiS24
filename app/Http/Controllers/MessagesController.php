@@ -8,7 +8,7 @@ use App\Http\Controllers\MessagesController;
 use Session;
 
 class MessagesController extends Controller
-{    
+{
     public static function getMessages() 
     {
         $data = Message::getMessages();

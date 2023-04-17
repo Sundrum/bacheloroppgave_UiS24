@@ -23,7 +23,7 @@
 
     <div class="row">
         <div class="col-sx-12 col-md-10 col-lg-8 col-xl-6 offset-md-1 offset-lg-2 offset-xl-3">
-            <div class="card card-rounded p-1 my-5">
+            <div class="card-rounded bg-white p-3 my-5">
                 <div class="row justify-content-center mb-2">
                     <div class="icon-card icon-color myaccount">
                         <i class="far fa-address-card fa-3x icon-color"></i>
@@ -41,8 +41,7 @@
                     <form method="POST" action="{{ route('changeaccount') }}">
                         @csrf
                         <div class="form-group">
-                            <span id="email_helptext" class="mx-5">@lang('myaccount.username')
-                            </span>
+                            <span id="email_helptext" class="mx-5">@lang('myaccount.username')</span>
                             <div class="input-group pb-2">
                                 <div class="input-group-prepend">
                                     <span name="prefixproduct" class="input-group-text bg-7s h-100">
@@ -50,6 +49,9 @@
                                     </span>
                                 </div>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="@lang('myaccount.username')" value="{{trim(Auth::user()->user_email)}}" required>
+                            </div>
+                            <div class="card-rounded bg-7r mx-4 mt-0 mb-2 px-4 py-2">
+                                <span class="">Not validated. You need to verify your email adress</span>
                             </div>
                         </div>
     

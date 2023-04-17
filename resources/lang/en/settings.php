@@ -7,8 +7,9 @@ return [
     | Settings Language Lines
     |--------------------------------------------------------------------------
     */
-
+    'customersetup' => 'Customer Setup',
     'generalsettings' => 'General Settings',
+    'generalsettingstext' => 'Information text',
     'sensorsettings' => 'Sensor Settings',
     'generalsetup' => 'General Setup',
     'smsalerts' => 'SMS alerts',

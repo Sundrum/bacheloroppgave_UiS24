@@ -527,7 +527,8 @@ class Unit extends Model
     {
         $unittype = substr($serialnumber,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
-            $url = 'serialnumber='.$serialnumber;
+            $sortfield = "irrigation_run_id DESC";
+            $url = 'serialnumber='.$serialnumber.'&sortfield='.$sortfield;
             $data = Api::getApi('irrigation/runlog/list?'.$url);
         }
         return $data;
@@ -538,15 +539,8 @@ class Unit extends Model
         $unittype = substr($serialnumber,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
             $data = Unit::getIrrigationRun($serialnumber);
-            $newestrun = -1;
-            $result = array();
-            foreach ($data['result'] as $run) {
-                if ($run['irrigation_run_id'] > $newestrun) {
-                    $newestrun = $run['irrigation_run_id'];
-                    $result = $run;
-                }
-            }
-            return $result;
+            if(isset($data['result']) && count($data['result']) > 0) return $data['result'][0];
+            else return $data;
         }
     }
 
@@ -554,32 +548,21 @@ class Unit extends Model
     {
         $unittype = substr($serialnumber,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
-            $data = Unit::getIrrigationRun($serialnumber);
-            $newestrun = -1;
-            $starttime = 0;
-            $stoptime = 0;
-            foreach ($data['result'] as $run) {
-                if ($run['irrigation_run_id'] > $newestrun) {
-                    $newestrun = $run['irrigation_run_id'];
-                    $starttime = $run['irrigation_starttime'];
-                    $stoptime = $run['irrigation_endtime'];
-                }
-            }
-            if (!$starttime) {
-                return $newestrun;
-            }
-    
-            if(strtotime($starttime) < strtotime('-3 days')){
-                $starttime = date('Y-m-d h:m:s', strtotime("-2 days", strtotime(now())));
-                // Log::info('New start time for irrigation: '.$starttime);  
-            }
+            $data = Unit::getNewestIrrigationLog($serialnumber);
+            $starttime = $data['irrigation_starttime'] ?? 0;
+            $stoptime = $data['irrigation_endtime'] ?? 0;
+
             
             $timestamp = str_replace('+00', '', $starttime);
             if($stoptime) {
-                $stop = str_replace('+00', '', $stoptime);
+                $stop = substr($stoptime, 0, 19);
                 $unitinformation = Api::getApi('sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);
                 // Log::info('Has stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
             } else {
+                if(strtotime($starttime) < strtotime('-3 days')){
+                    $starttime = date('Y-m-d h:m:s', strtotime("-2 days", strtotime(now())));
+                    // Log::info('New start time for irrigation: '.$starttime);  
+                }
                 $mytime = now();
                 $now = $mytime->toDateTimeString();
                 $stop = str_replace('+00', '', $now);
@@ -587,7 +570,6 @@ class Unit extends Model
                 // Log::info('Dont have stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
 
             }
-
             $sorted = array();
             if(is_array($unitinformation)) {
                 foreach ($unitinformation['result'] as $row) {

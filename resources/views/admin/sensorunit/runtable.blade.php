@@ -1,38 +1,28 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
 
 @section('content')
 
-<section class="container-fluid">
-    <div class="col-12">
-        <div class="mt-3 mb-3">
-            <div class="row justify-content-center">
-                <h3>Edit Run</h3>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-10 bg-grey rcorners3">
-                    <h5 class="text-center">Edit a Irrigation run</h5>
-                    <hr>
-                    <p> The run you are about to edit is: {{$run->irrigation_run_id ?? 'ERROR'}} ({{$run->log_id}})<br> <strong>Are you unsure? Then you shouldnt edit the run.</strong></p>
-                    <p>Changes made are none reverseable. An are visable for customers.</p>
-                    <div class="mt-1 mb-3">
-                        <div class="card-rounded" id="map_1" style="min-height: 600px; position:relative; height: 100%; width:100%;"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-12 bg-grey rcorners3">
-                    <br><br>
-                    <h5 class="text-center">Log</h5>
-                    <hr>
-                    <table id="logtable" class="display" width="100%"></table>
-                </div>
-
+<div class="mt-3 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-md-10 bg-white card-rounded px-3">
+            <h5 class="text-center">Edit a Irrigation run</h5>
+            <hr>
+            <p> The run you are about to edit is: {{$run->irrigation_run_id ?? 'ERROR'}} ({{$run->log_id}})<br> <strong>Are you unsure? Then you shouldnt edit the run.</strong></p>
+            <p>Changes made are none reverseable. An are visable for customers.</p>
+            <div class="mt-1 mb-2">
+                <div class="card-rounded" id="map_1" style="height: 500px; position:relative; width:100%;"></div>
             </div>
         </div>
+        <div class="col-md-10 bg-white card-rounded mt-3 px-3">
+            <h5 class="py-2">Log</h5>
+            <hr>
+            <table id="logtable" class="display" width="100%"></table>
+        </div>
     </div>
-</section>
+</div>
 <script>
+setTitle('Edit Run ' + @json($run['log_id']));
 var token = "{{ csrf_token() }}";
 var positions = Array();
 var latlngs = Array();
@@ -42,11 +32,11 @@ var startMarker;
 var startpoint;
 var endpoint;
 var log_id;
-var endIcon = new google.maps.MarkerImage("../../../img/irr_flag_destination.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var activeIcon = new google.maps.MarkerImage("../../../img/irr_icon_present.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(25,25));
-var startIcon = new google.maps.MarkerImage("../../../img/irr_flag_start.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var poiIcon = new google.maps.MarkerImage("../../../img/irr_icon_poi.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(25,25));
-var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 3, strokeColor:'#880808'};
+var startIcon = new google.maps.MarkerImage("/img/irrigation/start.png", null, null, null, new google.maps.Size(54,85.5));
+var endIcon = new google.maps.MarkerImage("/img/irrigation/finish.png", null, null, null, new google.maps.Size(54,85.5));
+var poiIcon = new google.maps.MarkerImage("/img/irrigation/sms.png", null, null, null, new google.maps.Size(54,85.5));
+var activeIcon = new google.maps.MarkerImage("/img/irrigation/current.svg", null, null, new google.maps.Point(25, 25), new google.maps.Size(50,50));
+var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 3, strokeColor:'#880808' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map_1'), {
@@ -59,9 +49,6 @@ function initMap() {
         tilt: 0
     });
     getLatestRun(@json($run['log_id']));
-    //marker();
-    //autoSizing();
-
 }
 
 function getLatestRun(id) {
@@ -91,11 +78,12 @@ function getLatestRun(id) {
 
             startPoint(startpoint);
             endPoint(endpoint);
-
+            console.log(data.data);
             var points = data.data;
             points.forEach(generateMarkers);
             addMarkers();
             autoSizing();
+            generateTable(data.data);
 
 
         },
@@ -106,8 +94,8 @@ function getLatestRun(id) {
 }
 
 function generateMarkers(item) {
-    if(item[2] !== 0) {
-        positions.push({lat: item[2], lng: item[3], timestamp: item[0] });
+    if(item[13] && item[13] !== 0) {
+        positions.push({lat: item[13], lng: item[14], timestamp: item['timestamp'] });
     } else {
         console.log('Not started')
     }
@@ -124,13 +112,13 @@ function pushMarker() {
     if (i == (positions.length - 1)) {
     /*activepoint = positions[i];
     iconR = activeIcon;
-    map.setCenter(positions[i]);
+    // map.setCenter(positions[i]);*/
     
-    activeMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(positions[i]),
-        icon: iconR,
-        map: map
-    });*/
+    // activeMarker = new google.maps.Marker({
+    //     position: new google.maps.LatLng(positions[i]),
+    //     icon: activeIcon,
+    //     map: map
+    // });
 
     } else {
         if (i == 0) {
@@ -306,8 +294,8 @@ var infowindow = new google.maps.InfoWindow();
     };
 }
 
-$(document).ready(function () {
-    var dataSet = @php echo $log; @endphp;
+function generateTable(data) {
+    const dataSet = data;
     var table = $('#logtable').DataTable({
         data: dataSet,
         pageLength: 25, // Number of entries
@@ -323,35 +311,39 @@ $(document).ready(function () {
             style: 'multi'
         },
         columns: [
-            { title: "Timestamp" },
-            { title: "0" },
-            { title: "1" },
-            { title: "2" },
-            { title: "3" },
-            { title: "4" },
-            { title: "5" },
-            { title: "6" },
-            { title: "7" },
-            { title: "8" },            
-            { title: "9" },
-            { title: "10" },
-            { title: "11" },
-            { title: "12" },
-            { title: "13" },            
-            { title: "14" },
-            { title: "15" },
-            { title: "16" },
-            { title: "17" },
-            { title: "18" },
+            { title: "Timestamp",
+            data: "timestamp" },
+            { title: "State",
+            data: "0"},
+            { title: "Vib", 
+            data: "1"},
+            { title: "Waterlost",
+            data: "2" },
+            { title: "Tilt Alert",
+            data: "3"},
+            { title: "Tilt Abs",
+            data: "4" },
+            { title: "Tilt Rel",
+            data: "5" },            
+            { title: "Btn",
+            data: "9" },
+            { title: "Temp",
+            data: "10" },
+            { title: "RH",
+            data: "11" },
+            { title: "Lat",
+            data: "13",
+            defaultContent: "<i>Not set</i>" },            
+            { title: "Lng",
+            data: "14",
+            defaultContent: "<i>Not set</i>" },
+            { title: "Vbat",
+            data: "15" },
+            { title: "RSSI",
+            data: "16" },
         ],
     });
-    
-    $('#unittable tbody').on( 'click', 'tr', function () {
-        var datarow = table.row(this).data();
-        var id = datarow[0];
-        window.location='sensorunit/'+id;
-    });
-});
+}
 
 </script>
 @endsection

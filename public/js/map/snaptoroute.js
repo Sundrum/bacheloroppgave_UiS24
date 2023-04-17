@@ -1,16 +1,16 @@
 function SnapToRoute(map, marker, polylinepath)
 {
-    latsnlngs.push(firstpoint);
-    latsnlngs.push(endpoint);
+    latsnlngs.push(polylinepath[0]);
+    latsnlngs.push(polylinepath[1]);
 	polyline = new google.maps.Polyline({
 				path: latsnlngs,
-				strokeColor: "#004079",
+				strokeColor: "#214466",
 				strokeWeight: 2,
 				strokeOpacity: 0.1
 	});
     polyline.setMap(map);
-    //polyline.setPath(latsnlngs);
-    //this.latsnlngs_distance = google.maps.geometry.spherical.computeDistanceBetween(endpoint,firstpoint);
+    // polyline.setPath(latsnlngs);
+    this.latsnlngs_distance = google.maps.geometry.spherical.computeDistanceBetween(polylinepath[0],polylinepath[1]);
     this.routePixels_ = [];
     this.normalProj_ = map.getProjection();
     this.map_ = map;
@@ -28,9 +28,7 @@ function SnapToRoute(map, marker, polylinepath)
 
 SnapToRoute.prototype.init_ = function () {
     this.loadLineData_();
-    //if (this.marker_ != activeMarker) {
-        this.loadMapListener_();
-    //}
+    this.loadMapListener_();
 };
 
 SnapToRoute.prototype.updateTargets = function (marker, polyline) {
@@ -49,24 +47,18 @@ SnapToRoute.prototype.loadMapListener_ = function () {
 
     google.maps.event.addListener(me.marker_, "dragend", function (evt) {
         me.updateMarkerLocation_(evt.latLng);
-        showContextMenuPOI(evt.latLng, point_id);
+        showContextMenuPOI(me.marker_.position, point_id);
     });
 
     google.maps.event.addListener(me.marker_, "drag", function (evt) {
         me.updateMarkerLocation_(evt.latLng);
-        showContextMenuPOI(evt.latLng, point_id);
+        // showContextMenuPOI(me.marker_.position, point_id);
     });
 };
 
 SnapToRoute.prototype.loadLineData_ = function () {
-    //var zoom = this.map_.getZoom();
     this.routePixels_ = [];
     var path = this.polyline_.getPath();
-    //var length = this.latsnlngs_distance;    
-    //var routePixels_ = this.routePixels_;
-
-    //var distancetomove = this.getClosestPointOnLines_(activeMarker, routePixels_);
-    
 
 	if (typeof path == 'undefined') console.log("undefined path");
 	else console.log("path ok?");

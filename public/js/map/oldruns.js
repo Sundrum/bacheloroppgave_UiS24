@@ -25,7 +25,7 @@ function addOldRuns(){
             oldrungreen = new google.maps.Polyline({
                 path: [coordinates[t*2], coordinates[t*2 + 1]],
                 geodesic: true,
-                strokeColor: '#008000',
+                strokeColor: '#a7c49d',
                 strokeOpacity: 0.8,
                 strokeWeight: 33,
                 map: map
@@ -43,7 +43,7 @@ function addOldRuns(){
             oldrunyellow = new google.maps.Polyline({
                 path: [coordinates[t*2], coordinates[t*2 + 1]],
                 geodesic: true,
-                strokeColor: '#FEE23E',
+                strokeColor: '#fed16d',
                 strokeOpacity: 0.8,
                 strokeWeight: 33,
                 map: map
@@ -51,7 +51,7 @@ function addOldRuns(){
     
             google.maps.event.addListener(oldrunyellow, 'click', (function(oldrunyellow, t) {
                 return function(event) {
-                    infowindow.setContent('Run: ' + oldruns[t].run_id + '<br>' + oldruns[t].days + ' days ago <br> Startime: ' + oldruns[t].starttime);
+                    infowindow.setContent('<h5 class="my-0">Run: ' + oldruns[t].run_id + '</h5><br>' + oldruns[t].days + ' days ago <br> Startime: ' + oldruns[t].starttime);
                     infowindow.setPosition(event.latLng);
                     infowindow.open(map);
                 }

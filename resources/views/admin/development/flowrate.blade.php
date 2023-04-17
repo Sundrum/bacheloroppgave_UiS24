@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 @section('content')
 <section class="container">

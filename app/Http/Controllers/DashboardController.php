@@ -324,11 +324,14 @@ class DashboardController extends Controller
                     }
                     $value = self::convertWoodMoisture($probe['value'], 20, $a, $b);
                     $probe['header'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else if (trim($probe['unittype_id']) == 36){
                     $value = $probe['value']/100;
                     $probe['header'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else {
                     $probe['header'] = round($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 }
             } if ($probe['hidden'] === 0) {
                 if (trim($probe['unittype_id']) == 24) {
@@ -394,6 +397,21 @@ class DashboardController extends Controller
             $probe['timestampDifference'] = self::getTimestampDifference($probe['timestamp']);
             $probe['timestampComment'] = self::getTimestampComment($probe['timestampDifference'], $probe['manipulatedTimestamp']);
         }
+    }
+
+    public static function calculatePercent($value, $min, $max) {
+        if($min == 0) {
+            $min = 0.01;
+        }
+        
+        if($value > $max) {
+            return 100;
+        } else if ($value < $min) {
+            return 0;
+        }
+
+        $max_percent = (($max/$min)*$max) - $max;
+        return abs((((($value/$min)*$max)-$max) / $max_percent) * 100);
     }
 
 }

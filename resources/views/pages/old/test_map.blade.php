@@ -2,40 +2,51 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry"> type="text/javascript"></script>
 
 @section('content')
-            <div id="map"></div>
-            <div class="overlap" style="position: absolute; top:170px; margin-left:10px; width:50px; z-index:10; background: white;">
-                <img class="image-responsive" onclick="$( '#infowindow' ).toggle();" src="../img/info_60x60.png" width="40" alt="" style="margin-left: 5px;">
-            </div>
-            <div id="infowindow" class="overlap" style="position: absolute; top:200px; width:250px; margin-left:10px; z-index:2; background: white; display:none;">
-                <table>
-                    <tr class="spaceUnder">
-                        <td><img class="image-responsive" src="../img/irr_icon_start.png" width="50"></td>
-                        <td class="tdspace"> Startpoint</td>
-                    </tr>
-                    <tr class="spaceUnder">
-                        <td><img class="image-responsive" src="../img/irr_icon_present.png" width="50"></td>
-                        <td class="tdspace"> Point of interest </td>
-                    </tr>
-                    <tr class="spaceUnder">
-                        <td><img class="image-responsive" src="../img/irr_icon_poi.png" width="50"></td>
-                        <td class="tdspace"> Point of interest </td>
-                    </tr>
-                    <tr class="spaceUnder">
-                        <td><img class="image-responsive" src="../img/irr_icon_final.png" width="50"></td>
-                        <td class="tdspace"> Endpoint </td>
-                    </tr>
-                </table>
-            </div>    
-@endsection
 
+    <div class="row bg-white card-rounded">
+        <div class="col-4 col-md pt-3">
+            <span>
+                Distance: <span id="meter" name="meter"></span> 243
+            </span>
+        </div>
+        <div class="col">
+            <button class="btn-7s" onclick="addPOI(0,0,1);">SMS<sub>1</sub></button>
+        </div>
+        <div class="col">
+            <button class="btn-7s" onclick="addPOI(0,0,2);">SMS<sub>2</sub></button>
+        </div>
+        <div class="col">
+            <div class="float-end">
+                <img class="image-responsive float-right pt-1" role="button" href="#" data-bs-toggle="dropdown" src="../img/info_60x60.png" width="40" alt="">
+                <ul class="dropdown-menu bg-white">
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/start.png" width="40"> @lang('map.startpoint')
+                    </li>
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/current.svg" width="40"> @lang('map.current')
+                    </li>
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/sms.png" width="40"> @lang('map.poi')
+                    </li class="px-3">
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/finish.png" width="40"> @lang('map.endpoint')
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="map"></div>
 
 <script>
-    var endIcon = new google.maps.MarkerImage("../img/irr_flag_destination.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var activeIcon = new google.maps.MarkerImage("../img/irr_flag_current.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var startIcon = new google.maps.MarkerImage("../img/irr_flag_start.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(120,60));
-var poiIcon = new google.maps.MarkerImage("../img/irr_icon_poi.png", null, null, new google.maps.Point(4, 28), new google.maps.Size(25,25));
+    setTitle('Irrigation sensor');
+    setName('Demo');
+    setCustomer('7Sense Agritech')
+var endIcon = new google.maps.MarkerImage("../img/irrigation/finish.png", null, null, null, new google.maps.Size(54,85.5));
+var activeIcon = new google.maps.MarkerImage("../img/irrigation/current.svg", null, null, new google.maps.Point(25, 25), new google.maps.Size(50,50));
+var startIcon = new google.maps.MarkerImage("../img/irrigation/start.png", null, null, null, new google.maps.Size(54,85.5));
+var poiIcon = new google.maps.MarkerImage("../img/irrigation/sms.png", null, null, null, new google.maps.Size(54,85.5));
 //var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 4, fillColor:'#FF0000' };
-var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 2, strokeColor:'#004079' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
+var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 2, strokeOpacity: 0.8, strokeColor:'#122e53' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
     
     var positions = Array();
     var positions = [{lat: 59.390982, lng: 10.460590},
@@ -76,7 +87,7 @@ var mapDiv = document.getElementById('map');
     var old = new google.maps.Polyline({
         path: oldRun,
         geodesic: true,
-        strokeColor: '#008000',
+        strokeColor: '#a7c49d',
         strokeOpacity: 0.8,
         strokeWeight: 33
     });
@@ -87,7 +98,7 @@ var mapDiv = document.getElementById('map');
     var old = new google.maps.Polyline({
         path: oldRun2,
         geodesic: true,
-        strokeColor: '#008000',
+        strokeColor: '#a7c49d',
         strokeOpacity: 0.8,
         strokeWeight: 33
     });
@@ -98,7 +109,7 @@ var mapDiv = document.getElementById('map');
     var old = new google.maps.Polyline({
         path: oldRun3,
         geodesic: true,
-        strokeColor: '#FEE23E',
+        strokeColor: '#fed16d',
         strokeOpacity: 0.8,
         strokeWeight: 33
     });
@@ -137,7 +148,7 @@ function addMarkers(){
     var irrigationpath = new google.maps.Polyline({
         path: latlngs,
         geodesic: true,
-        strokeColor: '#004079',
+        strokeColor: '#00265a',
         strokeOpacity: 0.8,
         strokeWeight: 33
     });
@@ -157,7 +168,7 @@ function addEndPoint(){
     var irrigationpath2 = new google.maps.Polyline({
         path: latlngs,
         geodesic: true,
-        strokeColor: '#004079',
+        strokeColor: '#122e53',
         strokeOpacity: 0.8,
         strokeWeight: 2
     });
@@ -168,3 +179,4 @@ function addEndPoint(){
 }
   
 </script>
+@endsection

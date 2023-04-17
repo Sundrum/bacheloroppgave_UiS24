@@ -1,10 +1,6 @@
 @extends('layouts.app')
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
 
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
-
 @section('content')
 <h2 id="name_unit" style="display: none;">{{$unit->sensorunit_location ?? $serial}} - ({{$serial}})</h2>
 <div class="row justify-content-center">

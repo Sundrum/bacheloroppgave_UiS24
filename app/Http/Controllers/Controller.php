@@ -131,7 +131,7 @@ class Controller extends BaseController
     }
     public function testmap() 
     {   
-        return view('pages.test_map');
+        return view('pages.old.test_map');
     }
 
     public function sensorunit ($serial) {
@@ -173,7 +173,12 @@ class Controller extends BaseController
             return view('pages.product.1065', compact('serial', 'unit'));
         } else {
             $data = Api::getApi('sensorunits/list?serialnumber='.$serial);
-            return view('pages.unitdetails', compact('serial', 'data'));
+            $result = Unit::latestArrayData($serial);
+            DashboardController::probeProcess($result);
+            ksort($result);
+            $unit = $data['result'][0];
+            $unit['probes'] = $result;
+            return view('pages.unitdetails', compact('serial', 'unit'));
         }
     }
 
@@ -181,6 +186,7 @@ class Controller extends BaseController
         $serial = request()->unit;
         $lat = request()->lat;
         $lng = request()->lng;
+        $variables = array();
         if (isset($lat)) {
             $phone_lat_lng = $lat;
             $phone_lat_lng .= ',' .$lng;
@@ -193,28 +199,9 @@ class Controller extends BaseController
                 $data = Unit::getCurrentRun($serial);
                 $variables = Unit::getVariables($serial);
                 $state = 0;
-
                 foreach ($variables['result'] as $variable) {
-                    if (trim($variable['variable']) == 'irrigation_state') {
-                        $result['irrigation_state'] = trim($variable['value']);
-                        $result['state_timestamp'] = $variable['dateupdated'];
-                    } else if (trim($variable['variable']) == 'irrigation_endpoint') {
-                        $result['irrigation_endpoint'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_meters') {
-                        $result['irrigation_meters'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_portalstart') {
-                        $result['irrigation_portalstart'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_portalstop') {
-                        $result['irrigation_portalstop'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_endpoint') {
-                        $result['irrigation_endpoint'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_poi_1') {
-                        $result['irrigation_poi_1'] = trim($variable['value']);
-                    } else if (trim($variable['variable']) == 'irrigation_poi_2') {
-                        $result['irrigation_poi_2'] = trim($variable['value']);
-                    }
+                    $variables[$variable['variable']] = trim($variable['value']);
                 }
-        
                 $sorted = array();
                 if (is_array($data)) {
                     foreach ($data as $interval) {
@@ -226,16 +213,16 @@ class Controller extends BaseController
                 if(!isset($phone_lat_lng)) {
                     if (isset($result['irrigation_state'])) {
                         $state = $result['irrigation_state'];
-                        if (count($sorted) == 0 && $state == 1) {
-                            return view('pages.map')->with('serial', $serial)->with('message', '1E: Waiting for first GPS Position.');
-                        } else if (count($sorted) == 0 && $state == 0) {
-                            return view('pages.map')->with('serial', $serial)->with('message', '0E: Press the button or start the sensor remote.');
+                        if (count($sorted) == 0 && $state == 2) {
+                            $message = '1E: Waiting for first GPS Position.';
+                        } else if (count($sorted) == 0 && $state == 1) {
+                            $message = '0E: Press the button or start the sensor remote.';
                         } else if (count($sorted) == 0 && $state == 2 && $result['irrigation_endpoint'] == '0,0') {
-                            
-                            return view('pages.map')->with('serial', $serial)->with('message', '2E: Waiting for first GPS Position.');
-                        } else if (count($sorted) == 0 && $state == 3) {
-                            return view('pages.map')->with('serial', $serial)->with('errormessage', 'Something went wrong, please restart the sensor by pushing the button.');
-                        }
+                            $message = '2E: Waiting for first GPS Position.';
+                        } 
+                        //else if (count($sorted) == 0 && $state == 3) {
+                        //     return view('pages.map')->with('serial', $serial)->with('errormessage', 'Something went wrong, please restart the sensor by pushing the button.');
+                        // }
                     }
                 }
                 
@@ -243,7 +230,11 @@ class Controller extends BaseController
                 if(isset($phone_lat_lng)) {
                     return view('pages.map')->with('serial', $serial)->with('phone_lat_lng', $phone_lat_lng)->with('irrigationrun', $irrigationrun)->with('variables', $result)->with('data', $sorted);
                 } else {
-                    return view('pages.map')->with('variables', $result)->with('data', $sorted)->with('serial', $serial)->with('irrigationrun', $irrigationrun);
+                    if(isset($message)) {
+                        return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted)->with('message', $message);
+                    } else {
+                        return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted);
+                    }
                 }
             }
         }

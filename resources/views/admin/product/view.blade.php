@@ -1,14 +1,11 @@
-@extends('layouts.admin')
-
-@section('content')
-<section class="container">
+<div class="card-rounded">
     <div class="row mt-3 mb-3">
         <div class="col-sm-5">
             <h2><b>Product</b> </h2>
             <span class="text-muted">Management</span>
         </div>
         <div class="col-sm-7">
-            <a onclick="window.location='{{ route('newproduct') }}'" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a>
+            <a onclick="window.location='{{ route('newproduct') }}'" id="button"><i></i><button class="btn-7g float-end"> @lang('admin.new')</button></a>
         </div>
     </div>
     <table id="producttable" class="display" width="100%">
@@ -28,7 +25,7 @@
                     <td>{{$row->product_name ?? ''}}</td>
                     <td>{{$row->productnumber ?? ''}}</td>
                     <td>{{$row->product_description ?? ''}}</td>
-                    <td><a href="/admin/product/{{$row->product_id}}"><button class="btn-primary-filled">Open</button></a></td>
+                    <td><a href="/admin/product/{{$row->product_id}}"><button class="btn-7s">Open</button></a></td>
 
                 </tr>
             @endforeach
@@ -42,9 +39,9 @@
                 <td></td>
             </tr>
         </tfoot>
-
     </table>
-</section>
+</div>
+
 
 <script>
 $(document).ready(function () {
@@ -71,4 +68,3 @@ $(document).ready(function () {
 });
 
 </script>
-@endsection

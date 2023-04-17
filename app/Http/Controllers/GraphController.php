@@ -17,6 +17,7 @@ class GraphController extends Controller {
     public static function getUnits() {
       Unit::getUnitsList();
       $sensorunits = Session::get('sensorunits');
+      
       return $sensorunits;
     }
 

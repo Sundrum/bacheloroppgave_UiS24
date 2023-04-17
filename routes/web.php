@@ -16,7 +16,7 @@
 /***
  * Admin pages 
 ***/
-Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard']);
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin');
 Route::get('/admin/apibilling', [App\Http\Controllers\AdminController::class, 'apismartsensor'])->name('billing');
 Route::get('/admin/billing/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getBilling']);
 Route::get('/admin/billing/summary/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getSummary']);
@@ -100,14 +100,14 @@ Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controller
 
 Route::get('/admin/irrigationstatus/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);
-Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus']);
+Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus'])->name('irrigationstatus');
 Route::get('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandController::class, 'irrigationFota']);
 Route::post('/admin/queue/delete', [App\Http\Controllers\Admin\CommandController::class, 'deleteQueue']);
 
 Route::get('/admin/farmfield/{serial}', [App\Http\Controllers\Admin\DevelopmentController::class, 'farmfield']);
 Route::get('/admin/development/fleetmanagement', [App\Http\Controllers\Admin\DevelopmentController::class, 'fleetmanagement']);
 
-Route::get('/select', [App\Http\Controllers\AdminController::class, 'select']);
+Route::get('/select', [App\Http\Controllers\AdminController::class, 'select'])->name('selectuser');
 Route::get('/select/{userid}/{customernumber}', [App\Http\Controllers\AdminController::class, 'setUser']);
 
 /***
@@ -119,7 +119,7 @@ Route::post('/admin/dev/data', [App\Http\Controllers\Development\MapController::
 /***
  * Dashboard routes
 ***/
-Route::get('/', [App\Http\Controllers\Controller::class, 'dashboard']);
+Route::get('/', [App\Http\Controllers\Controller::class, 'dashboard'])->name('dashboard');
 Route::get('/dashboard', [App\Http\Controllers\Controller::class, 'dashboard']);
 
 Route::post('/setorder', [App\Http\Controllers\DashboardController::class, 'setOrder'])->name('setorder');
@@ -133,7 +133,7 @@ Route::post('/timezone', [App\Http\Controllers\DashboardController::class, 'setT
 /***
  * Settings routes 
 ***/
-Route::get('/settings', [App\Http\Controllers\Controller::class, 'settings']);
+Route::get('/settings', [App\Http\Controllers\Controller::class, 'settings'])->name('settings');
 Route::get('/settings/{id}', [App\Http\Controllers\Controller::class, 'settingsid']);
 Route::get('/myaccount', [App\Http\Controllers\Controller::class, 'myaccount'])->name('myaccount');
 Route::post('/myaccount', [App\Http\Controllers\SettingsController::class, 'changeaccount'])->name('changeaccount');
@@ -165,13 +165,13 @@ Route::get('/map', [App\Http\Controllers\Controller::class, 'testmap']);
 /***
  * Messages pages 
 ***/
-Route::get('/messages', [App\Http\Controllers\Controller::class, 'messages']);
+Route::get('/messages', [App\Http\Controllers\Controller::class, 'messages'])->name('messages');
 Route::post('/deleteMessage', [App\Http\Controllers\MessagesController::class, 'deleteMessage'])->name('deleteMessage');
 
 /***
  * Graph pages 
 ***/
-Route::get('/graph', [App\Http\Controllers\Controller::class, 'graph']);
+Route::get('/graph', [App\Http\Controllers\Controller::class, 'graph'])->name('getGraph');
 Route::get('/graph/units', [App\Http\Controllers\GraphController::class, 'getUnits'])->name('getUnits');
 Route::get('/graph/getprobeinfo/{serialnumber}', [App\Http\Controllers\GraphController::class, 'getAllProbes'])->name('getAllProbes');
 Route::get('/graph/getprobeinfo/{serialnumber}/{probetype}', [App\Http\Controllers\GraphController::class, 'getProbeInfo'])->name('graph');
@@ -186,7 +186,8 @@ Route::get('/demo_uk', [App\Http\Controllers\TestDashboardController::class, 'uk
 
 
 Auth::routes();
-
+Route::get('/verify/email', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidation']);
+Route::get('/verify/testmail', [App\Http\Controllers\Auth\VerificationController::class, 'testMail']);
 
 /*** 
  * E-mail 

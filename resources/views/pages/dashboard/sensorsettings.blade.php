@@ -1,20 +1,26 @@
-<div class="card">
-    <div class="card-header">
-        <div class="float-right">
-            <label class="switch">
-            <input type="checkbox" data-toggle="collapse" data-target="#collapseSettings" onclick="enableSortable()" id="enableSorting">
-                <span class="slider round"></span>
-            </label>
+<div class="card card-rounded">
+    <div class="row px-3 py-3">
+        <div class="col-8">
+            <h5>@lang('dashboard.groupenable')</h5>
         </div>
-        <h5>@lang('dashboard.groupenable')</h5>
+        <div class="col-4">
+            <div class="text-end">
+                <label class="switch">
+                <input type="checkbox" data-toggle="collapse" data-target="#collapseSettings" onclick="enableSortable()" id="enableSorting">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
     </div>
+
     <div class="collapse" id="collapseSettings">
-        <div class="card-body">
-            <p>@lang('dashboard.groupinfo')</p>
-            <button  class="btn btn-secondary float-right"
+        <div class="px-3">
+            <span>@lang('dashboard.groupinfo')</span>
+            <button  class="btn-7g float-end"
                 data-toggle="modal" data-target="#changeGroup">@lang('dashboard.changegroup')
             </button>
-            <button class="btn btn-primary float-right mb-3"
+            <button class="btn-7s float-end mb-3"
                 style="margin-right: 5px;"
                 data-toggle="modal" data-target="#addGroup">@lang('dashboard.addgroup')
             </button>

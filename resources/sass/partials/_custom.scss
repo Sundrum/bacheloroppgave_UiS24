@@ -80,11 +80,11 @@ tr.spaceUnder>td {
 }
 
 input:checked + .slider {
-    background-color: #009A63;
+    background-color: $secondary;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #009A63;
+    box-shadow: 0 0 1px $secondary;
 }
 
 input:checked + .slider:before {

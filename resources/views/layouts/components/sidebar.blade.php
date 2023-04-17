@@ -3,28 +3,28 @@
 <hr class="divider">
 <ul class="sidebar-list">
     <li class="sidebar-item">
-        <a href="/dashboard">
+        <a onclick="loadContent('{{route('dashboard')}}')">
             <i class="fa fa-2x fa-desktop"></i>
             <span class="links_name">@lang('navbar.dashboard')</span>
         </a>
         <span class="tooltip-right">@lang('navbar.dashboard')</span>
     </li>
     <li class="sidebar-item">
-        <a href="/graph">
+        <a onclick="loadContent('{{route('getGraph')}}')">
             <i class="fa fa-2x fa-chart-bar"></i>
             <span class="links_name">@lang('navbar.graph')</span>
         </a>
         <span class="tooltip-right">@lang('navbar.graph')</span>
     </li>
     <li class="sidebar-item">
-        <a href="/messages">
+        <a onclick="loadContent('{{route('messages')}}')">
             <i class="fa fa-2x fa-envelope"></i>
             <span class="links_name">@lang('navbar.messages')</span>
         </a>
         <span class="tooltip-right">@lang('navbar.messages')</span>
     </li>
     <li class="sidebar-item">
-        <a href="/settings">
+        <a onclick="loadContent('{{route('settings')}}')">
             <i class="fas fa-2x fa-cog"></i>
             <span class="links_name">@lang('navbar.settings')</span>
         </a>
@@ -41,7 +41,7 @@
                 <span class="tooltip-right">@lang('navbar.selectuser')</span>
             </li> --}}
             <li class="sidebar-item">
-                <a href="/admin">
+                <a onclick="loadContent('{{route('admin')}}')">
                     <i class="fa fa-2x fa-lock"></i>
                     <span class="links_name">@lang('navbar.admin')</span>
                 </a>

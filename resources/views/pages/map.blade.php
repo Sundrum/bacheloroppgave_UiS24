@@ -1,57 +1,53 @@
 @extends('layouts.app')
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
 
+<script type="text/javascript" src="{{ asset('/js/map/utilities.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/map/snaptoroute.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/map/markers.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/map/oldruns.js') }}"></script>
 @section('content')
 
- <div class="container" style="position: relative;">
-    {{-- @if (isset($message))
-    <div class="alert alert-secondary">{{ $message }}</div>
-    @endif
-    @if (isset($errormessage))
-    <div class="alert alert-danger">{{ $errormessage }}</div>
-    @endif --}}
 
-    <div id="map"></div>
+<div class="row bg-white card-rounded">
     @if(isset($irrigationrun['irrigation_startpoint']))
-        <div class="overlap" style="position: absolute; top:90px; margin-left:10px; width:50px; z-index:10; background: white;">
-            <img class="image-responsive" onclick="$( '#infowindow' ).toggle();" src="../img/info_60x60.png" width="40" alt="" style="margin-left: 5px;">
+        <div class="col-3 col-md">
+            <span>
+                Distance: <span id="meter" name="meter"></span>
+            </span>
         </div>
-        <div id="infowindow" class="overlap" style="position: absolute; top:70px; width:250px; margin-left:60px; z-index:2; background: white; display:none;">
-            <table>
-                <tr class="spaceUnder">
-                    <td><img class="image-responsive" src="../img/irr_icon_start.png" width="50"></td>
-                    <td class="tdspace"> @lang('map.startpoint')</td>
-                </tr>
-                <tr class="spaceUnder">
-                    <td><img class="image-responsive" src="../img/irr_icon_present.png" width="50"></td>
-                    <td class="tdspace"> @lang('map.current')</td>
-                </tr>
-                <tr class="spaceUnder">
-                    <td><img class="image-responsive" src="../img/irr_icon_poi.png" width="50"></td>
-                    <td class="tdspace"> @lang('map.poi')</td>
-                </tr>
-                <tr class="spaceUnder">
-                    <td><img class="image-responsive" src="../img/irr_icon_final.png" width="50"></td>
-                    <td class="tdspace"> @lang('map.endpoint')</td>
-                </tr>
-            </table>
-        </div>
-        <div class="overlap" style="position: absolute; top:50px; margin-left:9px; z-index:10;">
-            <div class="form-group">
-                <input class="col-5 col-md-6 col-form-label" type="number" placeholder="Distance" id="meter" name="meter">
+        @if(isset($variables['irrigation_endpoint']) && $variables['irrigation_endpoint'] != '0,0' )
+            <div class="col">
+                <button class="btn-7s" onclick="addPOI(0,0,1);">SMS<sub>1</sub></button>
+            </div>
+            <div class="col">
+                <button class="btn-7s" onclick="addPOI(0,0,2);">SMS<sub>2</sub></button>
+            </div>
+        @endif
+        <div class="col">
+            <div class="float-end">
+                <img class="image-responsive float-right" role="button" href="#" data-bs-toggle="dropdown" src="../img/info_60x60.png" width="40" alt="">
+                <ul class="dropdown-menu bg-white">
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/start.png" width="40"> @lang('map.startpoint')
+                    </li>
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/current.svg" width="40"> @lang('map.current')
+                    </li>
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/sms.png" width="40"> @lang('map.poi')
+                    </li class="px-3">
+                    <li class="px-3">
+                        <img class="image-responsive" src="../img/irrigation/finish.png" width="40"> @lang('map.endpoint')
+                    </li>
+                </ul>
             </div>
         </div>
-    @endif
-    @if(isset($variables['irrigation_endpoint']) && $variables['irrigation_endpoint'] != '0,0' )
-            <div class="overlap" style="position: absolute; top:135px; margin-left:10px; width:50px; z-index:2; background: white;">
-                <img class="image-responsive" onclick="addPOI(0,0,1);" src="../img/poi1_btn.png" width="40" alt="" style="margin-left: 5px;">
-            </div>
-            <div class="overlap" style="position: absolute; top:160px; margin-left:10px; width:50px; z-index:2; background: white;">
-                <img class="image-responsive" onclick="addPOI(0,0,2);" src="../img/poi2_btn.png" width="40" alt="" style="margin-left: 5px;">
-            </div>
     @endif
 </div>
+<div id="map"></div>
 
 <script>
+    setTitle(@json($serial));
     var token = "{{ csrf_token() }}";
     var positions = Array();
     var serial = "{{ $serial }}";
@@ -69,8 +65,6 @@
     @else
         var count = 0;
     @endif
-
-
     @if(isset($irrigationrun['irrigation_startpoint']))
         var firstpoint = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_startpoint']); ?>);
         var center = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_startpoint']); ?>);
@@ -78,16 +72,14 @@
         var center = new google.maps.LatLng(<?php echo trim($phone_lat_lng); ?>);
     @endif
     @if(isset($variables['irrigation_endpoint']) && $variables['irrigation_endpoint'] != '0,0')
-        var endpoint = new google.maps.LatLng(<?php echo trim($variables['irrigation_endpoint']); ?>);
-        var center = new google.maps.LatLng(<?php echo trim($variables['irrigation_endpoint']); ?>);
+        var endpoint = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_endpoint']); ?>);
+        var center = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_endpoint']); ?>);
         console.log(endpoint);
     @endif
-    console.log(count);
     
     @if((isset($irrigationrun['irrigation_startpoint'])) || (isset($phone_lat_lng)) || (isset($variables['irrigation_endpoint']) && $variables['irrigation_endpoint'] != '0,0'))
         function initMap() {
-            var mapDiv = document.getElementById('map');
-            map = new google.maps.Map(mapDiv, {
+            map = new google.maps.Map(document.getElementById('map'), {
                 center: center,
                 mapTypeId: 'satellite',
                 mapTypeControl: true,
@@ -110,20 +102,12 @@
                 if (isset($variables['irrigation_endpoint']) && $variables['irrigation_endpoint'] != '0,0') {
                     echo "addEndMarker(new google.maps.LatLng(".$variables['irrigation_endpoint']."));";
                 }
-
-                echo 'google.maps.event.addListenerOnce(map, "projection_changed", function(){';
-                    if (isset($variables['irrigation_poi_1']) && $variables['irrigation_poi_1'] != '0,0') {
-                        echo "addPOI(".$variables['irrigation_poi_1'].", 1);";
-                    }
-                    if (isset($variables['irrigation_poi_2']) && $variables['irrigation_poi_2'] != '0,0') {
-                        echo "addPOI(".$variables['irrigation_poi_2'].", 2);";
-                    }
-                echo '});';	
             @endphp
             
             getLatestRun(serial);
             getOldRuns(serial, days);
             getDistance();
+            
             map.addListener("click", function(e){
                 if (!endMarker) {
                     showContextMenu(e.latLng);
@@ -143,6 +127,20 @@
                 infowindow.open(map);
             };
         }
+
+        function getPointOfInterest() {
+            @php
+                echo 'google.maps.event.addListenerOnce(map, "idle", function(){';
+                    if (isset($variables['irrigation_poi_1']) && $variables['irrigation_poi_1'] != '0,0') {
+                        echo "addPOI(".$variables['irrigation_poi_1'].", 1);";
+                    }
+                    if (isset($variables['irrigation_poi_2']) && $variables['irrigation_poi_2'] != '0,0') {
+                        echo "addPOI(".$variables['irrigation_poi_2'].", 2);";
+                    }
+                echo '});';	
+            @endphp
+        }
     @endif
 </script>
+
 @endsection

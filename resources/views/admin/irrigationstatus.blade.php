@@ -1,97 +1,148 @@
-@extends('layouts.admin')
-
-<link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}">
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Irrigation Overview</h1>
-    <div class="card card-rounded mb-2">
-        <div class="col-12 mt-3 mb-3">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-3">
-                    <div class="col-12">
-                        <div class="row btn-primary-outline justify-content-center" onclick="window.location.href='/admin/map/irrigationstatus'">
-                            <strong><i class="fa fa-location-arrow" aria-hidden="true"></i> Aktive sensorenheter</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+<section class="bg-white card-rounded">
+    <div class="m-3">
+        <div class="col-12 pt-3">
+            @include('admin.sensorunit.irrigationmap')
         </div>
         <div class="col-12 mt-3 mb-3">
             <div class="row justify-content-center">
-                <div class="col-6 col-md-3">
-                    <div class="col-12">
-                        <div class="row btn-primary-rounded justify-content-center" onclick="setSearch('21-1020-AA-');">
-                            <strong>21-1020-AA</strong>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="col-12">
-                        <div class="row btn-primary-rounded justify-content-center" onclick="setSearch('21-1020-AB-');">
-                            <strong>21-1020-AB</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 mt-3 mb-3">
-            <div class="row justify-content-center">
-                <div class="col-2">
+                <div class="col text-center">
                     <div class="row justify-content-center">
-                        <img src="{{asset('/img/irr_irrigation_green.png')}}" onclick="setSearch('state5');">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_7.png')}}" onclick="setSearch('state7');">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" id="off_season">
+                        <div class="col text-center">
+                            {{$variable['off_season'] ?? '0'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_6.png')}}" onclick="setSearch('state6');">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" id="post_settling">
+                        <div class="col text-center">
+                            {{$variable['post_settling'] ?? '0'}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col text-center">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_5.png')}}" onclick="setSearch('state5');">
+                        </div>
                     </div>
                     <div class="row justify-content-center" id="irrigation">
-                        {{$variable['irrigation']}}
+                        <div class="col">
+                            {{$variable['irrigation'] ?? '0'}}
+                        </div>
                     </div>
                 </div>
-                <div class="col-2">
+
+                <div class="col text-center">
                     <div class="row justify-content-center">
-                        <img src="{{asset('/img/irr_settling_green.png')}}" onclick="setSearch('state4');">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_4.png')}}" onclick="setSearch('state4');">
+                        </div>
                     </div>
                     <div class="row justify-content-center" id="settling">
-                        {{$variable['settling']}}
+                        <div class="col">
+                            {{$variable['settling'] ?? '0'}}
+                        </div>
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col text-center">
                     <div class="row justify-content-center">
-                        <img src="{{asset('/img/irr_idle_green.png')}}" onclick="setSearch('state3');">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_3.png')}}" onclick="setSearch('state3');">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" id="idle_activity">
+                        <div class="col">
+                            {{$variable['idle_activity'] ?? '0'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_2.png')}}" onclick="setSearch('state2');">
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" id="idle_clock_wait">
+                        <div class="col">
+                            {{$variable['idle_clock_wait'] ?? '0'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_1.png')}}" onclick="setSearch('state1');">
+                        </div>
                     </div>
                     <div class="row justify-content-center" id="idle_green">
-                        {{$variable['idle_green']}}
+                        <div class="col">
+                            {{$variable['idle_green'] ?? '0'}}
+                        </div>
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col text-center">
                     <div class="row justify-content-center">
-                        <img src="{{asset('/img/irr_idle_yellow.png')}}" onclick="setSearch('state2');">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state_0.png')}}" onclick="setSearch('state0');">
+                        </div>
                     </div>
                     <div class="row justify-content-center" id="idle">
-                        {{$variable['idle']}}
+                        <div class="col">
+                            {{$variable['idle'] ?? '0'}}
+                        </div>
                     </div>
                 </div>
-                <div class="col-2">
+                <div class="col text-center">
                     <div class="row justify-content-center">
-                        <img src="{{asset('/img/irr_notused.png')}}" onclick="setSearch('state1');">
+                        <div class="col">
+                            <img src="{{asset('/img/irrigation/state.png')}}" onclick="setSearch('state-1');">
+                        </div>
                     </div>
                     <div class="row justify-content-center" id="notused">
-                        {{$variable['notused']}}
+                        <div class="col">
+                            {{$variable['notused'] ?? 0}}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="table-section">
-        <table id="irrtable" class="display" width="100%"></table>
+    <div class="m-3">
+        <div id="table-section">
+            <table id="irrtable" class="display" width="100%"></table>
+        </div>
     </div>
-</div>
+</section>
 
 <!-- Datatables script  -->
 <script>
+   setTitle('Irrigation Overview');
+   
     var table;
     $(document).ready(function () {
         var dataSet = @php echo $data; @endphp;
         table = $('#irrtable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ],
             data: dataSet,
             pageLength: 25, // Number of entries
             responsive: true, // For mobile devices
@@ -107,13 +158,16 @@
                 style: 'multi'
             },
             columns: [
-                { title: "Status" },
-                { title: "Serialnumber" },
-                { title: "Name" },
-                { title: "Version" },
-                { title: "Customer" },
-                { title: "IMEI" },
-                { title: "Last Connected" },
+                { 
+                    title: "Status",
+                    width: "5%"
+                },
+                { title: "Serienummer" },
+                { title: "Navn" },
+                { title: "Versjon" },
+                { title: "Vibrasjon"},
+                { title: "Kunde" },
+                { title: "Siste levert" },
                 { title: "" },
             ],
         });
@@ -156,71 +210,5 @@
         });
     }
 </script>
+
 @endsection
-
-    {{-- <p>Hide Idle</p>
-    <label class="switch">
-        <input type="checkbox" name="hideidle" value="hideidle" checked onclick="checkbox_toggle(this);">
-        <span class="slider round"></span>
-    </label>
-    
-    <table align="center" style="position: static; text-align:center; width:100%;">
-        <tr style="margin-bottom:10px;">
-            @php
-                $m = 1;
-            @endphp
-            @foreach ($allirrigation as $irrUnit)
-            <td class="{{$irrUnit['class']}}" style="vertical-align:top; display:{{$irrUnit['display']}};">
-                    <a href='/unit/{{$irrUnit['serialnumber']}}'>
-                        <img src="{{ $irrUnit['img'] }}">
-                    </a>
-                    <p>{{ $irrUnit['serialnumber'] }}</p>
-                    <p>{{ $irrUnit['swversion']->value ?? 'Ukjent' }}</p>
-                    <p>{{ $irrUnit['timestampComment'] }}</p>
-                </td>
-
-                @if(!($m % $divider))
-                    </tr><tr style="margin-bottom:10px;">
-                @endif
-                @php $m++; @endphp
-            @endforeach
-        </tr>
-    <table> --}}
-
-
-{{-- <script>
-    function setDisplay(className, displayValue) {
-      var items = document.getElementsByClassName(className);
-      for (var i=0; i < items.length; i++) {
-        items[i].style.display = displayValue;
-        if (displayValue == 'none')
-        {
-            items[i].style.visibility='hidden';
-        } else
-        {
-            items[i].style.visibility='visible';
-        }
-      }
-    }
-    
-    function irrigation() {
-      setDisplay("irrigation_units", "");
-      setDisplay("all_units", "none");
-    }
-    
-    
-    function all() {
-      setDisplay("irrigation_units", "");
-      setDisplay("all_units", "");
-    }
-    
-    function checkbox_toggle(cb) {
-        if (cb.checked == false)
-        {
-            all();
-        } else
-        {
-            irrigation();
-        }
-    }
-</script> --}}

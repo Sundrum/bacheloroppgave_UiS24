@@ -1,5 +1,4 @@
-@extends('layouts.admin')
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+@extends('layouts.app')
 @section('content')
 <section class="container">
     <h1 class="text-center"> Wood Moisture Content Calculator</h1>

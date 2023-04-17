@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 <script src="{{ asset('js/three/three.js') }}"></script>
 <script src="{{ asset('js/three/loaders/STLLoader.js') }}"></script>

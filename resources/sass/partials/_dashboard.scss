@@ -29,32 +29,47 @@ body {
 }
 
 .circle {
-  border-radius: 50%;
-  height: 20px;
-  width: 20px;
-  margin: 5px;
-
   &-1 {
     background-color: $secondary;
+    @extend %circle-style;
+
   }
   &-0 {
     background-color: $danger;
+    @extend %circle-style;
   }
   &-b {
     background-color: $primary;
+    @extend %circle-style;
   }
   &-g {
     background-color: $secondary;
+    @extend %circle-style;
   }
   &-r {
     background-color: $danger;
+    @extend %circle-style;
   }
 }
 .group-average {
   font-size: small;
 }
-.sensor-name {
-  font-size: 20px;
+
+.sensor- {
+  &subtitle {
+    color: gray;
+    font-size: 16px;
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+  }
+  &heading {
+    font-size: 16px;
+  }
+  &icon {
+    font-size: 15px;
+    justify-content: center;
+  }
 }
 
 .group-card {

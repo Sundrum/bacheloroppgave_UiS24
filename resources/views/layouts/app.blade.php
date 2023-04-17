@@ -12,15 +12,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js" defer></script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
-
-<script type="text/javascript" src="{{ asset('/js/map/utilities.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/snaptoroute.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/markers.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/js/map/oldruns.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" SameSite="none Secure"></script>
 
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+<script src="https://nightly.datatables.net/js/jquery.dataTables.js" defer></script>
+<link href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.js" defer></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
 <script src="{{ asset('js/placeholder.js') }}"></script>
 
 @auth
@@ -51,19 +53,34 @@
 </head>
 <body>
 @auth
-    <main class="wrapper">
-        <section class="sidebar">
-            @include('layouts.components.sidebar')
-        </section>
-        <section class="content-wrapper">
-            <div class="topbar">
-                @include('layouts.components.topbar')
-            </div>
-            <div class="content-main">
-                @yield('content')
-            </div>
-        </section>
-    </main>
+    <section id="app">
+        <main class="wrapper">
+            <section class="sidebar">
+                @include('layouts.components.sidebar')
+            </section>
+            <section class="content-wrapper">
+                <div class="mt-4">
+                    @include('layouts.components.topbar')
+                </div>
+                <div id="content-main" class="content-main">
+                    @if(env('API_URL') !== 'localhost:46000/v1/')
+                        <div class="row mb-2 mx-2">
+                            <div class="col-12 card-rounded bg-7r py-1 pb-2 ">
+                                <h3>{{env('API_URL')}}</h3>
+                                Database connection are connected to Production. Please do not make any changes.
+                            </div>
+                        </div>
+                    @endif
+                    @yield('content')
+                </div>
+            </section>
+        </main>
+    </section>
+    <script>
+        $( window ).on( "unload", function() {
+            $(".message-g").remove();
+        });
+    </script>
 @else
     <main class="bg-img" id="main">
         @include('layouts.components.guestheader')

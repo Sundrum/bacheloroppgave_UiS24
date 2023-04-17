@@ -1,15 +1,11 @@
 @extends('layouts.app')
 
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
-
 @section('content')
-<div class="container-fluid">
+<div class="mt-2">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card card-rounded">
-                <div class="bg-grey card-rounded">
+            <div class="bg-white card-rounded p-2">
+                <div class="bg-white card-rounded">
                     <div class="row mx-2 mt-2 mb-3">
                         <div class="col my-auto">
                             <div class="col-xs-4">
@@ -71,6 +67,8 @@
 </div>
 
 <script>
+setTitle(@json(__('navbar.graph')));
+
 var collator = new Intl.Collator('nb'); // sort by name var
 var now = new Date();
 var strDateTimeStart = Date.now();
@@ -276,7 +274,7 @@ function refreshgraph()
       url: "/graph/units",
       type: 'GET',
       success: function (data) {
-
+        console.log(data);
         for (var i in data) {
             sensorenheter.push(data[i].serialnumber);
             if (data[i].sensorunit_location) {

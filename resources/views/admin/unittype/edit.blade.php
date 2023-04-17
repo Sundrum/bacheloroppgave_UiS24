@@ -1,7 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="">
     <h4><i class="fa fa-tag fa-lg"></i> Unittype</h4>
     <div class="row mt-3 mb-1">
         <a class="btn-primary-outline" href="/admin/unittypes" style="color: black; text-decoration: none;"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Back to Unittypes</strong></a>

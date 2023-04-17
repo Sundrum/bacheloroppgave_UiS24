@@ -49,4 +49,19 @@ return [
     'groupname' => 'Gruppenavn',
     'addgroupinfo'  => 'Fyll inn ønsket gruppenavn',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | General Admin Language Lines
+    |--------------------------------------------------------------------------
+    */
+    'users' => 'Users',
+    'user' => 'User',
+    'delete' => 'Delete',
+    'userinfo'  => 'User Information',
+    'save' => 'Save',
+    'loginas' => 'Log in as user',
+    'devices' => 'Devices',
+    'nounits' => 'No devices connected to this user',
+    'removeunit' => 'Do you want remove this unit?',
 ];

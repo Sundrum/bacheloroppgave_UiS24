@@ -1,7 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-<section class="container">
+<section class="">
     <div class="row mt-3 mb-3">
         <div class="col-sm-5">
             <h2><b>Sensorunit</b> </h2>

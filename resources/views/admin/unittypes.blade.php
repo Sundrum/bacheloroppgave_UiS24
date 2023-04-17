@@ -1,7 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="">
     <div class="row">
         <div class="col-8 my-auto">
             <h1><i class="fa fa-tag" aria-hidden="true"></i> Unittypes</h1>

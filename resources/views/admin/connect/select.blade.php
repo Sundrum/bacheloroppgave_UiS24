@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
     <h1><i class="fa fa-random" aria-hidden="true"></i> Select User</h1>

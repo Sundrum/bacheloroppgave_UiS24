@@ -1,7 +1,12 @@
-<i  class="fa fa-3x fa-info-circle fa-fw float-right"
-    style="margin-right: 10px;"
-    data-toggle="modal" onclick="showInfoBox();" data-target="#myInfowindow">
-</i>
+<div class="row">
+    <div class="col mb-1">
+        <i  class="fa fa-3x fa-info-circle fa-fw float-end"
+            style="margin-right: 10px;"
+            data-toggle="modal" onclick="showInfoBox();" data-target="#myInfowindow">
+        </i>
+    </div>
+</div>
+
 <div class="modal fade" id="myInfowindow"  role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

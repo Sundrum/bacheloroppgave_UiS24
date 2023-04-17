@@ -1,20 +1,22 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-<section class="container">
-    <div class="row mt-3 mb-3">
-        <div class="col-sm-5">
-            <h2><i class="fa fa-tag" aria-hidden="true"></i> <b>Users</b> </h2>
-            <span class="text-muted">Management</span>
+<div class="card card-rounded">
+    <div class="row p-3">
+        <div class="col-sm-12">
+            <a href="{{route('newuser')}}" class="btn-7g float-end" id="button"><i></i><span> @lang('admin.new')</span></a>
         </div>
-        <div class="col-sm-7">
-            <a href="{{route('newuser')}}" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a>
+        <div class="row pt-2">
+            <div class="col-12">
+                <table id="usertable" class="display" width="100%"></table>
+            </div>
         </div>
     </div>
-    <table id="usertable" class="display" width="100%"></table>
-</section>
+</div>
 
 <script>
+setTitle(@json( __('admin.users')));
+
 $(document).ready(function () {
     var dataSet = @php echo $data; @endphp;
     var table = $('#usertable').DataTable({

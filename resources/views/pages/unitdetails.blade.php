@@ -1,54 +1,107 @@
 @extends('layouts.app')
-<script src="https://code.highcharts.com/stock/highstock.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
-@section('content')
-<h2 id="name_unit" style="display: none;">{{$data['result'][0]['sensorunit_location'] ?? $serial}} - ({{$serial}})</h2>
-  <div class="row justify-content-center">
-      <div class="col-md-12">
-          <div class="card">
-              <div class="card-header">
-                  <div class="row">
-                      <div class="col">
-                        <div class="col-xs-4">
-                          <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/temperature.png" height="40" alt="" >
-                          <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/humidity.png" height="40" alt="">
-                        </div>
-                      </div>
-                      <div class="col-12 col-md-4 col-lg-3 mx-auto">
-                        @lang('general.timestamp')
-                          <select id="timestamp" class="form-control" onchange="setTimestamp()">
-                            <option value="1">@lang('general.exact')</option>
-                            <option @if(request()->timestamp == 2) selected @endif value="2">@lang('general.everyhour')</option>
-                            <option @if(request()->timestamp == 3) selected @endif value="3">@lang('general.everyday')</option>
-                          </select>
-                      </div>
 
-                      <div class="col-12 col-md-4 col-lg-3 mx-auto">
-                        @lang('general.timeperiod')
-                        {{-- @lang('graph.header.periodlabel') --}}
-                        <select class="form-control" id="days" onchange="refreshgraph()">
-                          <option selected="selected" value="10">10 dager</option>
-                          <option value="31">1 mnd</option>                            
-                          <option value="91">3 mnd</option>
-                          <option value="182">6 mnd</option>
-                          <option value="274">9 mnd</option>
-                          <option value="365">1 år</option>
-                          <option value="548">1,5 år</option>
-                          <option value="720">2 år</option>
-                          <option value="1095">3 år</option>
-                          <option value="1826">5 år</option>
-                          <option value="3652">10 år</option>   
-                        </select>
-                    </div>
-                  </div>
+@section('content')
+<script>setTitle(@json($unit['sensorunit_location']))</script>
+<div class="row text-center">
+  <div class="col-md-6">
+    <div class="row card-rounded bg-white mx-1">
+      <h3 class="p-2">I dag</h3>
+      @if(isset($unit['probes']) && count($unit['probes']) > 0)
+        @foreach($unit['probes'] as $probe)
+          @isset($probe['header'])
+          <div class="col">
+            <div class="row justify-content-center">
+              <div class="semi-donut" style="--percentage : {{$probe['percent'] ?? '0'}}; --fill: #00265a;">
+                {{$probe['header'] ?? 'NaN'}}
               </div>
-              <div class="card-body">        
-                  <div id="container" style="height: 500px; min-width: 310px"></div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                {{-- MIN VALUE --}}
+                0
               </div>
+              <div class="col-6">
+                {{-- Max VALUE --}}
+                100
+              </div>
+            </div>
+            <p class="col "><strong>{{$probe['unittype_description']}}</strong></p>
           </div>
-      </div>
+          @endisset
+        @endforeach
+      @endif
+    </div>
   </div>
+  <div class="col-md-6">
+    <div class="row card-rounded bg-white mx-1">
+      <h3 class="p-2">Gjennomsnitt på 7 dager</h3>
+      @if(isset($unit['probes']) && count($unit['probes']) > 0)
+        @foreach($unit['probes'] as $probe)
+          @isset($probe['header'])
+            <div class="col">
+              <div class="row justify-content-center">
+                <div class="semi-donut" style="--percentage : {{$probe['percent'] ?? '0'}}; --fill: #00265a;">
+                  {{$probe['header'] ?? 'NaN'}}
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                {{-- MIN VALUE --}}
+                0
+              </div>
+              <div class="col-6">
+                {{-- Max VALUE --}}
+                100
+              </div>
+            </div>
+            <p class="col "><strong>{{$probe['unittype_description']}}</strong></p>
+          </div>
+          @endisset
+        @endforeach
+      @endif
+    </div>
+  </div>
+</div>
+
+<h2 id="name_unit" style="display: none;">{{$unit['sensorunit_location'] ?? $serial}}</h2>
+<div class="row justify-content-center mt-2">
+  <div class="col-md-12">
+    <div class="bg-white card-rounded">
+      <div class="row py-3 px-3">
+        <div class="col">
+          <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/temperature.png" height="40" alt="" >
+          <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/humidity.png" height="40" alt="">
+        </div>
+        <div class="col-12 col-md-4 col-lg-3 mx-auto">
+          @lang('general.timestamp')
+          <select id="timestamp" class="form-control" onchange="setTimestamp()">
+            <option value="1">@lang('general.exact')</option>
+            <option @if(request()->timestamp == 2) selected @endif value="2">@lang('general.everyhour')</option>
+            <option @if(request()->timestamp == 3) selected @endif value="3">@lang('general.everyday')</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3 mx-auto">
+          @lang('general.timeperiod')
+          {{-- @lang('graph.header.periodlabel') --}}
+          <select class="form-control" id="days" onchange="refreshgraph()">
+            <option selected="selected" value="10">10 dager</option>
+            <option value="31">1 mnd</option>                            
+            <option value="91">3 mnd</option>
+            <option value="182">6 mnd</option>
+            <option value="274">9 mnd</option>
+            <option value="365">1 år</option>
+            <option value="548">1,5 år</option>
+            <option value="720">2 år</option>
+            <option value="1095">3 år</option>
+            <option value="1826">5 år</option>
+            <option value="3652">10 år</option>   
+          </select>
+        </div>
+      </div>
+      <div class="card-rounded" id="container" style="height: 500px; min-width: 310px;"></div>
+    </div>
+  </div>
+</div>
 
 
 <script>

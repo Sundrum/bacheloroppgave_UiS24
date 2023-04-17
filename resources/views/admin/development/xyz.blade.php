@@ -1,9 +1,8 @@
-@extends('layouts.admin')
-
-<script src="{{ asset('js/three/three.js') }}"></script>
-<script src="{{ asset('js/three/loaders/STLLoader.js') }}"></script>
+@extends('layouts.app')
 
 @section('content')
+<script src="{{ asset('js/three/three.js') }}"></script>
+<script src="{{ asset('js/three/loaders/STLLoader.js') }}"></script>
 <section class="container">
     <h1 class="text-center"> XYZ - Development </h1>
     <div class="row">

@@ -16,7 +16,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/intlTelInput.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/css/intlTelInput.css">
-<link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}">
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         @if(isset($page))

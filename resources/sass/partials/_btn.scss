@@ -13,6 +13,17 @@
   }
 }
 
+%btn-outline-style {
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 410;
+  margin: 4px 2px;
+  border-radius: 24px;
+}
+
 .btn-7 {
   &s {
     background-color: $primary;
@@ -39,5 +50,38 @@
     color: $black;
     @extend %btn-style;
     @include btn-style($yellow);
+  }
+}
+
+.btn-outline-7 {
+  &s {
+    color: $white;
+    background-color: $white;
+    border-color: $primary;
+    @extend %btn-outline-style;
+    @include btn-outline-style($primary);
+  }
+
+  &g {
+    color: $black;
+    background-color: $white;
+    border-color: $secondary;
+    @extend %btn-outline-style;
+    @include btn-outline-style($secondary);
+  }
+
+  &r {
+    color: $black;
+    background-color: $white;
+    border-color: $danger;
+    @extend %btn-outline-style;
+    @include btn-outline-style($danger);
+  }
+  &y {
+    color: $black;
+    background-color: $white;
+    border-color: $yellow;
+    @extend %btn-outline-style;
+    @include btn-outline-style($yellow);
   }
 }

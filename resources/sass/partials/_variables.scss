@@ -63,3 +63,27 @@ $heavy-weight: $xbold-weight;
     background-color: darken($color, 10%);
   }
 }
+
+@mixin btn-outline-style($color) {
+  &:hover {
+    @include easeOut;
+    font-weight: 450;
+    background-color: darken($color, 10%);
+  }
+  &:focus {
+    font-weight: 450;
+    background-color: darken($color, 15%);
+  }
+  &:hover {
+    @include easeOut;
+    font-weight: 450;
+    background-color: darken($color, 10%);
+  }
+}
+
+%circle-style {
+  border-radius: 50%;
+  margin-top: 2px;
+  height: 21px;
+  width: 21px;
+}
