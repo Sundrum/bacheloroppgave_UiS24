@@ -114,7 +114,7 @@
             @endif
         </div>
         <div class="row mt-3">
-            @if(isset($irrUnit['irrigation_state']) && ($irrUnit['irrigation_state'] === '5' ))
+            @if(isset($irrUnit['irrigation_state']) && ($irrUnit['irrigation_state'] === '5'))
                 <div class="col text-center">
                     <label class="switch">
                         <input type="checkbox" @if(isset($irrUnit['irrigation_portalstop']) && $irrUnit['irrigation_portalstop'] !== '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">

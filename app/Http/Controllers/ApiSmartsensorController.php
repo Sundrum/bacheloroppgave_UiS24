@@ -88,4 +88,89 @@ class ApiSmartsensorController extends AdminController
         
         return json_encode($text);
     }
+
+    public function proxyApi() {
+        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc') ORDER BY serialnumber ASC");
+        $result = array();
+        foreach ($data as $row) {
+            // dd(substr(trim($row->serialnumber), 11,17));
+            // if(substr($row->serialnumber, 11,17) > 1173 && substr($row->serialnumber, 11,17) < 1580) {
+                if(strcmp(trim($row->variable),'fota_137') == 0) {
+                    $result[trim($row->serialnumber)]['queue_at'] = substr($row->dateupdated,0,16). ' / ' . $row->value ?? null;
+                } if(strcmp(trim($row->variable),'lastconnect') == 0) {
+                    $result[trim($row->serialnumber)]['lastconnect'] = substr($row->value,0,16) ?? null;
+                } else {
+                    $result[trim($row->serialnumber)][trim($row->variable)] = trim($row->value) ?? null;
+                }
+                $result[trim($row->serialnumber)]['serialnumber'] = trim($row->serialnumber);
+
+            // }
+        }
+
+        $result = array_values($result);
+
+        foreach ($result as &$row) {
+            $serial = $row['serialnumber'];
+            $queue_data = DB::connection('sensordata')->select("SELECT statusid, dateupdated from queue WHERE serialnumber='$serial' AND typeid='2'");
+
+            if($queue_data) {
+                $row['fota_in_queue'] = $queue_data[0]->statusid ?? null;
+                $row['queue_updated_at'] = substr($queue_data[0]->dateupdated,0,16) ?? null;
+                $row['fota_in_queue_count'] = count($queue_data) ?? null;
+            } else {
+                $row['fota_in_queue'] = null;
+                $row['queue_updated_at'] = null;
+                $row['fota_in_queue_count'] = null;
+            }
+        }
+        $data = json_encode($result);
+        return view('admin.apismartsensor.proxy', compact('data'));
+        // return view('admin.apismartsensor.proxy_2', compact('data'));
+
+    }
+
+    public function fotaQueue(Request $req) {
+        if ($req->swversion == 'V1.3.7') {
+            return response()->json('V1.3.7');
+        }
+
+        $aa_cmd = "105,0,0,21-9030/app_update.bin";
+        $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v137.bin";
+        $productnumber = substr($req->serialnumber, 0,10);
+        $comment = 'FOTA to V1.3.7';
+
+        $in_queue = DB::connection('sensordata')->select("SELECT * FROM queue WHERE serialnumber='$req->serialnumber' AND typeid='2' ");
+        if ($in_queue) {
+            DB::connection('sensordata')->select("DELETE FROM queue WHERE serialnumber='$req->serialnumber' AND typeid='2' ");
+        }
+
+        if($productnumber == '21-9030-AA') {
+            $response = DB::connection('sensordata')->select("INSERT INTO queue (serialnumber,statusid,typeid,data,dateadded,comment) VALUES ('$req->serialnumber','1','2','$aa_cmd',now(),'$comment')");
+            $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='fota_137' AND serialnumber='$req->serialnumber'");
+            if(isset($check[0]->value)) {
+                $timestamp = now();
+                $response_2 = DB::connection('sensordata')->update("UPDATE status set dateupdated='$timestamp' WHERE variable='fota_137' AND serialnumber='$req->serialnumber'");
+            } else {
+                $response_2 = DB::connection('sensordata')->select("INSERT INTO status (serialnumber,variable,value,dateupdated) VALUES ('$req->serialnumber','fota_137','IN QUEUE',now())");
+            }
+        }
+        if($productnumber == '21-9030-AB') {
+            $response = DB::connection('sensordata')->select("INSERT INTO queue (serialnumber,statusid,typeid,data,dateadded,comment) VALUES ('$req->serialnumber','1','2','$ab_cmd',now(),'$comment')");
+            $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='fota_137' AND serialnumber='$req->serialnumber'");
+            if(isset($check[0]->value)) {
+                $timestamp = now();
+                $response_2 = DB::connection('sensordata')->update("UPDATE status set dateupdated='$timestamp' WHERE variable='fota_137' AND serialnumber='$req->serialnumber'");
+            } else {
+                $response_2 = DB::connection('sensordata')->select("INSERT INTO status (serialnumber,variable,value,dateupdated) VALUES ('$req->serialnumber','fota_137','IN QUEUE',now())");
+            }
+        }  
+
+        
+        return response()->json('DONE');
+    }
+
+    public function deleteQueue(Request $req) {
+        $in_queue = DB::connection('sensordata')->select("DELETE FROM queue WHERE serialnumber='$req->serialnumber' AND typeid='2' ");
+        return response()->json($in_queue);
+    }
 }

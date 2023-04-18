@@ -16,10 +16,16 @@
 /***
  * Admin pages 
 ***/
+
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin');
+
+// Admin Proxy API
 Route::get('/admin/apibilling', [App\Http\Controllers\AdminController::class, 'apismartsensor'])->name('billing');
 Route::get('/admin/billing/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getBilling']);
 Route::get('/admin/billing/summary/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getSummary']);
+Route::get('/admin/proxy', [App\Http\Controllers\ApiSmartsensorController::class, 'proxyApi'])->name('proxy');
+Route::post('/admin/proxy/fota', [App\Http\Controllers\ApiSmartsensorController::class, 'fotaQueue'])->name('fotaproxy');
+Route::post('/admin/proxy/queue/delete',  [App\Http\Controllers\ApiSmartsensorController::class, 'deleteQueue'])->name('deletequeue');
 
 Route::get('/admin/user', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('user');
 
@@ -27,6 +33,8 @@ Route::get('/admin/account/{id}', [App\Http\Controllers\Admin\UserController::cl
 Route::get('/admin/account', [App\Http\Controllers\Admin\UserController::class, 'new'])->name('newuser');
 Route::post('/admin/user/update', [App\Http\Controllers\Admin\UserController::class, 'user'])->name('updateUser');
 // Route::post('/admin/user/delete', 'Admin\UserController@delete');
+
+
 
 // Admin cases
 Route::get('/admin/sensorunit/cases', [App\Http\Controllers\Admin\SensorunitController::class, 'casesIndex'])->name('cases');
@@ -80,6 +88,7 @@ Route::get('/admin/testxyz', [App\Http\Controllers\Admin\SensorunitController::c
 
 Route::get('/dev/compass', [App\Http\Controllers\Admin\DevelopmentController::class, 'compass'])->name('compass');
 Route::get('/dev/woodmoisture', [App\Http\Controllers\Admin\DevelopmentController::class, 'woodMoisture']);
+Route::get('/dev/graph', [App\Http\Controllers\Admin\DevelopmentController::class, 'graph'])->name('devgraph');
 Route::get('/dev/calculate/woodmoisture/{id}/{temperature}/{ohm}', [App\Http\Controllers\Admin\DevelopmentController::class, 'developmentWoodMoisture']);
 Route::get('/dev/flowrate', [App\Http\Controllers\Admin\DevelopmentController::class, 'flowrate']);
 Route::get('/dev/calculaterun/{serial}/{run}', [App\Http\Controllers\Admin\DevelopmentController::class, 'devIrrigationRun']);

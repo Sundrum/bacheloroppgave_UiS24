@@ -121,3 +121,22 @@ function rotateImg(obj) {
     if (objectrotate.style.cssText) objectrotate.style.cssText = "";
     else objectrotate.style.cssText = "transform: rotate(-90deg);";
 }
+
+function addLoadingSpinner() {
+    const infoMessage = document.createElement('div');
+    infoMessage.className = "message-g";
+    let spinner_container = document.createElement('div');
+    spinner_container.innerHTML = '<div class="spinner-border text-7s" style="width: 3rem; height: 3rem;" role="status"><span class="sr-only"></span></div>';
+    infoMessage.appendChild(spinner_container);
+    document.getElementById("content-main").appendChild(infoMessage);
+}
+
+function removeLoadingSpinner() {
+    if ($) { // make sure jQuery is loaded
+        $(".message-g")
+            .fadeTo(4000, 0.8) // change to 0.8 -> 80%
+            .slideUp(500, function() {
+                $(this).remove(); // use $(this) instead of $(".message")
+            });
+    }
+}

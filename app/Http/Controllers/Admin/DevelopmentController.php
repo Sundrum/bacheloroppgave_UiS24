@@ -23,9 +23,58 @@ class DevelopmentController extends Controller
         return view('admin.development.compass');
     }
 
-    public function fleetmanagement() {
+    public function graph() {
+        return view('admin.development.graph');
+    }
 
+    public function fleetmanagement() {
         return view('admin.development.fleetmanagement');
+    }
+
+    public function productionLog() {
+        return view('admin.development.productionlog');
+    }
+
+    public function processLog(Request $req) {
+
+        $prod = array();
+        $i = 0;
+        $production_log = trim($req->production_log);
+        $production_log_temp = explode("\n", $production_log);
+        $production_log_temp = array_filter($production_log_temp, 'trim');
+        
+        foreach($production_log_temp as $line) {
+            if(strlen($line) > 50) {
+                $pieces = explode(";", $line);
+                $main_pieces = explode(",", $pieces[4]);
+                $prod[$i]['imei'] = trim($main_pieces[1]);
+                $prod[$i]['imsi'] = $main_pieces[0];
+                $prod[$i]['iccid'] = $main_pieces[4];
+                $prod[$i]['serial'] = $pieces[0];
+                $prod[$i]['checked'] = false;
+                $i++;
+            }
+        }
+
+        $serial_imei = trim($req->serial_imei);
+        $serial_imei_temp = explode("\n", $serial_imei);
+        $serial_imei_temp = array_filter($serial_imei_temp, 'trim');
+
+        foreach($serial_imei_temp as $line) {
+            $main_pieces = explode(",", $line);
+            $imei = trim($main_pieces[1]);
+            foreach ($prod as &$unit) {
+                if($unit['imei'] == $imei) {
+                    $unit['serial'] = '21-1044-AA-0'.$main_pieces[0];
+                    $unit['checked'] = true;
+                }
+            }
+        }
+        $feedback = "";
+        foreach ($prod as $unit) {
+            $feedback .= ''.$unit['imei'].','.(string)$unit['imsi'].','.(string)$unit['iccid'].','.(string)$unit['serial'].';;'.$unit['checked'].'<br>';
+        }
+        return $feedback;
     }
 
     public function farmfield($serial) {

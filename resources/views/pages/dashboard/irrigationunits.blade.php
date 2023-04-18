@@ -43,6 +43,14 @@
                                 </div>
                             </div>
                         @endif
+                        @if(isset($irrUnit['irrigation_state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['irrigation_state'] < '4' || $irrUnit['irrigation_state'] == '7'))
+                            <div class="col text-center">
+                                <label class="switch">
+                                    <input type="checkbox" @if(isset($irrUnit['irrigation_portalstart']) && $irrUnit['irrigation_portalstart'] == '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        @endif
                         <div class="col">
                             <i class="fa fa-3x fa-caret-down fa-fw float-end" data-toggle="collapse"
                             onclick="caretRotation(this)" id="caret{{trim($irrUnit['serialnumber'])}}"
@@ -53,137 +61,6 @@
                         </div>
                     </div>
 
-                    
-                    {{-- Irrigation Slider --}}
-                    @if (isset($irrUnit['irrigation_state']))
-                        @if ($irrUnit['timestampDifference'] < 5400)
-                            @if ($irrUnit['irrigation_state'] === '1')
-                                @if(isset($irrUnit['irrigation_portalstart']) && $irrUnit['irrigation_portalstart'] == '1')
-                                    <table align="center" style="position: static; text-align:center; width:60%;">
-                                        <tr> 
-                                            <td>
-                                                <label class="switch">
-                                                <input type="checkbox" checked onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @else
-                                    <table align="center" style="position: static; text-align:center; width:60%;">
-                                        <tr> 
-                                            <td>
-                                                <label class="switch">
-                                                <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @endif
-                            @endif
-                            @if ($irrUnit['irrigation_state'] === '5' || $irrUnit['irrigation_state'] === '6')
-                                @if(isset($irrUnit['irrigation_portalstop']) && $irrUnit['irrigation_portalstop'] == '1')
-                                    <table align="center" style="position: static; text-align:center; width:60%;">
-                                        <tr> 
-                                            <td>
-                                                <label class="switch">
-                                                <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @else
-                                        <table align="center" style="position: absolute; top:60px; text-align:center; width:60%;">
-                                            <tr>
-                                                @if (isset($irrUnit['pressure']) && $irrUnit['pressure'] > '-0.1')
-                                                <th><img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Pressure" rel="tooltip" alt="" style="margin-top: -20px;"></th>
-                                                @endif
-                                            </tr>
-                                            <tr>
-                                                @if (isset($irrUnit['pressure']) && $irrUnit['pressure'] > '-0.1')
-                                                    <th><p><strong>{{ round($irrUnit['pressure'],1) }} </strong>Bar</p></th>
-                                                @endif
-                                            </tr>
-                                        </table>
-                                @endif
-                            @endif
-                            @if ($irrUnit['irrigation_state'] === '4')
-                                @if(isset($irrUnit['irrigation_portalstop']) && $irrUnit['irrigation_portalstop'] == '1')
-                                    <table align="center" style="position: static; text-align:center; width:60%;">
-                                        <tr> 
-                                            <td>
-                                                <label class="switch">
-                                                <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @else
-                                    <table align="center" style="position: static; text-align:center; width:60%;">
-                                        <tr> 
-                                            <td>
-                                                <label class="switch">
-                                                <input type="checkbox" checked onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @endif
-                            @endif
-                        @else
-                            @if(isset($irrUnit['irrigation_portalstart']) && $irrUnit['irrigation_portalstart'] == '1')
-                                <table align="center" style="position: static; text-align:center; width:60%;">
-                                    <tr> 
-                                        <td>
-                                            <label class="switch">
-                                            <input type="checkbox" checked onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </table>
-                            @else
-                                <table align="center" style="position: static; text-align:center; width:60%;">
-                                    <tr> 
-                                        <td>
-                                            <label class="switch">
-                                            <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </table>
-                            @endif
-                        @endif
-                    @else
-                        @if(isset($irrUnit['irrigation_portalstart']) && $irrUnit['irrigation_portalstart'] == '1')
-                            <table align="center" style="position: static; text-align:center; width:60%;">
-                                <tr> 
-                                    <td>
-                                        <label class="switch">
-                                        <input type="checkbox" checked onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </td>
-                                </tr>
-                            </table>
-                        @else
-                            <table align="center" style="position: static; text-align:center; width:60%;">
-                                <tr> 
-                                    <td>
-                                        <label class="switch">
-                                        <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </td>
-                                </tr>
-                            </table>
-                        @endif
-                    @endif
                     @if(isset($irrUnit['percent_done']))
                         <div class="row mt-2">
                             <div class="col-12 mb-1">
@@ -219,13 +96,12 @@
         // If slider is 'checked'
         if (checkBox.checked) {
             console.log('Button checked');
-            var variable = '1';
             $.ajax({
                 url: "/startirrigation",
                 type: 'POST',
                 data: { 
                     "serial": serial,
-                    "variable": variable,
+                    "variable": 1,
                     "_token": token,
                 },
                 success: function(msg) {
@@ -238,13 +114,12 @@
         } else {
             var confirmed = confirm('Do you want to stop the unit?');
             if(confirmed) {
-                var variable = '0';
                 $.ajax({
                     url: "/startirrigation",
                     type: 'POST',
                     data: { 
                         "serial": serial,
-                        "variable": variable,
+                        "variable": 0,
                         "_token": token,
                     },
                     success: function(msg) {

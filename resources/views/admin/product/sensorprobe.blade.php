@@ -7,7 +7,7 @@
                     <div class="col-sm-2 mt-1 text-center">
                         Probenumber
                     </div>
-                    <div class="input-group col-sm-4">
+                    <div class="col-sm-4 mt-1 text-center">
                         Description
                     </div>
 
@@ -29,7 +29,7 @@
                                 <div class="col-sm-2 mt-1 text-center">
                                     <input type="text" class="form-control" value="{{$probe->sensorprobes_number}}" disabled>
                                 </div>
-                                <div class="input-group col-sm-4">
+                                <div class="col-sm-4 mt-1 text-center">
                                     <input type="text" class="form-control" value="{{$probe->unittype_description}}" disabled>
                                 </div>
 
@@ -85,7 +85,7 @@ function probeHidden(id, value) {
             console.log(msg);
         },   
         error: function(msg) {
-            alert("Failed - Please try again")
+            errorMessage("Failed - Please try again");
         }
     });
     console.log('Hidden ' + id + ' - '  + value)
@@ -168,7 +168,7 @@ function addNew(id){
             console.log('Data readback = '+ data);
             var code3 = '<div class="row m-2"><div class="col-sm-2 mt-1 text-center"><input type="text" class="form-control" value="';
                 code3 += data.sensorprobes_number;
-                code3 += '" disabled></div><div class="input-group col-sm-4"><input type="text" class="form-control" value="';
+                code3 += '" disabled></div><div class="col-sm-4 text-center"><input type="text" class="form-control" value="';
                 code3 += data.unittype_description;
                 code3 += '" disabled></div><div class="col-sm-2 mt-1 text-center"><label class="switch"><input type="checkbox" checked class="btn btn-primary" id="[';
                 code3 += data.sensorprobes_id;
