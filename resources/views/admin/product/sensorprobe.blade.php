@@ -116,7 +116,7 @@ function addField() {
     var code = '<div class="object" id="'+counter+'" style="background: #d2f8d2";>';
         code += '<div class="row m-2">';
         code += '<div class="col-sm-2 text-center"><input id="sensorprobe_number" type="text" class="form-control" required></div>';
-        code += '<div class="input-group col-sm-8 mt-1 mb-1"">';
+        code += '<div class="col-sm-8 mt-1 mb-1"">';
         code += '<select class="seriallist form-control" onchange="addNew('+counter+');" id="['+counter+'][unittype_id]" name="['+counter+'][unittype_id]">';
         code += code2;
         code += '</select></div>';

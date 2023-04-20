@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="container">
-    <div class="row mt-3 mb-3">
+<section class="card-rounded bg-white p-3">
+    <div class="row mt-2 mb-2">
         <div class="col-sm-5">
             <h2><b>Customer</b> </h2>
             <span class="text-muted">Management</span>
         </div>
         <div class="col-sm-7">
-            <a onclick="window.location='newcustomer'" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a>
+            <a onclick="window.location='newcustomer'" class="btn-7g float-end" id="button"><i></i><span> @lang('admin.new')</span></a>
         </div>
     </div>
     <table id="customertable" class="display" width="100%">
@@ -48,6 +48,7 @@
 </section>
 
 <script>
+setTitle(@json( __('admin.customer')));
 $(document).ready(function () {
     var table = $('#customertable').DataTable({
         pageLength: 25, // Number of entries

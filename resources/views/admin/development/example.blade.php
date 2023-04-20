@@ -1,4 +1,4 @@
-<section class="container">
+<section class="">
     <h1 class="text-center">{{$row['serial']}}</h1>
     <p class="text-center"> Tid: {{$row['time']}}</p>
 

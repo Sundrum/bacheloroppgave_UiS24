@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<section class="container">
-    <h1 class="text-center"> Wood Moisture Content Calculator</h1>
+<section class="card-rounded bg-white p-2">
     <div class="row">
         <div class="col-md-12 mt-2 mb-2">
             <div class="form-group row">
@@ -30,6 +29,7 @@
 </section>
 
 <script>
+    setTitle('Wood Moisture Content Calculator');
     function calculate() {
         var id = document.getElementById("treespecie").value;
         var temperature = document.getElementById("temperature").value;

@@ -3,7 +3,7 @@
 @section('content')
 <script src="{{ asset('js/three/three.js') }}"></script>
 <script src="{{ asset('js/three/loaders/STLLoader.js') }}"></script>
-<section class="container">
+<section class="">
     <h1 class="text-center"> XYZ - Development </h1>
     <div class="row">
         <div class="col-md-12">
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="">
         <div class="col-md-12" id="sizing">
             <div class="row justify-content-center">
                 <div id="xyz" class="card card-rounded"></div>

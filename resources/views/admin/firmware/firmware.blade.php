@@ -1,29 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="container">
-    @if (request()->message)
-        <div class="alert alert-success">{{ request()->message }}</div>
-    @endif
-
-    <div class="row">
-        <div class="col-12 card card-rounded">
-            <div class="row mt-4 mb-2">
-                <div class="col-8">
-                    <h3>Firmware</h3>
-                </div>
-                <div class="col-4 my-auto">
-
-                </div>
+<section class="row mb-3">
+    <div class="col-12">
+        <div class="col-12 card card-rounded p-3">
+            <div class="row mt-1 mb-2">
+                
                 <div class="col">
                     <p class="mb-0">To select multiple rows use shift and click.</p>
                     <p class="mt-0">Select all - will select all entries. Notice that you might not see every entrie.</p>
                 </div>
             </div>
             <div class="row justify-content-center">
-                <button class="btn btn-success card-rounded mr-2" data-toggle="modal" data-target="#uploadModal">Upload Firmware</button>
-                <button id="change" class="btn btn-primary card-rounded ml-2 mr-2">Toggle Released</button>
-                <button id="delete" class="btn btn-danger card-rounded ml-2">Delete</button>
+                <div class="col text-center">
+                    <button class="btn-7s mr-2" data-toggle="modal" data-target="#uploadModal">Upload Firmware</button>
+                    <button id="change" class="btn-7g ml-2 mr-2">Toggle Released</button>
+                    <button id="delete" class="btn-7r ml-2">Delete</button>
+
+                </div>
             </div>
 
             <table id="table" class="display" width="100%">
@@ -38,22 +32,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                @if(isset($firmware['result']))
-                    @foreach ($firmware['result'] as $row)
-                        <tr>
-                            <td></td>
-                            <td>{{$row['firmware_id'] ?? ''}}</td>
-                            <td>{{$row['productnumber'] ?? ''}}</td>
-                            <td>{{$row['firmwarename'] ?? ''}}</td>
-                            <td>{{$row['version'] ?? ''}}</td>
-                            @if($row['released'])
-                                <td><i class="ml-3 fa fa-lg fa-check text-success"></i></td>
-                            @else
-                                <td><i class="ml-3 fas fa-lg fa-times text-danger"></i></td>
-                            @endif
-                        </tr>
-                    @endforeach
-                @endif
+                    @isset($firmware['result'])
+                        @foreach ($firmware['result'] as $row)
+                            <tr>
+                                <td></td>
+                                <td>{{$row['firmware_id'] ?? ''}}</td>
+                                <td>{{$row['productnumber'] ?? ''}}</td>
+                                <td>{{$row['firmwarename'] ?? ''}}</td>
+                                <td>{{$row['major'] ?? 'NaN'}}.{{$row['minor'] ?? 'NaN'}}.{{$row['patch'] ?? 'NaN'}}-{{$row['build'] ?? 'unknown'}}</td>
+                                @if($row['released'])
+                                    <td><i class="ml-3 fa fa-lg fa-check text-g"></i></td>
+                                @else
+                                    <td><i class="ml-3 fas fa-lg fa-times text-r"></i></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    @endisset
                 </tbody>
                 <tfoot>
                     <tr>
@@ -68,14 +62,20 @@
 
             </table>
             <div class="row  justify-content-center mb-3">
-                <button type="button" class="mr-3 btn btn-primary card-rounded select-all">Select All</button>
-                <button type="button" class="ml-3 btn btn-primary card-rounded deselect-all">Deselect All</button>
+                <div class="col text-center">
+                    <button class="mr-3 btn-7s select-all">Select All</button>
+                    <button class="ml-3 btn-7s deselect-all">Deselect All</button>
+                </div>
             </div>
         </div>
     </div>
 </section>
 @include('admin.firmware.upload')
+
 <script>
+
+setTitle('Firmware @ Proxy');
+
 $(document).ready(function () {
     var table = $('#table').DataTable({
         pageLength: 25, // Number of entries
@@ -121,57 +121,49 @@ $(document).ready(function () {
                     },
                     success: function(data) {
                         console.log(data);
+                        const infoMessage = document.createElement('div');
+                        infoMessage.className = "message-g";
+                        infoMessage.appendChild(document.createTextNode(data));
+                        document.getElementById("content-main").appendChild(infoMessage);
+                        $(".message-g").fadeTo(4000, 0.8).slideUp(500, function() {
+                            $(".message-g").remove();
+                        });
                         table.rows('.selected').remove().draw();
                     },   
                     error: function(data) {
-                        console.log(data);
-                        alert('Something went wrong')
+                        console.log('ERROR ' + data);
+                        const infoMessage = document.createElement('div');
+                        infoMessage.className = "message-r";
+                        infoMessage.appendChild(document.createTextNode("Something went wrong, please try again"));
+                        document.getElementById("content-main").appendChild(infoMessage);
+                        $(".message-r").fadeTo(4000, 0.8).slideUp(500, function() {
+                            $(".message-r").remove();
+                        });
 
                     }
                 });
             }
 
         } else {
-            alert('Marker rader du ønsker å slette.');
+            const infoMessage = document.createElement('div');
+            infoMessage.className = "message-r";
+            infoMessage.appendChild(document.createTextNode("Marker rader du ønsker å slette"));
+            document.getElementById("content-main").appendChild(infoMessage);
+            $(".message-r").fadeTo(4000, 0.8).slideUp(500, function() {
+                $(".message-r").remove();
+            });
+
         }
     });
 
     $('#change').click( function () {
-        var counter = table.rows('.selected').data().length;
-        if (counter > 0) {
-            var confirmed = confirm( 'Er du sikker på å at ønsker å endre ' + counter + ' rad(er)?' );
-            if (confirmed) {
-                array = new Array();
-                for (i = 0; i < counter; i++) {
-                    console.log( table.rows('.selected').data()[i][1]);
-                    array[i] = table.rows('.selected').data()[i][1];
-                }
-                $.ajax({
-                    url: "/admin/firmware/change",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { 
-                        "array": array,
-                        "_token": token,
-                    },
-                    success: function(data) {
-                        if(data == 1) {
-                            location.reload();
-                        } else {
-                            console.log(data);
-                            alert('Something went wrong')
-                        }
-                    },   
-                    error: function(data) {
-                        console.log(data);
-                        alert('Something went wrong')
-                    }
-                });
-            }
-
-        } else {
-            alert('Marker rader du ønsker å endre.');
-        }
+        const infoMessage = document.createElement('div');
+        infoMessage.className = "message-g";
+        infoMessage.appendChild(document.createTextNode("This function is not yet supported"));
+        document.getElementById("content-main").appendChild(infoMessage);
+        $(".message-g").fadeTo(4000, 0.8).slideUp(500, function() {
+            $(".message-g").remove();
+        });
     });
 });
 </script>

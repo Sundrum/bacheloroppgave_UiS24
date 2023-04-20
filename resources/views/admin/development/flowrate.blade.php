@@ -1,7 +1,7 @@
 @extends('layouts.app')
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+
 @section('content')
-<section class="container">
+<section class="">
     <h1 class="text-center"> Flowrate Calculator</h1>
     <div class="row">
         <div class="col-md-12 mt-2 mb-2">

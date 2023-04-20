@@ -4,28 +4,19 @@
 
 <section class="row mb-3">
     <div class="col-6">
-        <div class="col-6">
-            <div class="row">
-                <a class="btn-primary-outline" href="/admin/irrigationstatus" style="color: black; text-decoration: none;"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til Irrigation Status</strong></a>
-            </div>
-        </div>
+        <a class="btn-7r" href="/admin/irrigationstatus" style="color: black; text-decoration: none;"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til Irrigation Status</strong></a>
     </div>
-    <div class="col-6">
-        <div class="col-6">
-            <div class="row">
-                <a class="btn-7g" href="/admin/irrigationdebug/{{$variable['unit']['serialnumber'] }}" style="color: black; text-decoration: none;"><strong>Waterlost Debug</strong></a>
-            </div>
-        </div>
+    <div class="col-6 text-end">
+            <a class="btn-7g" href="/admin/irrigationdebug/{{$variable['unit']['serialnumber'] }}" style="color: black; text-decoration: none;"><strong>Waterlost Debug</strong></a>
     </div>
     <div class="col-md-6 mt-2">
-        <div class="col-md-12 card card-rounded">
+        <div class="col-md-12 bg-white card-rounded p-3">
             <div class="row">
-                <h5 class="m-3">Innstillinger</h5>
-                <span class="circle ml-auto mr-3 mt-3"></span>
+                <div class="col">
+                    <h5 class="">Innstillinger</h5>
+                </div>
             </div>
-            {{-- <canvas id="chart-1" class="chart"></canvas> --}}
 
-            {{-- @dd($variable) --}}
             <div class="row">
                 <div class="col-6">
                     Serialnumber
@@ -107,7 +98,7 @@
     </div>
 
     <div class="col-md-6 mt-2">
-        <div class="col-md-12 card card-rounded">
+        <div class="col-md-12 card card-rounded p-3">
             <h5 class="mt-2 mb-2">Irrigation Innstillinger</h5>
             @isset($variable['unit']['config'])
                 @foreach($variable['unit']['config'] as $row)
@@ -122,93 +113,6 @@
                     <hr class="m-0">
                 @endforeach
             @endisset
-            {{-- <div class="row">
-                <div class="col-4">
-                    Måling
-                </div>
-                <div class="col-3">
-                    Grense
-                </div>
-                <div class="col-3">
-                    Intervall
-                </div>
-                <div class="col-2">
-                    
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-4">
-                    Vibration
-                </div>
-                <div class="col-3">
-                    @dd($variable)
-                    {{$variable['vibration_threshold_low']['value'] ?? 'Ukjent'}}
-                </div>
-                <div class="col-3">
-                    {{$variable['vibration_interval']['value'] ?? 'Ukjent'}}
-                </div>
-                <div class="col-2">
-                    {{$variable['vibration_trigger_sending']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-4">
-                    Tilt Δ
-                </div>
-                @dd($variable['tilt_threshold_low']['value'])
-                <div class="col-3">
-                    {{$variable['tilt_threshold_low']['value'] ?? 'Ukjent'}}
-                    {{($variable['tilt_threshold_high']['value']) ?? 'Ukjent' }} °
-                </div>
-                <div class="col-3">
-                    {{$variable['tilt_interval']['value'] ?? 'Ukjent'}}
-                </div>
-                <div class="col-2">
-                    {{$variable['tilt_trigger_sending']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-4">
-                    Pressure
-                </div>
-                <div class="col-3">
-                    {{$variable['pressure_threshold_low']['value'] ?? 'N/A'}}
-                </div>
-                <div class="col-3">
-                    {{$variable['pressure_interval']['value'] ?? '-'}}
-                </div>
-                <div class="col-2">
-                    {{$variable['pressure_trigger_sending']['value'] ?? '-'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-7">
-                    GNSS
-                </div>
-                <div class="col-3">
-                    {{$variable['gnss_interval']['value'] ?? 'Ukjent'}}
-                </div>
-                <div class="col-2">
-                    {{$variable['gnss_trigger_sending']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-7">
-                    Battery
-                </div>
-                <div class="col-3">
-                    {{$variable['battery_interval']['value'] ?? 'Ukjent'}}
-                </div>
-                <div class="col-2">
-                    {{$variable['battery_trigger_sending']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="mt-0"> --}}
 
             <h5 class="mb-2">Kommandoer</h5>
             <div class="row justify-content-center mb-2">
@@ -223,15 +127,15 @@
                         <button type="button" class="btn-7s dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <strong>FOTA</strong>
                         </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item disabled" href="#">Released</a>
+                        <div class="dropdown-menu bg-white">
+                            <a class="dropdown-item disabled text-white bg-7s" href="#">Released</a>
                             @if(isset($variable['firmware']['released']))
                             @foreach ($variable['firmware']['released'] as $row)
                             <a class="dropdown-item" onclick="FOTA('{{$variable['unit']['serialnumber']}}',{{$row['firmware_id']}});">{{$row['major'] ?? 'NaN'}}.{{$row['minor'] ?? 'NaN'}}.{{$row['patch'] ?? 'NaN'}}-{{$row['build'] ?? 'unknown'}}</a>
                             @endforeach
                             @endif
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item disabled" href="#">Not Released</a>
+                            <a class="dropdown-item disabled text-white bg-7r" href="#">Not Released</a>
                             @if(isset($variable['firmware']['notreleased']))
                             @foreach ($variable['firmware']['notreleased'] as $row)
                                 <a class="dropdown-item" onclick="FOTA('{{$variable['unit']['serialnumber']}}',{{$row['firmware_id']}});">{{$row['major'] ?? 'NaN'}}.{{$row['minor'] ?? 'NaN'}}.{{$row['patch'] ?? 'NaN'}}-{{$row['build'] ?? 'unknown'}}</a>
@@ -263,12 +167,12 @@
     </div>
     @include('admin.sensorunit.setvariable')
     <div class="col-12 mt-2">
-        <div class="col-12 card card-rounded">
-            <div class="row mt-4 mb-2">
+        <div class="col-12 card card-rounded p-3">
+            <div class="row mt-2 mb-2 ">
                 <div class="col-8">
                     <h3>Queue for Unit</h3>
                 </div>
-                <div class="col-4 my-auto">
+                <div class="col-4 text-end">
                     <button id="delete" class="btn-7r float-right">Delete</button>
                 </div>
                 <div class="col">
@@ -278,14 +182,16 @@
             </div>
             <table id="table" class="display" width="100%"></table>
             <div class="row  justify-content-center mb-3">
-                <button type="button" class="mr-3 btn-7s select-all">Select All</button>
-                <button type="button" class="ml-3 btn-7s deselect-all">Deselect All</button>
+                <div class="col text-center">
+                    <button type="button" class="mr-3 btn-7s select-all">Select All</button>
+                    <button type="button" class="ml-3 btn-7s deselect-all">Deselect All</button>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-12 mt-3">
-        <div class="col-12 card card-rounded">
-            <div class="row mt-4 mb-2">
+        <div class="col-12 card card-rounded p-3">
+            <div class="row mt-2 mb-2">
                 <div class="col-8">
                     <h3>Runtable</h3>
                 </div>
@@ -301,7 +207,7 @@
 
 </div>
     @include('admin.sensorunit.changeserialnumber')
-    @include('admin.firmware.upload')
+    {{-- @include('admin.firmware.upload') --}}
 
 </section>
 <script>
@@ -314,51 +220,36 @@ $('#changeserial').click( function () {
 } );
 
 function FOTA(serial, fw){
+    console.log(token);
     $.ajax({
         url: "/admin/irrigation/fota",
         type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token
+        },
         dataType: 'json',
         data: { 
             "serialnumber": serial,
             "cmd": 'fota',
-            "fw": fw,
-            "_token": token,
+            "fw": fw
         },
         success: function(msg) {
             if (msg == 1) {
-                const infoMessage = document.createElement('div');
-                infoMessage.className = "message-g";
-                infoMessage.appendChild(document.createTextNode("Command added to Queue"));
-                document.getElementById("content-main").appendChild(infoMessage);
-                $(".message-g").fadeTo(4000, 0.8).slideUp(500, function() {
-                    $(".message-g").remove();
-                });
+                successMessage('Command added to Queue');
 
                 setTimeout(function(){ 
                     location.reload();
                 }, 3000);
 
             } else if (msg == 2){
-                const infoMessage = document.createElement('div');
-                infoMessage.className = "message-r";
-                infoMessage.appendChild(document.createTextNode("A command failed"));
-                document.getElementById("content-main").appendChild(infoMessage);
-                $(".message-r").fadeTo(4000, 0.8).slideUp(500, function() {
-                    $(".message-r").remove();
-                });
+                errorMessage('A command failed');
             } else {
-                const infoMessage = document.createElement('div');
-                infoMessage.className = "message-r";
-                infoMessage.appendChild(document.createTextNode("Something went wrong. Please try again later."));
-                document.getElementById("content-main").appendChild(infoMessage);
-                $(".message-r").fadeTo(4000, 0.8).slideUp(500, function() {
-                    $(".message-r").remove();
-                });
+                errorMessage('E2 - Something went wrong. Please try again later.');
             }
         },   
         error: function(data) {
             console.log(data);
-
+            errorMessage('Something went wrong. Please try again later.');
         }
     });
 }

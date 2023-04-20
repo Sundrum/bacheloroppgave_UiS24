@@ -9,10 +9,12 @@ use App\Models\Sensorlatestvalues;
 use App\Models\Unit;
 use App\Models\Status;
 use App\Models\Api;
+use App\Models\Product;
 use App\Models\Irrigationrun;
 use App\Models\SensorunitVariable;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\CommandController;
+use DB;
 
 class IrrigationController extends Controller
 {
@@ -26,18 +28,23 @@ class IrrigationController extends Controller
         $latest_data = Sensorlatestvalues::where('serialnumber',$serial)->latest('timestamp')->get();
         $variable = array();
         $variable['unit'] = Sensorunit::where('serialnumber', $serial)->first();
-
-
+        $variable['products'] = Product::all();
+        $variable['unit']['status'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? ORDER BY variable ASC', [$serial]);
+        $variable['unit']['config'] = DB::connection('sensordata')->select('SELECT * FROM config WHERE serialnumber = ? ORDER BY variable ASC', [$serial]);
+        // dd($variable['unit']['config']);
         $variable['unit']['last_time'] = self::convertToSortableDate($variable['unit']['sensorunit_lastconnect']);
 
         foreach ($data as $row) {
             $name = trim($row->variable);
             $variable[$name]['value'] = $row->value;
             $variable[$name]['time'] = $row->dateupdated;
+            // $result->$name->time = trim($row->dateupdated);
+            // $result[trim($variable->variable)]->time = trim($variable->dateupdated);
         }
         $queue = CommandController::queueList($serial);
         $variable['firmware'] = CommandController::firmwareList($serial);
         $variable['runtable'] = self::runtable($serial);
+
         return view('admin.sensorunit.irrigationstatus',compact('variable', 'queue', 'latest_data')); // admin/irrigationstatus/+id
     }
 
@@ -56,6 +63,7 @@ class IrrigationController extends Controller
         }
         return json_encode($result);
     }
+
 
     public static function getRun($id) {
         $run = Irrigationrun::find($id);

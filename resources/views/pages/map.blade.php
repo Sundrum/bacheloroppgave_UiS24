@@ -67,6 +67,7 @@
     @endif
     @if(isset($irrigationrun['irrigation_startpoint']))
         var firstpoint = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_startpoint']); ?>);
+        console.log(firstpoint);
         var center = new google.maps.LatLng(<?php echo trim($irrigationrun['irrigation_startpoint']); ?>);
     @elseif(isset($phone_lat_lng))
         var center = new google.maps.LatLng(<?php echo trim($phone_lat_lng); ?>);

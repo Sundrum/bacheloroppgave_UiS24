@@ -425,7 +425,7 @@ class Unit extends Model
 
     public static function getUnitsProbe()
     {
-        $units = Session::get('sensorunits');
+        $units = Session::get('units');
         $unittypes = array();
         $allProbes = array();
         $result = array();

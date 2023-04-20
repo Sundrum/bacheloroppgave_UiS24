@@ -2,7 +2,7 @@
 
 @section('content')
 <script>
-setTitle('Customer');
+setTitle(@json( __('admin.customer')));
 </script>
 <div class="">
     <div class="row justify-content-center">

@@ -99,10 +99,8 @@ class AdminController extends Controller {
                 //     $status = $status->value ?? '';
                 // } else {
                 
-                // $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
+                $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
                 $status = $record[0]->value ?? '';
-                // $record_2 = DB::connection('sensordata')->select('SELECT value FROM config WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'vib_calibration']);
-                $vib_cal = $record_2[0]->value ?? '';
 
                 if (isset($unit['sensorunit_lastconnect'])) {
                     if(!in_array(trim($unit['serialnumber']),$sorted)){
@@ -113,7 +111,6 @@ class AdminController extends Controller {
                                     array_push($sorted, trim($unit['serialnumber']));
                                     $unit['irrigation_state'] = trim($variable['value']);
                                     $unit['swversion'] = $status ?? null;
-                                    $unit['vib_calibration'] = $vib_cal ?? null;
                                     $result[] = $unit;
                                 }
                             }
@@ -121,14 +118,12 @@ class AdminController extends Controller {
                                 array_push($sorted, trim($unit['serialnumber']));
                                 $unit['irrigation_state'] = -1;
                                 $unit['swversion'] = $status  ?? null;
-                                $unit['vib_calibration'] = $vib_cal ?? null;
                                 $result[] = $unit;
                             }
                         } else {
                             array_push($sorted, trim($unit['serialnumber']));
                             $unit['irrigation_state'] = -1;
                             $unit['swversion'] = $status ?? null;
-                            $unit['vib_calibration'] = $vib_cal ?? null;
                             $result[] = $unit;
                         }
                     }
@@ -175,12 +170,11 @@ class AdminController extends Controller {
             if($row['serialnumber']) { $dataset[$i][1]=$row['serialnumber']; } else { $dataset[$i][1] = null; }
             if($row['sensorunit_location']) { $dataset[$i][2]=$row['sensorunit_location']; } else { $dataset[$i][2] = null; }
             if(isset($row['swversion'])) { $dataset[$i][3]=trim($row['swversion']) ?? null; } else { $dataset[$i][3] = null; }
-            if(isset($row['vib_calibration'])) { $dataset[$i][4]=trim($row['vib_calibration']) ?? null; } else { $dataset[$i][3] = null; }
 
-            $dataset[$i][5]=$row->customer_name; 
+            $dataset[$i][4]=$row->customer_name; 
     
-            if($row['sensorunit_lastconnect']) { $dataset[$i][6]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][6] = null; }
-            $dataset[$i][7] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
+            if($row['sensorunit_lastconnect']) { $dataset[$i][5]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][5] = null; }
+            $dataset[$i][6] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
 
             $i++;
         }

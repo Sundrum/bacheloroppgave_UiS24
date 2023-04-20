@@ -1,10 +1,10 @@
 <div class="modal" id="uploadModal">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content bg-a-grey">
+      <div class="modal-content bg-grey">
       
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title text-center">Upload Firmware</h4>
+          <h4 class="m-auto">Upload Firmware</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         
@@ -32,9 +32,9 @@
                     <label for="productnumber" class="col-md-4 col-form-label">{{ __('Productnumber') }}</label>
                     <div class="input-group col-md-6">
                         <select name="productnumber" id="productnumber" class="form-control">
-                            <option value="21-1020-AA" selected>21-1020-AA</option>
-                            <option value="21-1020-AB">21-1020-AB</option>
-                            <option value="21-9020-AA">21-9020-AA</option>
+                            @foreach ($variable['products'] as $product)
+                                <option value="{{$product->productnumber}}" selected>{{$product->productnumber}}, {{$product->product_name}}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -48,38 +48,19 @@
                     </div>
                 </div>
                 <div class="form-group row justify-content-center">
-                    <label for="firmware" class="col-md-4 col-form-label">{{ __('ZIP fil') }}</label>
+                    <label for="firmware" class="col-md-4 col-form-label">{{ __('File') }}</label>
                     <div class="col-md-6">
-                        <input type="file" accept=".zip" name="firmware" id="firmware" required>
+                        <input type="file" accept=".bin, .cbor" name="firmware" id="firmware" required>
+                        <span class="text-muted">Format accepted (.bin / .cbor)</span>
                     </div>
                 </div>
             
                 <div class="row justify-content-center">
-                    <div class="col-2">
-                        <button type="submit" class="btn btn-primary-filled"> Upload </button>
+                    <div class="col text-center">
+                        <button type="submit" class="btn-7s"> Upload </button>
                     </div>
                 </div>
             </form>
         </div> 
     </div>
 </div>
-
-{{-- <script>
-$( "#upload" ).on( "submit", function(e) {
-    e.preventDefault();
-    var dataString = $(this).serialize() 
-    $.ajax({
-        type: "POST",
-        url: "/admin/upload/firmware",
-        data: dataString,
-        success: function (msg) {
-            console.log(msg);
-            if(msg == 1) {
-                console.log("Updated");
-            } else {
-                console.log("Error");
-            }
-        }
-    });
-});
-</script> --}}

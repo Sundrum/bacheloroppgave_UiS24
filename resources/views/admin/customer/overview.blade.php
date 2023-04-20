@@ -15,7 +15,6 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <h3>Customer</h3>
             <div class="row">
                 <div class="col-12">
                     <div class="card card-rounded">
@@ -157,7 +156,7 @@
                             <hr class="mb-2">
                             <div class="row mt-1">
                                 <div class="col">
-                                    <a class="float-right" href="/admin/customer/edit/{{$customer->customer_id ?? ''}}"><button class="btn-primary-filled">Edit</button></a>
+                                    <a class="float-end" href="/admin/customer/edit/{{$customer->customer_id ?? ''}}"><button class="btn-7g">Edit</button></a>
                                 </div>
                             </div>
                         </div>
@@ -172,9 +171,9 @@
             <h3>Sensorunits</h3>
             <div class="card card-rounded">
                 <div class="m-2">
-                    <div class="row justify-content-center mb-1">
-                        <div class="col">
-                            <button class="btn btn-success card-rounded" data-toggle="modal" data-target="#updateUnit">Add sensorunit</button>
+                    <div class="row mb-1">
+                        <div class="col text-center">
+                            <button class="btn-7g" data-toggle="modal" data-target="#updateUnit">Add sensorunit</button>
                         </div>
                     </div>
                     <table id="sensorunit" class="display" width="100%">
@@ -191,7 +190,7 @@
                                     <tr>
                                         <td>{{$unit->serialnumber ?? ''}}</td>
                                         <td>{{$unit->sensorunit_location ?? ''}}</td>
-                                        <td class="text-center"><a href="/admin/sensorunit/{{$unit->sensorunit_id ?? ''}}"><button class="btn-primary-filled">Open</button></a></td>
+                                        <td class="text-center"><a href="/admin/sensorunit/{{$unit->sensorunit_id ?? ''}}"><button class="btn-7s">Open</button></a></td>
                                     </tr>
                                 @endforeach
                             @else
@@ -208,9 +207,9 @@
             <h3>Users</h3>
             <div class="card card-rounded">
                 <div class="m-2">
-                    <div class="row justify-content-center mb-1">
-                        <div class="col">
-                            <a href="/admin/account?customer_id={{$customer->customer_id}}"><button class="btn btn-success card-rounded">Add new user</button></a>
+                    <div class="row mb-1">
+                        <div class="col text-center">
+                            <a href="/admin/account?customer_id={{$customer->customer_id}}"><button class="btn-7g">Add new user</button></a>
                         </div>
                     </div>
                     <table id="usertable" class="display" width="100%">
@@ -227,7 +226,7 @@
                                     <tr>
                                         <td>{{$user->user_name ?? ''}}</td>
                                         <td>{{$user->user_email ?? ''}}</td>
-                                        <td class="text-center"><a href="/admin/account/{{$user->user_id ?? ''}}"><button class="btn-primary-filled">Open</button></a></td>
+                                        <td class="text-center"><a href="/admin/account/{{$user->user_id ?? ''}}"><button class="btn-7s">Open</button></a></td>
                                     </tr>
                                 @endforeach
                             @else
@@ -245,6 +244,7 @@
 @include('admin.customer.addunits')
 <script>
 var token = "{{ csrf_token() }}";
+setTitle(@json( __('admin.customer')));
 
 $(document).ready(function () {
     var table = $('#sensorunit').DataTable({

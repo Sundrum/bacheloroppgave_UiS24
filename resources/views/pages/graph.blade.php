@@ -13,7 +13,7 @@
                                 <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/humidity.png" height="40" alt="">
                             </div>
                         </div>
-                        <div class="col-12 col-md-2 col-lg-2 mx-auto">
+                        <div class="col-12 col-md-3 col-lg-3 mx-auto">
                           @lang('general.timestamp')
                             <select id="timestamp" class="form-control" onchange="setTimestamp()">
                               <option value="1">@lang('general.exact')</option>
@@ -21,7 +21,7 @@
                               <option @if(request()->timestamp == 3) selected @endif value="3">Hver dag</option>
                             </select>
                         </div>
-                        <div class="col-12 col-md-2 col-lg-2 mx-auto">
+                        <div class="col-12 col-md-3 col-lg-3 mx-auto">
                             @lang('general.choosesensortype')
                             <select class="form-control" id="probetype" name="typeofsensor" onchange="refreshgraph()">
                                 @foreach($probes as $probe)
@@ -29,17 +29,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        {{-- @dd($unit) --}}
                         <div class="col-12 col-md-3 col-lg-3 mx-auto">
-                          Velg projekt
-                          <select class="form-control" id="projects" name="projects" onchange="refreshgraph()">
-                            <option selected="selected" value="">Alle</option>
-                              @foreach($sensorunits['sharedgroups'] as $customer)
-                                  <option value="{{$customer['customernumber']}}">{{$customer['customer_site_title']}}</option>
-                              @endforeach
-                          </select>
-                        </div>
-                        <div class="col-12 col-md-2 col-lg-2 mx-auto">
                             @lang('general.timeperiod')
                             {{-- @lang('graph.header.periodlabel') --}}
                             <select class="form-control" id="days" onchange="refreshgraph()">

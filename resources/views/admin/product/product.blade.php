@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label class="form-label" for="name">Product Type</label>
                         
-                        <select class="custom-select" id="product_type" name="product_type" required>
+                        <select class="custom-select form-control" id="product_type" name="product_type" required>
                             @foreach($product_type as $row)
                                 <option value="{{$row->product_type_id}}" @if(isset($product->product_type) && $row->product_type_id==$product->product_type) selected="selected" @endif> {{$row->product_type_name}} </option>
                             @endforeach
@@ -43,7 +43,7 @@
                         <input type="number" class="form-control" id="document_id_ref" name="document_id_ref" placeholder="Documentation" value="{{$product->document_id_ref ?? '1'}}" required>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary-filled">Lagre</button>
+                        <button type="submit" class="btn-7g">Lagre</button>
                     </div>
                 </form>
             </div>

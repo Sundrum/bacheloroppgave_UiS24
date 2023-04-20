@@ -1,29 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="container">
-    <div class="row mt-3 mb-3">
-        <div class="col-sm-5">
-            <h2><b>Queue to Irrigation</b> </h2>
-            <span class="text-muted">Management</span>
+<section class="bg-white card-rounded">
+    <div class="p-3">
+        <div class="row">
+            <div class="col-12 m-3">
+                <div class="col text-center">
+                    <button id="button" class="btn-7g">Count</button>
+                    <button id="markall" class="btn-7s">Mark all</button>
+                    <button id="delete" class="btn-7r">Delete</button>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-7">
-            <button id="button" class="btn btn-success card-rounded">Count</button>
-            <button id="markall" class="btn btn-primary card-rounded">Mark all</button>
-            <button id="delete" class="btn btn-danger card-rounded">Delete</button>
-
-            {{-- <a href="{{route('newuser')}}" class="btn btn-primary-filled float-right" id="button"><i></i><span> @lang('admin.new')</span></a> --}}
-        </div>
+        <table id="table" class="display" width="100%"></table>
     </div>
-    <table id="table" class="display" width="100%"></table>
 </section>
 
 <script>
+document.getElementById("top-title").innerHTML = 'Queue @ Proxy';
+
 $(document).ready(function () {
     var dataSet = @php echo $data; @endphp;
     var table = $('#table').DataTable({
         data: dataSet,
-        pageLength: 25, // Number of entries
+        pageLength: 100, // Number of entries
         responsive: true, // For mobile devices
         columnDefs : [{ 
             responsivePriority: 1, targets: 4,
@@ -41,7 +41,7 @@ $(document).ready(function () {
             { title: "Status" },
             { title: "Command" },
             { title: "Updated at" },
-            { title: "Created at" },
+            // { title: "Created at" },
         ],
     });
     
@@ -90,6 +90,7 @@ $(document).ready(function () {
         }
     });
 });
+
 
 
 </script>

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-<link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}">
 
 @section('content')
 <h1><i class="fa fa-user" aria-hidden="true"></i> {{$user['user_name']}}</h1>

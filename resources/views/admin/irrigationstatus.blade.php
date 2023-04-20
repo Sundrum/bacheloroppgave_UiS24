@@ -165,7 +165,6 @@
                 { title: "Serienummer" },
                 { title: "Navn" },
                 { title: "Versjon" },
-                { title: "Vibrasjon"},
                 { title: "Kunde" },
                 { title: "Siste levert" },
                 { title: "" },

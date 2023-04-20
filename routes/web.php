@@ -110,7 +110,7 @@ Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controller
 Route::get('/admin/irrigationstatus/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);
 Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus'])->name('irrigationstatus');
-Route::get('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandController::class, 'irrigationFota']);
+Route::post('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandController::class, 'irrigationFota']);
 Route::post('/admin/queue/delete', [App\Http\Controllers\Admin\CommandController::class, 'deleteQueue']);
 
 Route::get('/admin/farmfield/{serial}', [App\Http\Controllers\Admin\DevelopmentController::class, 'farmfield']);

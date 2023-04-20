@@ -20,4 +20,7 @@
 
 </section>
 
+<script>
+document.getElementById("top-title").innerHTML = 'Product';
+</script>
 @endsection
