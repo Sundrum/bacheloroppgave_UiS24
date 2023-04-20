@@ -3,134 +3,62 @@
 @section('content')
 <div class="row mb-3 no-print">
     <div class="col">
-        <div class="row p-2">
-            <a class="btn-primary-outline" href="/admin" style="color: black; text-decoration: none;"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til admin</strong></a>
-        </div>
+        {{-- <button class="btn-7g" href="/admin" ><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til admin</strong></button> --}}
+    </div>
+    <div class="col text-end">
+        {{-- <a class="btn-7g" href="/admin" style="color: black; text-decoration: none;"><img class=""> <strong>Show log</strong></a> --}}
+
     </div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
-
 
 <div class="row">
-        
-    <div class="col-sm-6 col-md-6 col-lg-6">
-        <p class="text-left text-muted">More information will be displayed if you click on one of your sensors</p>
-        <div id="map" style="max-width: auto; height: 700px;"></div>
-    </div>
-
-    <div class="col-sm-6 col-md-6 col-lg-6 ">
-        <br>
-        <div class="col-md-2 card card-rounded text-center">
-        {{-- <h3 class="text-center"><strong></strong></h3> --}}
-        <a class="btn-secoundary-outline" href="/admin" style="color: black; text-decoration: none;"><img class=""> <strong>Show log</strong></a>
-        </div>
-        <section class="">
-                <div class="row mt-3 mb-3">
-                    <div class="col-md-12">
-                        <br>
-                        <div class="col-md-12 card card-rounded">
-                            <div class="row m-1 mt-3 mb-2">
-                                <div class="col-md-4">
-                                    <img class="" src="{{ asset('/img/irr_icon_present.png') }}" style="max-width: 100px; height: 65px;">
-                                </div> 
-                                <div class="col-md-4">
-                                    <h4 class="text-center">Gun 1</h4>
-                                </div>           
-                            </div>
-                            <div class="row m-1 mt-1 mb-3 justify-content-center">
-                                <div class="col-md-8">
-                                    {{-- <a href="https://minside.ice.no/minbedrift/3772189/abonnement">
-                                        <div class="btn-primary-filled">
-                                            Go to
-                                        </div>
-                                    </a> --}}
-                                    <p class="text-center">On @ "date/time"</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <br>
-                        <div class="col-md-12 card card-rounded">
-                            <div class="row m-1 mt-3 mb-2">
-                                <div class="col-md-4">
-                                    <img class="" src="{{ asset('/img/idle_green_marker.svg') }}" style="max-width: 100px; height: 65px;">
-                                </div>  
-                                <div class="col-md-4">
-                                    <h4 class="text-center">Boom 1</h4>
-                                </div>           
-                            </div>
-                            <div class="row m-1 mt-1 mb-3 justify-content-center">
-                                <div class="col-md-8">
-                                    
-                                    <p class="text-center">On @ "date/time"</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <br>
-                        <div class="col-md-12 card card-rounded">
-                            <div class="row m-1 mt-3 mb-2">
-                                <div class="col-md-4">
-                                    <img class="" src="{{ asset('/img/irrigation_blue_marker.svg') }}" style="max-width: 100px; height: 65px;">
-                                </div> 
-                                <div class="col-md-4">
-                                    <h4 class="text-center">Gun 2</h4>
-                                </div>           
-                            </div>
-                            <div class="row m-1 mt-1 mb-3 justify-content-center">
-                                <div class="col-md-8">
-
-                                    <p class="text-center">On @ "date/time"</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <br>
-                        <div class="col-md-12 card card-rounded">
-                            <div class="row m-1 mt-3 mb-2">
-                                <div class="col-md-4">
-                                    <img class="" src="{{ asset('/img/idle_green_marker.svg') }}" style="max-width: 100px; height: 65px;">
-                                </div> 
-                                <div class="col-md-4">
-                                    <h4 class="text-center">Pump 1</h4>
-                                </div>           
-                            </div>
-                            <div class="row m-1 mt-1 mb-3 justify-content-center">
-                                <div class="col-md-8">
-                                    <div class="pie-wrapper progress-75 style-2">
-                                        <span class="label">75<span class="smaller">%</span></span>
-                                    <div class="pie">
-                                        <div class="left-side half-circle"></div>
-                                        <div class="right-side half-circle"></div>
-                                    </div>
-                                    <div class="shadow"></div>
+    <section class="col-md-6 col-lg-6">
+        <div id="map" class="card-rounded" style="max-width: auto; height: 600px;"></div>
+    </section>
+    
+    <section class="col-md-6 col-lg-6">
+        <div class="row">
+            <p class="text-left text-muted">More information will be displayed if you click on one of your sensors</p>
+            @foreach ($irrigationunits as $unit)
+                <div class="col-md-12 mt-1">
+                    <div class="card-rounded bg-white" id ="{{$unit['serialnumber']}}">
+                        <div class="row p-2">
+                            <div class="col-md-4 align-self-center">
+                                <img src="{{ asset($unit['img'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
+                            </div> 
+                            <div class="col-md-4 text-center">
+                                <div class="row">
+                                    <div class="col-12 pt-2">
+                                        <h4 class="text-center">{{ $unit['sensorunit_location'] ?? $unit['serialnumber']}}</h4>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        @if($unit['state'] == 4 || $unit['state'] == 5 || $unit['state'] == 6) 
+                                            <span>Started @ {{$unit['run']['starttime'] ?? ''}}</span>
+                                        @else
+                                            <span>Finished @ {{$unit['run']['endtime'] ?? ''}} </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>           
                         </div>
                     </div>
                 </div>
-        </section>
-</div>
+            @endforeach
+        </div>
+    </section>
 </div>
 
 
-<script>
+<script type="module">
 setTitle('Fleet Managment');
-const parser = new DOMParser();
-const sleepIcon = "../../img/idle_green_marker.svg";
-const sleepIconElement = parser.parseFromString(
-    sleepIcon,
-  "image/svg+xml"
-).documentElement;
-var activeIcon =  new google.maps.MarkerImage("../../img/idle_green_marker.svg", null, null, null, new google.maps.Size(40,40));
-var irrigationIcon =  new google.maps.MarkerImage("../../img/irrigation_blue_marker.svg", null, null, null, new google.maps.Size(40,40));
 
-var activeLatLng, arrayLength;
-var bounds = new google.maps.LatLngBounds();
+let markers;
+let map;
+let infoWindow;
+
+import { MarkerClusterer } from "https://cdn.skypack.dev/@googlemaps/markerclusterer@2.0.3";
 var myStyles =[
     {
         featureType: "poi",
@@ -142,66 +70,62 @@ var myStyles =[
 ];
 
 function initMap() {
-var mapDiv = document.getElementById('map');
-    map = new google.maps.Map(mapDiv, {
+
+    map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 59.390982, lng: 10.460590},
-        mapTypeId: 'satellite',
         mapTypeControl: true,
         zoom: 16,
         streetViewControl: false,
         tilt: 0,
-        styles: myStyles 
+        styles: myStyles
     });
-    addMarkers();
-    autoSizing();
+
+    infoWindow = new google.maps.InfoWindow({
+        content: "",
+        disableAutoPan: true,
+    });
+    
+    addMarkers(@json($irrigationunits));
 }
 
-google.maps.event.addDomListener(window, "load", initMap);
+window.initMap = initMap;
 
-function autoSizing() {
-    map.setCenter(bounds.getCenter());
-    map.fitBounds(bounds);
-}
+function addMarkers(activeLatLng){
+    let bounds = new google.maps.LatLngBounds();
+    const markers = activeLatLng.map((data, i) => {
+        if(data['lat'] && data['lng']) {
+            const label = data['serialnumber'];
+            const marker = new google.maps.Marker({
+                position: new google.maps.LatLng(data['lat'], data['lng']),
+                icon: new google.maps.MarkerImage("/img/irrigation/marker_state_"+data['state']+".png", null, null, null, new google.maps.Size(27,42.75)),
+                map: map
+            });
+            bounds.extend(marker.position);
 
+            marker.addListener("click", () => {
+                infoWindow.setContent(label);
+                infoWindow.open(map, marker);
+            });
 
-function addMarkers(){
-    marker = new google.maps.Marker({
-        position: new google.maps.LatLng(59.409994,10.448804),
-        icon: activeIcon,
-        map: map
+            marker.addListener("mouseover", () => {
+                document.getElementById(data['serialnumber']).className="bg-7g card-rounded";
+            });
+
+            marker.addListener("mouseout", () => {
+                document.getElementById(data['serialnumber']).className="bg-white card-rounded";
+            });
+            return marker;
+        }
         
     });
+    map.setCenter(bounds.getCenter());
+    map.fitBounds(bounds);
+    // // Add a marker clusterer to manage the markers.
+    new MarkerClusterer({ map, markers });
 
-    // marker = new google.maps.Marker({
-    //         position: new google.maps.LatLng(59.409994,10.448804),
-    //         icon: activeIcon,
-    //         map: map
-    // });
-    bounds.extend(marker.position);
-
-    marker = new google.maps.Marker({
-            position: new google.maps.LatLng(59.433838,10.410157),
-            icon: irrigationIcon,
-            map: map
-    });
-    bounds.extend(marker.position);
-
-    marker = new google.maps.Marker({
-            position: new google.maps.LatLng(59.385768,10.438389),
-            icon: irrigationIcon,
-            map: map
-    });
-    bounds.extend(marker.position);
-
-    for (i = 0; i < activeLatLng.length; i++) {
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(activeLatLng[i]['lat'], activeLatLng[i]['lng']),
-            icon: activeIcon,
-            map: map
-        });
-        bounds.extend(marker.position);
-    }
-} 
+}
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry&callback=initMap" defer></script>
 
 @endsection

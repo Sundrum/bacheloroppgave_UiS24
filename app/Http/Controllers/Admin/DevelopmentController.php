@@ -14,7 +14,7 @@ use App\Models\Api;
 use App\Models\Irrigationrun;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Http;
-
+use Session;
 
 class DevelopmentController extends Controller
 {
@@ -28,7 +28,38 @@ class DevelopmentController extends Controller
     }
 
     public function fleetmanagement() {
-        return view('admin.development.fleetmanagement');
+        $irrigationunits = Session::get('irrigation');
+
+        foreach( $irrigationunits as &$unit) {
+            $data = Api::getApi('sensorunits/data/latest?serialnumber='.trim($unit['serialnumber']));
+            if (isset($data['result']) && count($data['result']) > 0) {
+                foreach ($data['result'] as $row) {
+                    if(trim($row['probenumber'])==0) {
+                        if($unit['sensorunit_lastconnect'] < date('Y-m-d h:m:s', strtotime("-2 hours", strtotime(now())))) {
+                            $unit['state'] = 0;
+                        } else {
+                            $unit['state'] = $row['value'];
+                        }
+                        $unit['img'] = '/img/irrigation/marker_state_'.$unit['state'].'.png';
+                        $unit['run'] = Unit::getNewestIrrigationLog($unit['serialnumber']);
+                        if($unit['run']['irrigation_starttime']) {
+                            $unit['run']['starttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['run']['irrigation_starttime']), DashboardController::convertTimestampToUserTimezone($unit['run']['irrigation_starttime']));
+                        }
+                        if($unit['run']['irrigation_endtime']) {
+                            $unit['run']['endttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['run']['irrigation_endtime']), DashboardController::convertTimestampToUserTimezone($unit['run']['irrigation_endtime']));
+                        }
+                    }
+                    if(trim($row['probenumber'])==13 && $row['value'] != '0') {
+                        $unit['lat'] = $row['value'];
+                    }
+                    if(trim($row['probenumber'])==14 && $row['value'] != '0') {
+                        $unit['lng'] = $row['value'];
+                    }
+                }
+            }
+        }
+        // dd($irrigationunits);
+        return view('admin.development.fleetmanagement', compact('irrigationunits'));
     }
 
     public function productionLog() {
