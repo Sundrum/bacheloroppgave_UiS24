@@ -44,9 +44,9 @@ class CustomerController extends Controller
                 $customerid= '-';
             }
             if ($action == 1) {
-                $sorted[$i][4] = '<button class="btn btn-primary-filled"><a href="/admin/customer/'.$customerid.'" style="color:#FFFFFF;">Edit</a></button>';
+                $sorted[$i][4] = '<button class="btn btn-7s"><a href="/admin/customer/'.$customerid.'" style="color:#FFFFFF;">Edit</a></button>';
             } else if ($action == 2) {
-                $sorted[$i][4] = '<button class="btn btn-primary-filled"><a href="/admin/connect/customer/'.$customerid.'" style="color:#FFFFFF;">Select</a></button>';
+                $sorted[$i][4] = '<button class="btn btn-7s"><a href="/admin/connect/customer/'.$customerid.'" style="color:#FFFFFF;">Select</a></button>';
             }
 
             //$sorted[$i][4] = '<a href="/admin/customer/'.$customerid.'"><p> Edit</p> </a>';

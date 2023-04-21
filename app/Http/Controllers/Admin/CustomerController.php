@@ -56,7 +56,7 @@ class CustomerController extends Controller
             $customer[trim($row->variable)] = trim($row->value);
         }
 
-        $customer->users = User::where('customer_id_ref', $id)->get();
+        $customer->users = User::select('users.*', 'roletype.roletype')->where('customer_id_ref', $id)->join('roletype', 'roletype_id', 'users.roletype_id_ref')->get();
         $customer->sensorunits = Sensorunit::where('customer_id_ref', $id)->get();
         // dd($customer);
         return view('admin.customer.overview', compact('customertypes','countries', 'customer'));

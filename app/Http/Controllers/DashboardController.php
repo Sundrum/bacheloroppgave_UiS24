@@ -323,14 +323,14 @@ class DashboardController extends Controller
                         $b = $tree_temp->specie_value_b;
                     }
                     $value = self::convertWoodMoisture($probe['value'], 20, $a, $b);
-                    $probe['header'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['header'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                     $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else if (trim($probe['unittype_id']) == 36){
                     $value = $probe['value']/100;
-                    $probe['header'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['header'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                     $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else {
-                    $probe['header'] = round($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['header'] = number_format($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                     $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 }
             } if ($probe['hidden'] === 0) {
@@ -344,15 +344,15 @@ class DashboardController extends Controller
                         $b = $tree_temp->specie_value_b;
                     }
                     $value = self::convertWoodMoisture($probe['value'], 20, $a, $b);
-                    $probe['body'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['body'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                 } else if (trim($probe['unittype_id']) == 33) {
                     $val = ($probe['value']/1000000000);
-                    $probe['body'] = round($val, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['body'] = number_format($val, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                 } else if (trim($probe['unittype_id']) == 36){
                     $value = $probe['value']/100;
-                    $probe['body'] = round($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['body'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                 } else {
-                    $probe['body'] = round($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
+                    $probe['body'] = number_format($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                 }
             } 
 

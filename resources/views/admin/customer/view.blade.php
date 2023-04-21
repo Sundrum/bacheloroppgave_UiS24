@@ -30,7 +30,7 @@
                     <td>{{$row->customernumber ?? ''}}</td>
                     <td>{{$row->customer_maincontact ?? ''}}</td>
                     <td>{{$row->customer_email ?? ''}}</td>
-                    <td><a href="/admin/customer/{{$row->customer_id}}"><button class="btn-primary-filled">Open</button></a></td>
+                    <td><a href="/admin/customer/{{$row->customer_id}}"><button class="btn-7s">Open</button></a></td>
                 </tr>
             @endforeach
         </tbody>

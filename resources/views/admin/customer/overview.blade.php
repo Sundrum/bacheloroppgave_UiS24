@@ -215,8 +215,10 @@
                     <table id="usertable" class="display" width="100%">
                         <thead>
                             <tr>
+                                {{-- <td>#</td> --}}
                                 <td>Name</td>
                                 <td>Email</td>
+                                <td>Roletype</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -224,8 +226,10 @@
                             @if(isset($customer->users) && count($customer->users) > 0)
                                 @foreach ($customer->users as $user)
                                     <tr>
+                                        {{-- <td>{{$user->user_id ?? ''}}</td> --}}
                                         <td>{{$user->user_name ?? ''}}</td>
                                         <td>{{$user->user_email ?? ''}}</td>
+                                        <td>{{$user->roletype ?? ''}}
                                         <td class="text-center"><a href="/admin/account/{{$user->user_id ?? ''}}"><button class="btn-7s">Open</button></a></td>
                                     </tr>
                                 @endforeach
