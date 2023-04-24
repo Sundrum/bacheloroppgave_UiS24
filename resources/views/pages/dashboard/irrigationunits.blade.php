@@ -94,22 +94,27 @@
         var checkBox = document.getElementById("startIrrigationButton" + serial);
         // If slider is 'checked'
         if (checkBox.checked) {
-            console.log('Button checked');
-            $.ajax({
-                url: "/startirrigation",
-                type: 'POST',
-                data: { 
-                    "serial": serial,
-                    "variable": 1,
-                    "_token": token,
-                },
-                success: function(msg) {
-                    alert('Remote start of Irrigation sensor');
-                },   
-                error:function(msg) {
-                    alert("Failed - Please try again")
-                }
-            });
+            var confirmed = confirm('Do you want to start the unit?');
+            if(confirmed) {
+                console.log('Button checked');
+                $.ajax({
+                    url: "/startirrigation",
+                    type: 'POST',
+                    data: { 
+                        "serial": serial,
+                        "variable": 1,
+                        "_token": token,
+                    },
+                    success: function(msg) {
+                        successMessage('Remote start of Irrigation sensor');
+                    },   
+                    error:function(msg) {
+                        errorMessage('Something went wrong - please try again.');
+                    }
+                });
+            } else {
+                checkBox.checked = false;
+            }
         } else {
             var confirmed = confirm('Do you want to stop the unit?');
             if(confirmed) {
@@ -122,10 +127,10 @@
                         "_token": token,
                     },
                     success: function(msg) {
-                        console.log(msg);
+                        successMessage('Success: Remote stop of Irrigation sensor');
                     },   
                     error:function(msg) {
-                        alert("Failed - Please try again")
+                        errorMessage('Something went wrong - please try again.');
                     }
                 });
             } else {
