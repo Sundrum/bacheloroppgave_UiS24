@@ -48,7 +48,6 @@
 
 <script>
     setTitle(@json($serial));
-    var token = "{{ csrf_token() }}";
     var positions = Array();
     var serial = "{{ $serial }}";
     var setEndpoint = "@lang('map.setend')";

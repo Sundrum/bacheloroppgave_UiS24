@@ -5,16 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+<script src="{{ asset('js/jquery-3-3-1.js') }}"></script>
+<script src="{{ asset('js/sortable.min.js') }}"></script>
+<script src="{{ asset('js/fontawesome-5-13-0.min.js') }}"></script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" SameSite="none Secure"></script>
-
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
 <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 <script src="https://nightly.datatables.net/js/jquery.dataTables.js" defer></script>
@@ -26,28 +22,19 @@
 <script src="{{ asset('js/placeholder.js') }}"></script>
 
 @auth
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
     <script>
-        var token = "{{ csrf_token() }}";
-        var timezone = moment.tz.guess();
-        $.ajax({
-            url: "/timezone",
-            type: 'POST',
-            data: { 
-                "timezone": timezone,
-                "_token": token,
-            },
-            success: function(msg) {
-                console.log(msg);
-            },   
-            error:function(msg) {
-                console.log("Problems setting your local timezone");
-            }
-        });
+        const token = "{{ csrf_token() }}";
     </script>
+    <script src="{{ asset('js/timezone.js') }}"></script>
+
 @endauth
 
-<script src="{{ asset('js/app.js') }}"></script>
 @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/popper.js') }}"></script>
 
 <title>{{ config('APP_NAME', '7Sense Portal') }}</title>
 </head>

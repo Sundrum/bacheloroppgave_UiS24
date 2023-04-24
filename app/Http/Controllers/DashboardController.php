@@ -29,15 +29,20 @@ class DashboardController extends Controller
     public static function setIrrigationStatus ($irrUnit) {
         if($irrUnit['timestampDifference'] < 5400) {
             if(isset($irrUnit['irrigation_state'])) {
-                $irrUnit['img'] = '../img/irrigation/state_'.$irrUnit['irrigation_state'].'.png';
+                $irrUnit['img'] = '/img/irrigation/state_'.$irrUnit['irrigation_state'].'.png';
+                $irrUnit['markerimg'] = '/img/irrigation/marker_state_'.$irrUnit['irrigation_state'].'.png';
             } else {
-                $irrUnit['img'] = '../img/irrigation/state_1.png';
+                $irrUnit['img'] = '/img/irrigation/state_1.png';
+                $irrUnit['markerimg'] = '/img/irrigation/marker_state_1.png';
+
             }
         } else {
             if(isset($irrUnit['irrigation_state'])) {
-                $irrUnit['img'] = '../img/irrigation/state_0.png';
+                $irrUnit['img'] = '/img/irrigation/state_0.png';
+                $irrUnit['markerimg'] = '/img/irrigation/marker_state_0.png';
             } else {
-                $irrUnit['img'] = '../img/irrigation/state.png';
+                $irrUnit['img'] = '/img/irrigation/state.png';
+                $irrUnit['markerimg'] = '/img/irrigation/marker_state.png';
             }
         }
         if (isset($irrUnit['vibration']) && $irrUnit['vibration'] !== 0) {

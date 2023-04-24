@@ -92,7 +92,6 @@
 <script>
     function startIrrigation(serial) {
         var checkBox = document.getElementById("startIrrigationButton" + serial);
-        var token = "{{ csrf_token() }}";
         // If slider is 'checked'
         if (checkBox.checked) {
             console.log('Button checked');

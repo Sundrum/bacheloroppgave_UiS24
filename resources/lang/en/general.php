@@ -36,7 +36,7 @@ return [
     'language' => 'Language',
     'savesettings' => 'Save Settings',
 
-
+    'fleetmanagment' => 'Fleet Managment',
     'somethingwentwrong' => 'Something went wrong! We were not able to load your data. Please try again!',
 
 ];

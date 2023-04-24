@@ -24,7 +24,7 @@
                     <div class="card-rounded bg-white" id ="{{$unit['serialnumber']}}">
                         <div class="row p-2">
                             <div class="col-md-4 align-self-center">
-                                <img src="{{ asset($unit['img'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
+                                <img src="{{ asset($unit['markerimg'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
                             </div> 
                             <div class="col-md-4 text-center">
                                 <div class="row">
@@ -34,11 +34,15 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        @if($unit['state'] == 4 || $unit['state'] == 5 || $unit['state'] == 6) 
-                                            <span>Started @ {{$unit['run']['starttime'] ?? ''}}</span>
+                                        @isset($unit['state'])
+                                            @if($unit['state'] == 4 || $unit['state'] == 5 || $unit['state'] == 6) 
+                                                <span>Started @ {{$unit['run']['starttime'] ?? 'Starttime'}}</span>
+                                            @else
+                                                <span>Finished @ {{$unit['run']['endtime'] ?? 'Endtime'}} </span>
+                                            @endif
                                         @else
-                                            <span>Finished @ {{$unit['run']['endtime'] ?? ''}} </span>
-                                        @endif
+                                            <span>Last connected @ {{$unit['timestampComment']}} </span>
+                                        @endisset
                                     </div>
                                 </div>
                             </div>           
@@ -52,7 +56,7 @@
 
 
 <script type="module">
-setTitle('Fleet Managment');
+setTitle(@json(__('general.fleetmanagment')));
 
 let markers;
 let map;
@@ -97,7 +101,7 @@ function addMarkers(activeLatLng){
             const label = data['serialnumber'];
             const marker = new google.maps.Marker({
                 position: new google.maps.LatLng(data['lat'], data['lng']),
-                icon: new google.maps.MarkerImage("/img/irrigation/marker_state_"+data['state']+".png", null, null, null, new google.maps.Size(27,42.75)),
+                icon: new google.maps.MarkerImage(data['markerimg'], null, null, null, new google.maps.Size(27,42.75)),
                 map: map
             });
             bounds.extend(marker.position);

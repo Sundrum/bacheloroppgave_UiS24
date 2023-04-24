@@ -33,9 +33,6 @@
                                 </span>
                             </div>
                             <input type="tel" class="form-control" id="customer_variables_sms" name="customer_variables_sms" value="{{ $customersettings['customer_variables_sms'] ?? '' }}" autofocus>
-                            {{-- @if(!trim($customersettings['customer_variables_sms_1']))
-                                <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#sms-alert"><i class="fa fa-plus"></i></button>
-                            @endif --}}
                         </div>
                     </div>
                     
@@ -48,16 +45,21 @@
                             </div>
                         </div>
                     </div>
-
                 @else
-                    <div class="form-group row">
-                        <div class="input-group">
-                            <label for="sms_info" class="col-md-4 col-form-label text-md-right">@lang('settings.smsalerts')</label>
-                            <div class="input-group-prepend"><span name="prefixproduct" value="" class="input-group-text"><i class="fa fa-phone fa-fw"></i></span></div>
-                            <input type="text" class="col-md-5 form-control" id="sms_info" name="sms_info" value="" placeholder="@lang('settings.paid')" disabled>
+                <div class="form-group">
+                    <span class="mx-5" for="customer_variables_sms">@lang('settings.smsalerts')</span>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-7s h-100">
+                                <i class="fa fa-phone fa-fw icon-color"></i>
+                            </span>
+                        </div>
+                        <input type="tel" class="form-control" id="sms_info" name="sms_info" placeholder="@lang('settings.paid')" disabled>
+                        <div class="input-group-append">
                             <button type="button" class="btn" data-toggle="popover" data-placement="top" data-trigger="focus" data-content="@lang('settings.smsalertsinfo')"><i class="fa fa-info-circle fa-lg"></i></button>
                         </div>
                     </div>
+                </div>
                 @endif
 
                 <div class="form-group mt-2">

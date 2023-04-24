@@ -22,4 +22,7 @@ return [
     'everyhour' => 'Hver time',
     'everyday' => 'Hver dag',
     'endCase' => 'Avslutt sak',
+
+    'fleetmanagment' => 'Flåtestyring',
+
 ];

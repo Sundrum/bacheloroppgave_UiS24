@@ -1,9 +1,13 @@
-<div class="row">
+<div class="row justify-content-end">
+
     <div class="col mb-1">
         <i  class="fa fa-3x fa-info-circle fa-fw float-end"
             style="margin-right: 10px;"
             data-toggle="modal" onclick="showInfoBox();" data-target="#myInfowindow">
         </i>
+        @if(count(Session::get('irrigation')) > 1)
+            <button class="btn-7g float-end" onclick="loadContent('{{route('fleetmanagment')}}')"><strong>@lang('general.fleetmanagment')</strong></button>
+        @endif
     </div>
 </div>
 

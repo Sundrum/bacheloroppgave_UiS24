@@ -261,6 +261,9 @@ class Unit extends Model
             if (isset($result['irrigation_state'])){
                 if ($result['irrigation_state'] == 4 || $result['irrigation_state'] == 5 || $result['irrigation_state'] == 6 ) {
                     $currentRun = Unit::getCurrentRun($unit['serialnumber']);
+                    if(isset($currentRun['irrigation_starttime']) && $currentRun['irrigation_starttime']) $result['run']['starttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($currentRun['irrigation_starttime']), DashboardController::convertTimestampToUserTimezone($currentRun['irrigation_starttime']));
+                    if(isset($currentRun['irrigation_endtime']) && $currentRun['irrigation_endtime']) $result['run']['endtime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($currentRun['irrigation_endtime']), DashboardController::convertTimestampToUserTimezone($currentRun['irrigation_endtime']));
+
                     $coordinates = array();
                     if (is_array($currentRun)) {
                         $index = 0;

@@ -114,7 +114,7 @@ Route::post('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandControl
 Route::post('/admin/queue/delete', [App\Http\Controllers\Admin\CommandController::class, 'deleteQueue']);
 
 Route::get('/admin/farmfield/{serial}', [App\Http\Controllers\Admin\DevelopmentController::class, 'farmfield']);
-Route::get('/admin/development/fleetmanagement', [App\Http\Controllers\Admin\DevelopmentController::class, 'fleetmanagement']);
+Route::get('/admin/development/fleetmanagement', [App\Http\Controllers\Admin\DevelopmentController::class, 'fleetmanagement'])->name('fleetmanagment');
 
 Route::get('/select', [App\Http\Controllers\AdminController::class, 'select'])->name('selectuser');
 Route::get('/select/{userid}/{customernumber}', [App\Http\Controllers\AdminController::class, 'setUser']);
