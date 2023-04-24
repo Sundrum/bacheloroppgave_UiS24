@@ -42,15 +42,15 @@ class Controller extends BaseController
         $sensorunits = DashboardController::getOrder();
         $sensorunits = DashboardController::processSensorArray($sensorunits);
 
-        Unit::getProbeSettings();
-        $settingscounter = Session::get('settingscounter');
-        if ($settingscounter == 0) {
-            $settings = 1;
-            Session::put('settingserror', $settings);
-        } else {
-            $settings = 0;
-            Session::put('settingserror', $settings);
-        }
+        // Unit::getProbeSettings();
+        // $settingscounter = Session::get('settingscounter');
+        // if ($settingscounter == 0) {
+        //     $settings = 1;
+        //     Session::put('settingserror', $settings);
+        // } else {
+        //     $settings = 0;
+        //     Session::put('settingserror', $settings);
+        // }
 
         return view('pages.dashboard', compact('irrigationunits'), compact('sensorunits'));
     }

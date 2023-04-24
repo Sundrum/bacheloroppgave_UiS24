@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Unit;
+use App\Models\Sensorprobevariable;
 use App\Models\SensorunitVariable;
 use App\Models\Treespecies;
 use Lang;
@@ -286,16 +287,19 @@ class DashboardController extends Controller
                     }
                     $value = self::convertWoodMoisture($probe['value'], 20, $a, $b);
                     $probe['header'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
-                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else if (trim($probe['unittype_id']) == 36){
                     $value = $probe['value']/100;
                     $probe['header'] = number_format($value, $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
-                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
                 } else {
                     $probe['header'] = number_format($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
-                    $probe['percent'] = self::calculatePercent($probe['value'], 0, 100);
+                    $upper = Sensorprobevariable::select('value')->where('serialnumber', $probe['serialnumber'])->where('variable', 'sensorprobe_upper_threshold')->where('sensorprobe_number', $probe['probenumber'])->first();
+                    $probe['upperthreshold'] = round($upper->value ?? 100, $probe['unittype_decimals']);
+                    $lower = Sensorprobevariable::select('value')->where('serialnumber', $probe['serialnumber'])->where('variable', 'sensorprobe_lower_threshold')->where('sensorprobe_number', $probe['probenumber'])->first();
+                    $probe['lowerthreshold'] = round($lower->value ?? 0, $probe['unittype_decimals']);
+                    $probe['percent'] = self::calculatePercent($probe['value'],  $probe['lowerthreshold'], $probe['upperthreshold']);
                 }
-            } if ($probe['hidden'] === 0) {
+            } 
+            if ($probe['hidden'] === 0) {
                 if (trim($probe['unittype_id']) == 24) {
                     $tree_specie = SensorunitVariable::where('sensorunit_variables.serialnumber', $probe['serialnumber'])->where('sensorunit_variables.variable', 'tree_species')->first();
                     $a = -0.038;
@@ -344,20 +348,11 @@ class DashboardController extends Controller
                 else $batt_thresholds = [3.80, 4.9, 5.45, 5.45];
 
                 $batteryStatus = $probe['value'];
-                if ($batteryStatus > $batt_thresholds[3]) {
-                    $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_100.png";
-                } else if ($batteryStatus > $batt_thresholds[2]) {
-                    $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_75.png";
-                } else if ($batteryStatus > $batt_thresholds[1]) {
-                    $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_50.png";
-                } else {
-                    $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_25.png";
-                }
+                if ($batteryStatus > $batt_thresholds[3]) $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_100.png";
+                else if ($batteryStatus > $batt_thresholds[2]) $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_75.png";
+                else if ($batteryStatus > $batt_thresholds[1]) $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_50.png";
+                else $probe['unittype_icon'] = "https://storage.portal.7sense.no/images/dashboardicons/battery_icons/battery_25.png";
             }
-
-            $probe['manipulatedTimestamp'] = self::convertTimestampToUserTimezone($probe['timestamp']);
-            $probe['timestampDifference'] = self::getTimestampDifference($probe['timestamp']);
-            $probe['timestampComment'] = self::getTimestampComment($probe['timestampDifference'], $probe['manipulatedTimestamp']);
         }
     }
 

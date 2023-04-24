@@ -57,28 +57,28 @@ class SettingsController extends Controller
             $result[] = Unit::updateSensorSettings($serial, $variable, $value);
         }
 
-        if (isset($irrigation_pressure_bar)) {
-            $old_pressure = Status::select('value')->where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
-            if(isset($old_pressure)) {
-                if ($old_pressure->value !== $irrigation_pressure_bar) {
-                    $settling = $irrigation_pressure_bar - 1;
-                    $comment = 'User update pressure';
-                    $data = '7,4,nan,'.$settling.';8,4,0,nan,'.$irrigation_pressure_bar;
-                    Api::postQueue('queue/add?serialnumber='.$serial.'&typeid=2&data='.base64_encode($data).'&comment='.rawurlencode($comment));
-                    $status = Status::where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
-                    $status->value = $irrigation_pressure_bar;
-                    $status->save();
-                }
-            } else {
-                $settling = $irrigation_pressure_bar - 1;
-                $comment = 'User update pressure';
-                $data = '7,4,nan,'.$settling.';8,4,0,nan,'.$irrigation_pressure_bar;
-                Api::postQueue('queue/add?serialnumber='.$serial.'&typeid=2&data='.base64_encode($data).'&comment='.rawurlencode($comment));
-                $status = Status::where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
-                $status->value = $irrigation_pressure_bar;
-                $status->save();
-            }
-        }
+        // if (isset($irrigation_pressure_bar)) {
+        //     $old_pressure = Status::select('value')->where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
+        //     if(isset($old_pressure)) {
+        //         if ($old_pressure->value !== $irrigation_pressure_bar) {
+        //             $settling = $irrigation_pressure_bar - 1;
+        //             $comment = 'User update pressure';
+        //             $data = '7,4,nan,'.$settling.';8,4,0,nan,'.$irrigation_pressure_bar;
+        //             Api::postQueue('queue/add?serialnumber='.$serial.'&typeid=2&data='.base64_encode($data).'&comment='.rawurlencode($comment));
+        //             $status = Status::where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
+        //             $status->value = $irrigation_pressure_bar;
+        //             $status->save();
+        //         }
+        //     } else {
+        //         $settling = $irrigation_pressure_bar - 1;
+        //         $comment = 'User update pressure';
+        //         $data = '7,4,nan,'.$settling.';8,4,0,nan,'.$irrigation_pressure_bar;
+        //         Api::postQueue('queue/add?serialnumber='.$serial.'&typeid=2&data='.base64_encode($data).'&comment='.rawurlencode($comment));
+        //         $status = Status::where('serialnumber', $serial)->where('variable', 'pressure_threshold_low')->first();
+        //         $status->value = $irrigation_pressure_bar;
+        //         $status->save();
+        //     }
+        // }
 
         return Redirect::to('settings/1');
     }

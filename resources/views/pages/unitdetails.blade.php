@@ -18,11 +18,11 @@
             <div class="row">
               <div class="col-6">
                 {{-- MIN VALUE --}}
-                0
+                {{$probe['lowerthreshold'] ?? ''}}
               </div>
               <div class="col-6">
                 {{-- Max VALUE --}}
-                100
+                {{$probe['upperthreshold'] ?? ''}}
               </div>
             </div>
             <p class="col "><strong>{{$probe['unittype_description']}}</strong></p>
@@ -47,11 +47,11 @@
             <div class="row">
               <div class="col-6">
                 {{-- MIN VALUE --}}
-                0
+                {{$probe['lowerthreshold'] ?? ''}}
               </div>
               <div class="col-6">
                 {{-- Max VALUE --}}
-                100
+                {{$probe['upperthreshold'] ?? ''}}
               </div>
             </div>
             <p class="col "><strong>{{$probe['unittype_description']}}</strong></p>
