@@ -14,46 +14,12 @@ use Session, Redirect, DateTime, DateTimeZone;
 
 class DashboardController extends Controller
 {
-    public static function processIrrigationArray($irrigationunits) {
-        // dd($irrigationunits);
+    public static function processIrrigationArray(&$irrigationunits) {
         foreach ($irrigationunits as &$irrUnit) {
-            $irrUnit['manipulatedTimestamp'] = self::convertTimestampToUserTimezone($irrUnit['timestamp']);
-            $irrUnit['timestampDifference'] = self::getTimestampDifference($irrUnit['timestamp']);
+            $irrUnit['manipulatedTimestamp'] = self::convertTimestampToUserTimezone($irrUnit['sensorunit_lastconnect']);
+            $irrUnit['timestampDifference'] = self::getTimestampDifference($irrUnit['sensorunit_lastconnect']);
             $irrUnit['timestampComment'] = self::getTimestampComment($irrUnit['timestampDifference'], $irrUnit['manipulatedTimestamp']);
-            $irrUnit = self::setIrrigationStatus($irrUnit);
         }
-        // dd($irrigationunits);
-        return $irrigationunits;
-    }
-
-    public static function setIrrigationStatus ($irrUnit) {
-        if($irrUnit['timestampDifference'] < 5400) {
-            if(isset($irrUnit['irrigation_state'])) {
-                $irrUnit['img'] = '/img/irrigation/state_'.$irrUnit['irrigation_state'].'.png';
-                $irrUnit['markerimg'] = '/img/irrigation/marker_state_'.$irrUnit['irrigation_state'].'.png';
-            } else {
-                $irrUnit['img'] = '/img/irrigation/state_1.png';
-                $irrUnit['markerimg'] = '/img/irrigation/marker_state_1.png';
-
-            }
-        } else {
-            if(isset($irrUnit['irrigation_state'])) {
-                $irrUnit['img'] = '/img/irrigation/state_0.png';
-                $irrUnit['markerimg'] = '/img/irrigation/marker_state_0.png';
-            } else {
-                $irrUnit['img'] = '/img/irrigation/state.png';
-                $irrUnit['markerimg'] = '/img/irrigation/marker_state.png';
-            }
-        }
-        if (isset($irrUnit['vibration']) && $irrUnit['vibration'] !== 0) {
-            $irrUnit['vibration'] = ($irrUnit['vibration']/1)*100; // ?
-        }
-        // if exactly 90 degrees tilt = 0
-        if (isset($irrUnit['tilt']) && $irrUnit['tilt'] == 90) {
-            $irrUnit['tilt'] = 90; // ?
-        }
-
-        return $irrUnit;
     }
 
     public static function processSensorArray($sensorunits) {
@@ -63,15 +29,6 @@ class DashboardController extends Controller
                     $unit['manipulatedTimestamp'] = self::convertTimestampToUserTimezone($unit['sensorunit_lastconnect']);
                     $unit['timestampDifference'] = self::getTimestampDifference($unit['sensorunit_lastconnect']);
                     $unit['timestampComment'] = self::getTimestampComment($unit['timestampDifference'], $unit['manipulatedTimestamp']);
-                    /*if ($unit['timestampDifference'] < 5400) {
-                        $unit['color'] = '#159864';
-                    } else if {
-                        if ($unit['timestampDifference'] < 10800) {
-                            $unit['color'] = '#DFC04F';
-                        } else {
-                            $unit['color'] = '#D10D0D';
-                        }
-                    }*/
                     foreach ($unit as &$sensor) {
                         if (is_array($sensor) && !empty($sensor)) {
                             self::probeProcess($sensor);

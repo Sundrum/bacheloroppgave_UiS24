@@ -38,7 +38,6 @@ class Controller extends BaseController
         if(self::checkCustomer() == 287) return view('test_folder.demo_uk');
 
         $irrigationunits = Unit::getLatestIrrigation();
-        $irrigationunits = DashboardController::processIrrigationArray($irrigationunits);
 
         $sensorunits = DashboardController::getOrder();
         $sensorunits = DashboardController::processSensorArray($sensorunits);

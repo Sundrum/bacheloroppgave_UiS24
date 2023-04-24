@@ -8,7 +8,7 @@
                     {{-- Checks if sensorname exists --}}
                     <div class="row">
                         <div class="col-12 col-md-8">
-                            <h5>{{ $irrUnit['sensorname'] ?? $irrUnit['serialnumber'] ?? '' }}</h5>
+                            <h5>{{ $irrUnit['sensorunit_location'] ?? $irrUnit['serialnumber'] ?? '' }}</h5>
                         </div>
                         <div class="col-12 col-md-4">
                             <span class="float-end">
@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col">
                             <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'>
-                                <img width="60" height="60" src="{{$irrUnit['img'] ?? '../img/irrigation/state.png'}}" class="float-left">
+                                <img width="60" height="60" src="{{$irrUnit['img'] ?? '/img/irrigation/state.png'}}" class="float-left">
                             </a>
                         </div>
                         @if (isset($irrUnit['eta']))
@@ -43,10 +43,10 @@
                                 </div>
                             </div>
                         @endif
-                        @if(isset($irrUnit['irrigation_state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['irrigation_state'] < '4' || $irrUnit['irrigation_state'] == '7'))
+                        @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] < '4' || $irrUnit['latest']['state'] == '7'))
                             <div class="col text-center">
                                 <label class="switch">
-                                    <input type="checkbox" @if(isset($irrUnit['irrigation_portalstart']) && $irrUnit['irrigation_portalstart'] == '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
+                                    <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
                                     <span class="slider round"></span>
                                 </label>
                             </div>

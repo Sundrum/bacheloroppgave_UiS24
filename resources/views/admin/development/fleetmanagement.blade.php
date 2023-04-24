@@ -13,7 +13,7 @@
 
 <div class="row">
     <section class="col-md-6 col-lg-6">
-        <div id="map" class="card-rounded" style="max-width: auto; height: 600px;"></div>
+        <div id="map" class="card-rounded" style="max-width: auto; min-height: 600px; height:90%"></div>
     </section>
     
     <section class="col-md-6 col-lg-6">
@@ -21,7 +21,7 @@
             <p class="text-left text-muted">More information will be displayed if you click on one of your sensors</p>
             @foreach ($irrigationunits as $unit)
                 <div class="col-md-12 mt-1">
-                    <div class="card-rounded bg-white" id ="{{$unit['serialnumber']}}">
+                    <div class="card-rounded bg-white irrigationlist" id="{{$unit['serialnumber']}}">
                         <div class="row p-2">
                             <div class="col-md-4 align-self-center">
                                 <img src="{{ asset($unit['markerimg'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
@@ -34,14 +34,14 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        @isset($unit['state'])
-                                            @if($unit['state'] == 4 || $unit['state'] == 5 || $unit['state'] == 6) 
-                                                <span>Started @ {{$unit['run']['starttime'] ?? 'Starttime'}}</span>
+                                        @isset($unit['variable']['irrigation_state'])
+                                            @if($unit['variable']['irrigation_state'] == '4' || $unit['variable']['irrigation_state'] == '5' || $unit['variable']['irrigation_state'] == '6') 
+                                                <span>Started @ {{$unit['currentRun']['starttime'] ?? 'Starttime'}}</span>
                                             @else
-                                                <span>Finished @ {{$unit['run']['endtime'] ?? 'Endtime'}} </span>
+                                                <span>Finished @ {{$unit['currentRun']['endtime'] ?? $unit['timestampComment'] ?? 'Endtime'}} </span>
                                             @endif
                                         @else
-                                            <span>Last connected @ {{$unit['timestampComment']}} </span>
+                                            <span>Last connected @ {{$unit['timestampComment'] ?? ''}} </span>
                                         @endisset
                                     </div>
                                 </div>
@@ -97,26 +97,27 @@ window.initMap = initMap;
 function addMarkers(activeLatLng){
     let bounds = new google.maps.LatLngBounds();
     const markers = activeLatLng.map((data, i) => {
-        if(data['lat'] && data['lng']) {
+        if(data['latest']['lat'] && data['latest']['lng']) {
             const label = data['serialnumber'];
             const marker = new google.maps.Marker({
-                position: new google.maps.LatLng(data['lat'], data['lng']),
+                position: new google.maps.LatLng(data['latest']['lat'], data['latest']['lng']),
                 icon: new google.maps.MarkerImage(data['markerimg'], null, null, null, new google.maps.Size(27,42.75)),
                 map: map
             });
             bounds.extend(marker.position);
-
+            marker.id = "marker_"+data['serialnumber'];
             marker.addListener("click", () => {
                 infoWindow.setContent(label);
                 infoWindow.open(map, marker);
             });
 
             marker.addListener("mouseover", () => {
-                document.getElementById(data['serialnumber']).className="bg-7g card-rounded";
+                document.getElementById(data['serialnumber']).className="bg-7g card-rounded irrigationlist";
+                console.log(marker.id);
             });
 
             marker.addListener("mouseout", () => {
-                document.getElementById(data['serialnumber']).className="bg-white card-rounded";
+                document.getElementById(data['serialnumber']).className="bg-white card-rounded irrigationlist";
             });
             return marker;
         }
@@ -128,6 +129,7 @@ function addMarkers(activeLatLng){
     new MarkerClusterer({ map, markers });
 
 }
+
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry&callback=initMap" defer></script>

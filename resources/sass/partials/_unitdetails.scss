@@ -27,6 +27,10 @@
       animation: fillAnimation 1s ease-in;
     }
   }
+
+  .irrigationlist:hover {
+    background-color: $secondary !important;
+  }
   
   @keyframes fillAnimation {
     0% {

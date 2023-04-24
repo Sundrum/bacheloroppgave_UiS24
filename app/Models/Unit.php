@@ -10,6 +10,7 @@ use App\Models\Unit;
 use App\Models\Api;
 use App\Models\SensorunitVariable;
 use App\Models\Status;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Log;
 
 use Session, DateTime, DateTimeZone;
@@ -205,65 +206,72 @@ class Unit extends Model
     {
         Unit::getUnitsList();
         $units = Session::get('irrigation');
-        //dd($units);
-        $latestIrrgationReadings = array();
-        foreach ($units as $unit) {
-            $result = array();
+        DashboardController::processIrrigationArray($units);
+
+        foreach ($units as &$unit) {
             $variables = Unit::getVariables($unit['serialnumber']);
             $data = Api::getApi('sensorunits/data/latest?serialnumber='.$unit['serialnumber']);
-            if(strcmp($unit['serialnumber'], '21-1020-AC-00510') == 0) {
-                // dd($unit['serialnumber'], $data);
-            }
+            
             foreach ($data['result'] as $probe) {
-                if ($probe['probenumber'] == '0'); // ??
-                else if ($probe['probenumber'] == '1') $result['vibration'] = trim($probe['value']); // Vibration
-                else if ($probe['probenumber'] == '2') $result['water_lost'] = trim($probe['value']); // Water Lost
-                else if ($probe['probenumber'] == '3') $result['tilt_alert'] = trim($probe['value']); // Tilt alert
-                else if ($probe['probenumber'] == '4') $result['tilt'] = trim($probe['value']); // tilt abs
-                else if ($probe['probenumber'] == '5') $result['tilt_relative'] = trim($probe['value']); // tilt relative
+                if ($probe['probenumber'] == '0') $unit['latest']['state'] = trim($probe['value']); // State
+                else if ($probe['probenumber'] == '1') $unit['latest']['vibration'] = trim(($probe['value']/1)*100); // Vibration
+                else if ($probe['probenumber'] == '2') $unit['latest']['water_lost'] = trim($probe['value']); // Water Lost
+                else if ($probe['probenumber'] == '3') $unit['latest']['tilt_alert'] = trim($probe['value']); // Tilt alert
+                else if ($probe['probenumber'] == '4') $unit['latest']['tilt'] = trim($probe['value']); // tilt abs
+                else if ($probe['probenumber'] == '5') $unit['latest']['tilt_relative'] = trim($probe['value']); // tilt relative
                 else if ($probe['probenumber'] == '6') ; // ACC X
                 else if ($probe['probenumber'] == '7') ; // ACC Y
                 else if ($probe['probenumber'] == '8') ; // ACC Z
-                else if ($probe['probenumber'] == '9') $result['button_pressed'] = trim($probe['value']); // Button Pressed
-                else if ($probe['probenumber'] == '10') $result['temperature'] = trim($probe['value']); // Temperature
-                else if ($probe['probenumber'] == '11') $result['rh'] = trim($probe['value']); // Relative Humidity
+                else if ($probe['probenumber'] == '9') $unit['latest']['button_pressed'] = trim($probe['value']); // Button Pressed
+                else if ($probe['probenumber'] == '10') $unit['latest']['temperature'] = trim($probe['value']); // Temperature
+                else if ($probe['probenumber'] == '11') $unit['latest']['rh'] = trim($probe['value']); // Relative Humidity
                 else if ($probe['probenumber'] == '12') ; // Unit Barro
-                else if ($probe['probenumber'] == '13') $result['lat'] = trim($probe['value']); // LAT
-                else if ($probe['probenumber'] == '14') $result['lng'] = trim($probe['value']); // LNG
-                else if ($probe['probenumber'] == '15') $result['vbat'] = trim($probe['value']); // Vbat
+                else if ($probe['probenumber'] == '13') $unit['latest']['lat'] = trim($probe['value']); // LAT
+                else if ($probe['probenumber'] == '14') $unit['latest']['lng'] = trim($probe['value']); // LNG
+                else if ($probe['probenumber'] == '15') $unit['latest']['vbat'] = trim($probe['value']); // Vbat
                 // else if ($probe['probenumber'] == '16') $result['tilt_relative'] = trim($probe['value']); // tilt relative
                 // else if ($probe['probenumber'] == '17') $result['tilt'] = trim($probe['value']); // tilt abs
-                else if ($probe['probenumber'] == '22') $result['pressure'] = trim($probe['value']); // Pressure
-                else if ($probe['probenumber'] == '23') $result['flow_velocity'] = trim($probe['value']); // Flow Velocity
+                else if ($probe['probenumber'] == '22') $unit['latest']['pressure'] = trim($probe['value']); // Pressure
+                else if ($probe['probenumber'] == '23') $unit['latest']['flow_velocity'] = trim($probe['value']); // Flow Velocity
                 //else if ($probe['probenumber'] == '21') $result['flowrate'] = trim($probe['value']); // Flow rate
             }
             
             foreach ($variables['result'] as $variable) {
-                if (trim($variable['variable']) == 'irrigation_state') {
-                    $result['irrigation_state'] = trim($variable['value']);
-                    $result['state_timestamp'] = $variable['dateupdated'];
-                } else if (trim($variable['variable']) == 'irrigation_endpoint') {
-                    $result['irrigation_endpoint'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_meters') {
-                    $result['irrigation_meters'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_portalstart') {
-                    $result['irrigation_portalstart'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_portalstop') {
-                    $result['irrigation_portalstop'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_endpoint') {
-                    $result['irrigation_endpoint'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_poi_1') {
-                    $result['irrigation_poi_1'] = trim($variable['value']);
-                } else if (trim($variable['variable']) == 'irrigation_poi_2') {
-                    $result['irrigation_poi_2'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_state') $unit['variable']['irrigation_state'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_endpoint') $unit['variable']['irrigation_endpoint'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_meters') $unit['variable']['irrigation_meters'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_portalstart') $unit['variable']['irrigation_portalstart'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_portalstop') $unit['variable']['irrigation_portalstop'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_endpoint') $unit['variable']['irrigation_endpoint'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_poi_1') $unit['variable']['irrigation_poi_1'] = trim($variable['value']);
+                if (trim($variable['variable']) == 'irrigation_poi_2') $unit['variable']['irrigation_poi_2'] = trim($variable['value']);
+            }
+
+            if($unit['timestampDifference'] < 5400) {
+                if(isset($unit['variable']['irrigation_state'])) {
+                    $unit['img'] = '/img/irrigation/state_'.$unit['variable']['irrigation_state'].'.png';
+                    $unit['markerimg'] = '/img/irrigation/marker_state_'.$unit['variable']['irrigation_state'].'.png';
+                    $unit['latest']['state'] = $unit['variable']['irrigation_state'];
+                } else {
+                    $unit['img'] = '/img/irrigation/state_1.png';
+                    $unit['markerimg'] = '/img/irrigation/marker_state_1.png';
+                    $unit['latest']['state'] = 1;
+                }
+            } else {
+                if(isset($unit['variable']['irrigation_state'])) {
+                    $unit['img'] = '/img/irrigation/state_0.png';
+                    $unit['markerimg'] = '/img/irrigation/marker_state_0.png';
+                    $unit['latest']['state'] = 0;
+                } else {
+                    $unit['img'] = '/img/irrigation/state.png';
+                    $unit['markerimg'] = '/img/irrigation/marker_state.png';
+                    $unit['latest']['state'] = -1;
                 }
             }
-            if (isset($result['irrigation_state'])){
-                if ($result['irrigation_state'] == 4 || $result['irrigation_state'] == 5 || $result['irrigation_state'] == 6 ) {
-                    $currentRun = Unit::getCurrentRun($unit['serialnumber']);
-                    if(isset($currentRun['irrigation_starttime']) && $currentRun['irrigation_starttime']) $result['run']['starttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($currentRun['irrigation_starttime']), DashboardController::convertTimestampToUserTimezone($currentRun['irrigation_starttime']));
-                    if(isset($currentRun['irrigation_endtime']) && $currentRun['irrigation_endtime']) $result['run']['endtime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($currentRun['irrigation_endtime']), DashboardController::convertTimestampToUserTimezone($currentRun['irrigation_endtime']));
 
+            if (isset($unit['latest']['state'])){
+                if (($unit['latest']['state'] == '4' || $unit['latest']['state'] == '5' || $unit['latest']['state'] == '6') && $unit['timestampDifference'] < 6000) {
+                    $currentRun = Unit::getCurrentRun($unit['serialnumber']);
                     $coordinates = array();
                     if (is_array($currentRun)) {
                         $index = 0;
@@ -281,7 +289,7 @@ class Unit extends Model
                             if (count($coordinates) > 15) {
                                 $distance_current = self::getDistance($coordinates[$coordinates_length-15]['lat'],$coordinates[$coordinates_length-15]['lng'], $coordinates[$coordinates_length-1]['lat'],$coordinates[$coordinates_length-1]['lng']);
                             }
-                            $result['starttime'] = self::hourMinuteUser($coordinates[0]['timestamp']);
+                            $unit['starttime'] = self::hourMinuteUser($coordinates[0]['timestamp']);
                             $starttime = strtotime($coordinates[0]['timestamp']);
                             $currenttime = strtotime($coordinates[$coordinates_length-1]['timestamp']);
                             if (count($coordinates) > 15) {
@@ -292,30 +300,25 @@ class Unit extends Model
                             $meter_time = $meter_sec * 3600.0;
                             if (is_nan($meter_time)) $meter_time = 0;
     
-                            if (isset($result['irrigation_endpoint']) && $result['irrigation_endpoint'] !== '0,0') {
+                            if (isset($unit['variable']['irrigation_endpoint']) && $unit['variable']['irrigation_endpoint'] !== '0,0') {
                                 $endpoint = explode(",",$result['irrigation_endpoint']);
                                 $distance_total = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $endpoint[0], $endpoint[1]);
-                                $result['total_meters'] = $distance_total;
+                                $unit['total_meters'] = $distance_total;
                                 $distance_diff = round($distance_total - $distance_to_active, 1);
-                                $result['irrigation_meters'] = $distance_diff;
+                                $unit['irrigation_meters'] = $distance_diff;
                                 $time_left = ( $distance_diff / $meter_time);
-                                $result['percent_done'] = (1 -  ($distance_diff / $distance_total)) * 100;
+                                $unit['percent_done'] = (1 -  ($distance_diff / $distance_total)) * 100;
                                 $var = $time_left*3600;
                                 $eta = self::timestampUserTimezone($coordinates[$coordinates_length-1]['timestamp'], $var);
-                                $result['eta'] = $eta;
+                                $unit['eta'] = $eta;
                             }
-                            $result['speed'] = round($meter_time,1);
+                            $unit['speed'] = round($meter_time,1);
                         }
                     }
                 }
             }
-
-            $result['timestamp'] = $unit['sensorunit_lastconnect'];
-            $result['serialnumber'] = $unit['serialnumber'];
-            $result['sensorname'] = $unit['sensorunit_location'];
-            array_push($latestIrrgationReadings, $result);
         }
-        return $latestIrrgationReadings;
+        return $units;
     }
     
 
