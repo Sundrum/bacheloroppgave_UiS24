@@ -43,9 +43,6 @@ class AdminController extends Controller {
     }
 
     public function setUser($userid, $customernumber) {
-
-        //$userid = $request->userid;
-        //$customernumber = $request->customernumber;
         Session::put('user_id',$userid);
         Session::put('customernumber', $customernumber);
         return Redirect::to('dashboard');

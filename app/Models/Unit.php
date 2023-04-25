@@ -555,8 +555,8 @@ class Unit extends Model
         $unittype = substr($serialnumber,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
             $data = Unit::getNewestIrrigationLog($serialnumber);
-            $starttime = $data['irrigation_starttime'] ?? 0;
-            $stoptime = $data['irrigation_endtime'] ?? 0;
+            $starttime = $data['irrigation_starttime'];
+            $stoptime = $data['irrigation_endtime'];
 
             
             $timestamp = str_replace('+00', '', $starttime);

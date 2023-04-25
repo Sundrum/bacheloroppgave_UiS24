@@ -23,10 +23,10 @@
                 <div class="col-md-12 mt-1">
                     <div class="card-rounded bg-white irrigationlist" id="{{$unit['serialnumber']}}">
                         <div class="row p-2">
-                            <div class="col-md-4 align-self-center">
+                            <div class="col-md-3 align-self-center">
                                 <img src="{{ asset($unit['markerimg'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
                             </div> 
-                            <div class="col-md-4 text-center">
+                            <div class="col-md-6 text-center">
                                 <div class="row">
                                     <div class="col-12 pt-2">
                                         <h4 class="text-center">{{ $unit['sensorunit_location'] ?? $unit['serialnumber']}}</h4>
@@ -44,8 +44,16 @@
                                             <span>Last connected @ {{$unit['timestampComment'] ?? ''}} </span>
                                         @endisset
                                     </div>
+ 
                                 </div>
-                            </div>           
+                            </div>
+                            @isset($unit['percent'])
+                                <div class="col-md-3 float-end">
+                                    <div class="semi-donut-full float-end" style="--percentage : {{$unit['percent'] ?? '0'}}; --fill: #00265a;">
+                                        {{$unit['percent'] ?? '0'}}
+                                    </div>   
+                                </div> 
+                            @endisset         
                         </div>
                     </div>
                 </div>
