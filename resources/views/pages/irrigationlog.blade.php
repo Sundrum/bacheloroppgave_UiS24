@@ -1,13 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css"
-/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
 
-<div class="container">
+<div class="">
   <div class="bg-white card-rounded p-3">
     <div id="calendar"></div>
   </div>
@@ -34,9 +31,7 @@
         </div>
       </div>
     </div>
-    <!-- END Modal -->
-  </body>
-</html>
+
 <script>
   setTitle('Calendar');
   
@@ -47,14 +42,12 @@
       url: "/irrigation/run",
       type: 'GET',
       success: function (data) {
-        const irrigationlog;
-        
+        let irrigationlog;
         for(let i in data) {
           console.log(data[i]);
-          irrigationlog[i] = { title: data[i].serialnumber, start: data[i].irrigation_starttime, end: data[i].irrigation_endtime };
+          // irrigationlog[i] = {title: data[i].serialnumber, start: data[i].irrigation_starttime, end: data[i].irrigation_endtime};
         }
 
-        console.log(irrigationlog);
         initCalendar(irrigationlog);
       },
       error: function (data) {

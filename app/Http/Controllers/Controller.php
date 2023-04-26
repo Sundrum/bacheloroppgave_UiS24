@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Unit;
 use App\Models\Sensorunit;
+use App\Models\Irrigationrun;
 use App\Models\Api;
 use Lang;
 use App\Models\Customer;
@@ -245,6 +246,11 @@ class Controller extends BaseController
     public function irrigationRuns() {
         $irrigationunits = Session::get('irrigation');
         return view('pages.irrigationlog');
+    }
+
+    public function getIrrigationRun() {
+        $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00179')->get();
+        return $irrigationruns;
     }
 
     /* Helper functions */
