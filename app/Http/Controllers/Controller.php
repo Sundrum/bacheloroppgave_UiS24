@@ -242,6 +242,11 @@ class Controller extends BaseController
         return Redirect::to('dashboard');
     }
 
+    public function irrigationRuns() {
+        $irrigationunits = Session::get('irrigation');
+        return view('pages.irrigationlog');
+    }
+
     /* Helper functions */
 
     public static function getUserTimezone() {
