@@ -247,7 +247,6 @@
 </div>
 @include('admin.customer.addunits')
 <script>
-var token = "{{ csrf_token() }}";
 setTitle(@json( __('admin.customer')));
 
 $(document).ready(function () {

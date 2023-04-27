@@ -249,7 +249,7 @@ class Controller extends BaseController
     }
 
     public function getIrrigationRun() {
-        $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00179')->get();
+        $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00096')->get();
         return $irrigationruns;
     }
 

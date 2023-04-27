@@ -4,103 +4,92 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
 
-<div class="">
+<div class="card">
   <div class="bg-white card-rounded p-3">
     <div id="calendar"></div>
   </div>
 </div>
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">
-              &times;
-            </button>
-            <h4 class="modal-title">Create Event</h4>
-          </div>
-          <div class="modal-body">
-            <input type="text" class="form-control" />
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">
-              Close
-            </button>
-          </div>
+ 
+<div class="modal fade" id="updateUnit">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bg-a-grey">
+      <div class="modal-body">
+        <div class="col-12">
+          <h2 class="modal-title" id="eventtitle"></h2>
         </div>
+        <p class="body" id="starttime"></p>
+        <p class="body" id="endtime"></p>
+        <button type="button" class="btn-7s" data-dismiss="modal"> Close </button>
       </div>
-    </div>
+  </div>
+</div>
 
 <script>
-  setTitle('Calendar');
   
-  getIrrigationLog();
-  
-  function getIrrigationLog() {    
-    $.ajax({
-      url: "/irrigation/run",
-      type: 'GET',
-      success: function (data) {
-        let irrigationlog;
-        for(let i in data) {
-          console.log(data[i]);
-          // irrigationlog[i] = {title: data[i].serialnumber, start: data[i].irrigation_starttime, end: data[i].irrigation_endtime};
-        }
-
-        initCalendar(irrigationlog);
-      },
-      error: function (data) {
-        errorMessage('Failed');
+setTitle('Calendar');
+getIrrigationLog();
+function getIrrigationLog() {    
+  $.ajax({
+    url: "/irrigation/run",
+    type: 'GET',
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    
+    success: function (data) { 
+      successMessage('Loading');
+      let logs = Array();
+      console.log(data[1]);
+      for(let i in data) {
+        let end
+        if(data[i].irrigation_endtime) 
+          end = new Date(data[i].irrigation_endtime).toDateString()
+        
+        else(!data[i].irrigation_endtime)
+          end = data[i].irrigation_endtime
+        
+          logs[i] = {
+          title: data[i].irrigation_run_id + ": " + data[i].serialnumber,
+          start: new Date(data[i].irrigation_starttime).toDateString(),
+          end: new Date(data[i].irrigation_endtime).toDateString(),
+          allDay: true,
+          color: 'blue',
+          textcolor: 'white'
+        };
       }
-    })
-  };
+      initCalendar(logs);
+      console.log(logs);
+    },
+    error: function (data) {
+        errorMessage('Failed');
+    }
+  });
+}
 
-  function initCalendar() {
-      $("#calendar").fullCalendar({
-        selectable: true,
-        selectHelper: true,
-        select: function () {
-          $("#myModal").modal("toggle");
-        },
-        header: {
-          left: "month, agendaWeek, agendaDay, list",
-          center: "title",
-          right: "prev, today, next",
-        },
-        buttonText: {
-          today: "Today",
-          month: "Month",
-          week: "Week",
-          day: "Day",
-          list: "List",
-        },
-        events: [
-          {
-            title: "Vanning",
-            start: "2023-06-03T09:00",
-            end: "2023-06-07T10:00",
-            color: "blue",
-            textColor: "white",
-          },
-          {
-            title: "Vanning",
-            start: "2023-04-18T13:00",
-            end: "2023-04-22T15:00",
-            color: "blue",
-            textColor: "white",
-          },
-        ],
-        // dayRender: function (date, cell) {
-        //   let newDate = $.fullCalendar.formatDate(date, "DD-MM-YYYY");
-        //   if (newDate == "XX-XX-XXXX") {
-        //     cell.css("background", "lightgrey");
-        //   } else if (newDate == "20-04-2023") {
-        //     cell.css("background", "grey");
-        //   }
-        // },
-      });
-  }
+function initCalendar(irrigationevents) {
+    $("#calendar").fullCalendar({
+      selectable: true,
+      timeFormat: 'h(:mm)t',
+      eventClick: function (calEvent, jsEvent, view) {
+        document.querySelector('#eventtitle').innerText = calEvent.title;
+        document.querySelector('#starttime').innerText = view.start;
+        document.querySelector('#endtime').innerText = jsEvent.end;
+        $('#updateUnit').modal('show');
+      },
+      header: {
+        left: "month, agendaWeek, agendaDay, list",
+        center: "title",
+        right: "prev, today, next",
+      },
+      buttonText: {
+        today: "Today",
+        month: "Month",
+        week: "Week",
+        day: "Day",
+        list: "List",
+      },
+      events: irrigationevents
+    });
+}
 </script>
 
 @endsection
