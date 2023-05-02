@@ -1,5 +1,6 @@
 @extends('layouts.demo')
 
+@section('content')
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -13,7 +14,7 @@
 </head>
 <body>
     <main id="app" class="py-4 bg-white">
-        <div class="container"></div>
+        <div class="container-fluid"></div>
     </main>
 </body>
 </html>
@@ -793,7 +794,7 @@ window.addEventListener("load", () =>
     renderGroupSensors()
     renderIrrigationMap() // Popup for irrigationSensorBtn
 
-    document.querySelector(".container").innerHTML += html
+    document.querySelector(".container-fluid").innerHTML += html
 })
 
 /* Collapsable sensor details */
@@ -836,7 +837,7 @@ document.addEventListener('click', (e) =>
 
     /* Fix irrigation sensors not filling container when info button is present */
 
-    .container > div
+    .container-fluid > div
     {
         width: 100%;
     }
@@ -879,3 +880,4 @@ document.addEventListener('click', (e) =>
     }
     
 </style>
+@endsection

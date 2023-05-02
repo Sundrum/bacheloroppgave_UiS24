@@ -35,7 +35,7 @@
                                 {{-- Sensor card --}}
                 
                                 <li class="bg-white row mx-1 py-1" data-id="{{ $sensor['serialnumber'] }}" data-toggle="collapse" data-target="#collapse{{$sensor['serialnumber']}}">
-                                    <div class="col-12 col-md-5">
+                                    <div class="col-12 col-md-5"  style="cursor: pointer;" >
                                         <div class="row">
                                             <span class="circle-@if($sensor['timestampDifference'] < 10800){{1}}@else{{0}}@endif"></span>
                                             <div class="col">
@@ -49,7 +49,7 @@
                                         </div>
                 
                                     </div>
-                                    <div class="col-12 col-md-7 text-end">
+                                    <div class="col-12 col-md-7 text-end"  style="cursor: pointer;" >
                                         @foreach ($sensor['probe'] as $probe)
                                             @isset($probe['header'])
                                                 @if($probe['value'] == '0' && $probe['unittype_id'] == 47)

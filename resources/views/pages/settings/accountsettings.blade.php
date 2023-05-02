@@ -1,11 +1,7 @@
-<div class="row mt-4 mb-4 justify-content-center">
-    <h3 class="text-center">@lang('settings.users')</h3>
-</div>
-
-<div class="row">
+<div class="row m-1">
     <div class="col-12 text-end">
         <button class="btn-7g" onclick="removeValues()" type="button" data-toggle="modal" data-target="#newUser">
-            + @lang('settings.newuser')
+            <strong>+ @lang('settings.newuser')</strong>
         </button>
     </div>
 </div>
