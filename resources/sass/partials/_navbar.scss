@@ -1,6 +1,7 @@
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
   border-bottom: 4px solid $primary;
+  cursor: pointer;
   color: $primary;
 }
 
@@ -358,4 +359,8 @@
   a:hover{
     background-color: darken($secondary,15%);
   }
+}
+
+.dropdown-item {
+  cursor: pointer;
 }
