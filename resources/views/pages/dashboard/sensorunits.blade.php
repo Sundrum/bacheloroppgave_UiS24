@@ -34,7 +34,7 @@
                                 <hr class="my-0">
                                 {{-- Sensor card --}}
                 
-                                <li class="bg-white row mx-1" data-id="{{ $sensor['serialnumber'] }}" data-toggle="collapse" data-target="#collapse{{$sensor['serialnumber']}}">
+                                <li class="bg-white row mx-1 py-1" data-id="{{ $sensor['serialnumber'] }}" data-toggle="collapse" data-target="#collapse{{$sensor['serialnumber']}}">
                                     <div class="col-12 col-md-5">
                                         <div class="row">
                                             <span class="circle-@if($sensor['timestampDifference'] < 10800){{1}}@else{{0}}@endif"></span>

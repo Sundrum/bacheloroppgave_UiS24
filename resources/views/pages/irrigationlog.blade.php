@@ -45,7 +45,7 @@ function getIrrigationLog() {
           end = new Date(data[i].irrigation_endtime).toDateString()
         
         else(!data[i].irrigation_endtime)
-          end = data[i].irrigation_endtime
+          end = data[i].irrigation_starttime
         
           logs[i] = {
           title: data[i].irrigation_run_id + ": " + data[i].serialnumber,

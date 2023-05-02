@@ -171,7 +171,7 @@ Route::get('/oldruns/{serial}/{days}', [App\Http\Controllers\MapController::clas
 Route::get('/run/{serial}', [App\Http\Controllers\MapController::class, 'oldRunMap']);
 Route::get('/map', [App\Http\Controllers\Controller::class, 'testmap']);
 Route::get('/irrigation/log',  [App\Http\Controllers\Controller::class, 'irrigationRuns']);
-Route::get('/irrigation/run',  [App\Http\Controllers\Controller::class, 'getIrrigationRun']);
+Route::get('/irrigation/run',  [App\Http\Controllers\Controller::class, 'getIrrigationEvents']);
 
 
 /***

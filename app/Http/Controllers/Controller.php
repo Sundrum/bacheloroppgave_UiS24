@@ -248,7 +248,7 @@ class Controller extends BaseController
         return view('pages.irrigationlog');
     }
 
-    public function getIrrigationRun() {
+    public function getIrrigationEvents() {
         $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00096')->get();
         return $irrigationruns;
     }

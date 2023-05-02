@@ -23,7 +23,6 @@
 </div>
 <script>
 setTitle('Edit Run ' + @json($run['log_id']));
-var token = "{{ csrf_token() }}";
 var positions = Array();
 var latlngs = Array();
 var bounds = new google.maps.LatLngBounds();
@@ -72,7 +71,7 @@ function getLatestRun(id) {
             console.log('irrigation_nozzleadjustment: ' + data.irrigation_nozzleadjustment);
             console.log('hidden: ' + data.hidden);
             console.log('portal_endpoint: ' + data.portal_endpoint);
-        
+
             startpoint = data.irrigation_startpoint.split(",");
             endpoint = data.irrigation_endpoint.split(",");
 
@@ -296,6 +295,7 @@ var infowindow = new google.maps.InfoWindow();
 
 function generateTable(data) {
     const dataSet = data;
+    console.log(data);
     var table = $('#logtable').DataTable({
         data: dataSet,
         pageLength: 25, // Number of entries

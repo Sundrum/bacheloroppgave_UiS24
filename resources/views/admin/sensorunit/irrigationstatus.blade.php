@@ -43,42 +43,6 @@
                     {{$variable['unit']['last_time'] ?? ''}}
                 </div>
             </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-6">
-                    Firmware
-                </div>
-                <div class="col-6">
-                    {{$variable['swversion']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-6">
-                    Bootloader
-                </div>
-                <div class="col-6">
-                    {{$variable['bootloader_version']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-6">
-                    IMEI
-                </div>
-                <div class="col-6">
-                    {{$variable['imei']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
-            <hr class="m-0">
-            <div class="row">
-                <div class="col-6">
-                    Idle Sleep Time
-                </div>
-                <div class="col-6">
-                    {{$variable['idle_sleep_time']['value'] ?? 'Ukjent'}}
-                </div>
-            </div>
             <hr class="mt-0">
             <h5 class="mb-2">Status Innstillinger</h5>
             @isset($variable['unit']['status'])
@@ -211,8 +175,6 @@
 
 </section>
 <script>
-var token = "{{ csrf_token() }}";
-
 document.getElementById("top-title").innerHTML = document.getElementById("serialnumber").innerHTML;
 
 $('#changeserial').click( function () {
