@@ -21,7 +21,7 @@
             <p class="text-left text-muted">More information will be displayed if you click on one of your sensors</p>
             @foreach ($irrigationunits as $unit)
                 <div class="col-md-12 mt-1">
-                    <div class="card-rounded bg-white irrigationlist" id="{{$unit['serialnumber']}}">
+                    <div class="card-rounded bg-white irrigationlist" id="{{$unit['serialnumber']}}" onclick="loadContent('/include/view_irrigation.php?unit={{$unit['serialnumber']}}')">
                         <div class="row p-2">
                             <div class="col-md-3 align-self-center">
                                 <img src="{{ asset($unit['markerimg'] ?? '/img/irrigation/marker_state_0.png') }}" width="50">
@@ -104,14 +104,16 @@ window.initMap = initMap;
 
 function addMarkers(activeLatLng){
     let bounds = new google.maps.LatLngBounds();
+    let counter = 0;
     const markers = activeLatLng.map((data, i) => {
-        if(data['latest']['lat'] && data['latest']['lng']) {
+        if(data['latest']['lat'] && data['latest']['lng'] && data['latest']['lat']) {
             const label = data['serialnumber'];
             const marker = new google.maps.Marker({
                 position: new google.maps.LatLng(data['latest']['lat'], data['latest']['lng']),
                 icon: new google.maps.MarkerImage(data['markerimg'], null, null, null, new google.maps.Size(27,42.75)),
                 map: map
             });
+            counter++;
             bounds.extend(marker.position);
             marker.id = "marker_"+data['serialnumber'];
             marker.addListener("click", () => {
@@ -131,10 +133,13 @@ function addMarkers(activeLatLng){
         }
         
     });
+
     map.setCenter(bounds.getCenter());
     map.fitBounds(bounds);
     // // Add a marker clusterer to manage the markers.
-    new MarkerClusterer({ map, markers });
+    if(counter > 3) {
+        new MarkerClusterer({ map, markers });
+    }
 
 }
 
