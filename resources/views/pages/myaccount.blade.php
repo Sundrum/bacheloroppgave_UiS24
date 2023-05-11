@@ -34,7 +34,7 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-12">
-                        <p>@lang('myaccount.myaccount_info')</p>
+                        {{-- <p>@lang('myaccount.myaccount_info')</p> --}}
                     </div>
                 </div>
                 <div class="card-body justify-content-center">
@@ -50,9 +50,9 @@
                                 </div>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="@lang('myaccount.username')" value="{{trim(Auth::user()->user_email)}}" required>
                             </div>
-                            <div class="card-rounded bg-7r mx-4 mt-0 mb-2 px-4 py-2">
+                            {{-- <div class="card-rounded bg-7r mx-4 mt-0 mb-2 px-4 py-2">
                                 <span class="">Not validated. You need to verify your email adress</span>
-                            </div>
+                            </div> --}}
                         </div>
     
                         <div class="form-group pb-2">
@@ -117,7 +117,7 @@
     let telhomeinput = $("#phone_home");
     let prefixhome = 47;
     let prefixwork = 47;
-
+    setTitle(@json(__('myaccount.myaccount')));
      // initialize
     intlTelInput(telworkInput.get(0), {
         hiddenInput: 'phone_work',

@@ -6,16 +6,16 @@
 
 <div class="card">
   <div class="bg-white card-rounded p-3">
-    <div id="calendar"></div>
+    <div id="calendar" style="color: black"></div>
   </div>
 </div>
- 
+
 <div class="modal fade" id="updateUnit">
   <div class="modal-dialog modal-lg">
     <div class="modal-content bg-a-grey">
       <div class="modal-body">
         <div class="col-12">
-          <h2 class="modal-title" id="eventtitle"></h2>
+          <h2 class="modal-title fc-title" id="eventtitle"></h2>
         </div>
         <p class="body" id="starttime"></p>
         <p class="body" id="endtime"></p>
@@ -45,15 +45,14 @@ function getIrrigationLog() {
           end = new Date(data[i].irrigation_endtime).toDateString()
         
         else(!data[i].irrigation_endtime)
-          end = data[i].irrigation_starttime
+          end = data[i].irrigation_endtime
         
           logs[i] = {
           title: data[i].irrigation_run_id + ": " + data[i].serialnumber,
           start: new Date(data[i].irrigation_starttime).toDateString(),
           end: new Date(data[i].irrigation_endtime).toDateString(),
-          allDay: true,
-          color: 'blue',
-          textcolor: 'white'
+          allDays: true,
+          color: 'KC Royals Blue',
         };
       }
       initCalendar(logs);
@@ -65,18 +64,22 @@ function getIrrigationLog() {
   });
 }
 
-function initCalendar(irrigationevents) {
+function initCalendar(irrigationEvents) {
     $("#calendar").fullCalendar({
       selectable: true,
       timeFormat: 'h(:mm)t',
+      select: function(start, end, allDays) {
+          $("#updateUnit").modal("toggle");
+      },
       eventClick: function (calEvent, jsEvent, view) {
         document.querySelector('#eventtitle').innerText = calEvent.title;
         document.querySelector('#starttime').innerText = view.start;
         document.querySelector('#endtime').innerText = jsEvent.end;
         $('#updateUnit').modal('show');
+        
       },
       header: {
-        left: "month, agendaWeek, agendaDay, list",
+        left: "month, agendaWeek",
         center: "title",
         right: "prev, today, next",
       },
@@ -84,10 +87,8 @@ function initCalendar(irrigationevents) {
         today: "Today",
         month: "Month",
         week: "Week",
-        day: "Day",
-        list: "List",
       },
-      events: irrigationevents
+      events: irrigationEvents
     });
 }
 </script>

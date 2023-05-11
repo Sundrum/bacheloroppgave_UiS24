@@ -114,7 +114,6 @@ Route::post('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandControl
 Route::post('/admin/queue/delete', [App\Http\Controllers\Admin\CommandController::class, 'deleteQueue']);
 
 Route::get('/admin/farmfield/{serial}', [App\Http\Controllers\Admin\DevelopmentController::class, 'farmfield']);
-Route::get('/admin/development/fleetmanagement', [App\Http\Controllers\Admin\DevelopmentController::class, 'fleetmanagement'])->name('fleetmanagment');
 
 Route::get('/select', [App\Http\Controllers\AdminController::class, 'select'])->name('selectuser');
 Route::get('/select/{userid}/{customernumber}', [App\Http\Controllers\AdminController::class, 'setUser']);
@@ -155,6 +154,7 @@ Route::post('/customeradmin/user/delete', [App\Http\Controllers\CustomerAdminCon
 Route::post('/customeradmin/user/update', [App\Http\Controllers\CustomerAdminController::class, 'updateUser']);
 Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
 
+
 /***
  * Support routes 
 ***/
@@ -172,6 +172,7 @@ Route::get('/run/{serial}', [App\Http\Controllers\MapController::class, 'oldRunM
 Route::get('/map', [App\Http\Controllers\Controller::class, 'testmap']);
 Route::get('/irrigation/log',  [App\Http\Controllers\Controller::class, 'irrigationRuns']);
 Route::get('/irrigation/run',  [App\Http\Controllers\Controller::class, 'getIrrigationEvents']);
+Route::get('/fleetmanagement', [App\Http\Controllers\MapController::class, 'fleetmanagement'])->name('fleetmanagment');
 
 
 /***

@@ -23,6 +23,16 @@ return [
     'everyday' => 'Hver dag',
     'endCase' => 'Avslutt sak',
 
+    'myaccount' => 'Min Konto',
+    'username' => 'E-post / Brukernavn',
+    'altemail' => 'Alternativ e-post',
+    'name'  => 'Navn',
+    'phonenumber' => 'Telefon',
+    'language' => 'Språk',
+    'savesettings' => 'Lagre innstillinger',
+
     'fleetmanagment' => 'Flåtestyring',
+    'somethingwentwrong' => 'Noe gikk galt. Data ble ikke lastet korrekt. Vennligst prøv igjen.',
+
 
 ];

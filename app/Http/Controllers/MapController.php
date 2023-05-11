@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Unit;
+use App\Http\Controllers\DashboardController;
+
 use DateTime;
 
 class MapController extends Controller {
@@ -170,6 +172,17 @@ class MapController extends Controller {
         $data = Unit::setPoint($serial, $point_id, $latlng, $distance);
         
         return $data;
+    }
+
+    public function fleetmanagement() {
+        $irrigationunits = Unit::getLatestIrrigation();
+        foreach($irrigationunits as &$unit) {
+            $unit['currentRun'] = Unit::getNewestIrrigationLog($unit['serialnumber']);
+            if(isset($unit['currentRun']['irrigation_starttime']) && $unit['currentRun']['irrigation_starttime']) $unit['currentRun']['starttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['currentRun']['irrigation_starttime']), DashboardController::convertTimestampToUserTimezone($unit['currentRun']['irrigation_starttime']));
+            if(isset($unit['currentRun']['irrigation_endtime']) && $unit['currentRun']['irrigation_endtime']) $unit['currentRun']['endtime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['currentRun']['irrigation_endtime']), DashboardController::convertTimestampToUserTimezone($unit['currentRun']['irrigation_endtime']));
+
+        }
+        return view('pages.fleetmanagement', compact('irrigationunits'));
     }
 
     public static function daysSince($starttime, $now) {

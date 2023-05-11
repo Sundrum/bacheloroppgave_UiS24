@@ -293,9 +293,20 @@ class DashboardController extends Controller
                 } else {
                     $probe['header'] = number_format($probe['value'], $probe['unittype_decimals']) . ' ' . trim($probe['unittype_shortlabel']);
                     $upper = Sensorprobevariable::select('value')->where('serialnumber', $probe['serialnumber'])->where('variable', 'sensorprobe_upper_threshold')->where('sensorprobe_number', $probe['probenumber'])->first();
-                    $probe['upperthreshold'] = round($upper->value ?? 100, $probe['unittype_decimals']);
+                    if(isset($upper->value) && $upper->value) {
+                        $probe['upperthreshold'] = round((float)$upper->value, $probe['unittype_decimals']);
+                    } else {
+                        $probe['upperthreshold'] = 100;
+                    }
+
                     $lower = Sensorprobevariable::select('value')->where('serialnumber', $probe['serialnumber'])->where('variable', 'sensorprobe_lower_threshold')->where('sensorprobe_number', $probe['probenumber'])->first();
-                    $probe['lowerthreshold'] = round($lower->value ?? 0, $probe['unittype_decimals']);
+
+                    if(isset($lower->value) && $lower->value) {
+                        $probe['lowerthreshold'] = round($lower->value, $probe['unittype_decimals']);
+                    } else {
+                        $probe['lowerthreshold'] = 0;
+                    }
+
                     $probe['percent'] = self::calculatePercent($probe['value'],  $probe['lowerthreshold'], $probe['upperthreshold']);
                 }
             } 
@@ -368,7 +379,11 @@ class DashboardController extends Controller
         }
 
         $max_percent = (($max/$min)*$max) - $max;
-        return abs((((($value/$min)*$max)-$max) / $max_percent) * 100);
+        $result = abs((((($value/$min)*$max)-$max) / $max_percent) * 100);
+        
+        if($result < 0)  return 0;
+        else if ($result > 100) return 100;
+        else return $result;
     }
 
 }

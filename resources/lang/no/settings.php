@@ -8,6 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    'customersetup' => 'Kunde innstillinger',
     'generalsettings' => 'Generelle Innstillinger',
     'sensorsettings' => 'Sensor Innstillinger',
     'generalsetup' => 'Generelt Oppsett',

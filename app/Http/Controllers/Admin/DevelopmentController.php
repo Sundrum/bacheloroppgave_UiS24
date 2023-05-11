@@ -27,17 +27,6 @@ class DevelopmentController extends Controller
         return view('admin.development.graph');
     }
 
-    public function fleetmanagement() {
-        $irrigationunits = Unit::getLatestIrrigation();
-        foreach($irrigationunits as &$unit) {
-            $unit['currentRun'] = Unit::getNewestIrrigationLog($unit['serialnumber']);
-            if(isset($unit['currentRun']['irrigation_starttime']) && $unit['currentRun']['irrigation_starttime']) $unit['currentRun']['starttime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['currentRun']['irrigation_starttime']), DashboardController::convertTimestampToUserTimezone($unit['currentRun']['irrigation_starttime']));
-            if(isset($unit['currentRun']['irrigation_endtime']) && $unit['currentRun']['irrigation_endtime']) $unit['currentRun']['endtime'] = DashboardController::getTimestampComment(DashboardController::getTimestampDifference($unit['currentRun']['irrigation_endtime']), DashboardController::convertTimestampToUserTimezone($unit['currentRun']['irrigation_endtime']));
-
-        }
-        return view('admin.development.fleetmanagement', compact('irrigationunits'));
-    }
-
 
     public function productionLog() {
         return view('admin.development.productionlog');
