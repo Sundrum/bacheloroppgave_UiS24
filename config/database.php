@@ -56,7 +56,7 @@ return [
             'port' => env('DB_PORT', '5432'),
             'database' => 'sensors',
             'username' => env('DB_USERNAME', 'admin_db'),
-            'password' => env('DB_PASSWORD', 'onesnes78'),
+            'password' => env('DB_PASSWORD_2', 'onesnes78'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
