@@ -128,6 +128,7 @@ Route::post('/admin/dev/data', [App\Http\Controllers\Development\MapController::
  * Dashboard routes
 ***/
 Route::get('/', [App\Http\Controllers\Controller::class, 'dashboard'])->name('dashboard');
+Route::get('/home', [App\Http\Controllers\Controller::class, 'dashboard']);
 Route::get('/dashboard', [App\Http\Controllers\Controller::class, 'dashboard']);
 
 Route::post('/setorder', [App\Http\Controllers\DashboardController::class, 'setOrder'])->name('setorder');

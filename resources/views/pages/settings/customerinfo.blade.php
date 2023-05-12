@@ -2,8 +2,8 @@
     <div class="col-sx-12 col-md-10 col-lg-8 col-xl-6 offset-md-1 offset-lg-2 offset-xl-3">
         <div class="card-rounded bg-white p-3 my-5">
             <div class="row justify-content-center mb-2">
-                <div class="icon-card icon-color">
-                    <i class="fas fa-cogs fa-3x icon-color"></i>
+                <div class="icon-card" style="padding: 20px;">
+                    <i class="fas fa-cog fa-3x icon-color"></i>
                 </div>
             </div>
             <div class="row text-center">

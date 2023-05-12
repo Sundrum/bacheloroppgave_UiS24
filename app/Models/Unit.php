@@ -301,7 +301,7 @@ class Unit extends Model
                             if (is_nan($meter_time)) $meter_time = 0;
     
                             if (isset($unit['variable']['irrigation_endpoint']) && $unit['variable']['irrigation_endpoint'] !== '0,0') {
-                                $endpoint = explode(",",$result['irrigation_endpoint']);
+                                $endpoint = explode(",",$unit['variable']['irrigation_endpoint']);
                                 $distance_total = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $endpoint[0], $endpoint[1]);
                                 $unit['total_meters'] = $distance_total;
                                 $distance_diff = round($distance_total - $distance_to_active, 1);

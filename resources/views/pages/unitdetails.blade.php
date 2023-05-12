@@ -35,7 +35,8 @@
   <div class="col-md-6">
     <div class="row card-rounded bg-white mx-1">
       <h3 class="p-2">Gjennomsnitt på 7 dager</h3>
-      @if(isset($unit['probes']) && count($unit['probes']) > 0)
+      <p> Kommer snart! </p>
+      {{-- @if(isset($unit['probes']) && count($unit['probes']) > 0)
         @foreach($unit['probes'] as $probe)
           @isset($probe['header'])
             <div class="col">
@@ -46,11 +47,9 @@
             </div>
             <div class="row">
               <div class="col-6">
-                {{-- MIN VALUE --}}
                 {{$probe['lowerthreshold'] ?? ''}}
               </div>
               <div class="col-6">
-                {{-- Max VALUE --}}
                 {{$probe['upperthreshold'] ?? ''}}
               </div>
             </div>
@@ -58,7 +57,7 @@
           </div>
           @endisset
         @endforeach
-      @endif
+      @endif --}}
     </div>
   </div>
 </div>

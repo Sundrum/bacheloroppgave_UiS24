@@ -72,7 +72,7 @@ class ForgotPasswordController extends Controller
             Mail::send(['html' => 'email.forgotpassword'], $data, function($message) use ($email, $name)
             {
                 $message->from(env('MAIL_FROM_ADDRESS', 'no-replay@portal.7sense.no'), env('MAIL_FROM_NAME', '7Sense Portal'));
-                $message->to($email, $name)->subject('Test mail');
+                $message->to($email, $name)->subject('Forgot password');
             });
 
             $message = 'E-mail has been sent, please follow the link in the mail';

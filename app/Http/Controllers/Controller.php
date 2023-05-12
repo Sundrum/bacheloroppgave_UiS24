@@ -228,7 +228,7 @@ class Controller extends BaseController
                 
                 $irrigationrun = Unit::getNewestIrrigationLog($serial);
                 if(isset($phone_lat_lng)) {
-                    return view('pages.map')->with('serial', $serial)->with('phone_lat_lng', $phone_lat_lng)->with('irrigationrun', $irrigationrun)->with('variables', $result)->with('data', $sorted);
+                    return view('pages.map')->with('serial', $serial)->with('phone_lat_lng', $phone_lat_lng)->with('irrigationrun', $irrigationrun)->with('variables', $variables)->with('data', $sorted);
                 } else {
                     if(isset($message)) {
                         return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted)->with('message', $message);

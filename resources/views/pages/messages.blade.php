@@ -2,6 +2,9 @@
 
 @section('content')
 <script>setTitle(@json(__('general.messages')))</script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 
 <div class="row">
     <div class="col-12 card-rounded bg-white px-3 py-2">
@@ -30,6 +33,10 @@ $(document).ready(function () {
             data: dataSet,
             order: 0,
             pageLength: 25, // amount of items
+            columnDefs : [
+            { 
+                responsivePriority: 2, targets: 3 }
+            ],
             responsive: true, // hover
             columns: [
                 { title: "Time", orderable: false, searchable: true},

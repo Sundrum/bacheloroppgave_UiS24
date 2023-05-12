@@ -23,19 +23,19 @@
             <div class="modal-body">
                 <table>
                     <tr class="spaceUnder">
-                        <td> <img src="../img/irr_idle_yellow.png" class="float-left"> </td>
+                        <td> <img src="../img/irrigation/state_0.png" class="float-left" width="50"> </td>
                         <td class="tdspace"> @lang('dashboard.nocontact')</td>
                     </tr>
                     <tr class="spaceUnder">
-                        <td> <img src="../img/irr_idle_green.png" class="float-left"> </td>
+                        <td> <img src="../img/irrigation/state_1.png" class="float-left"  width="50"> </td>
                         <td class="tdspace"> @lang('dashboard.sleepmode')</td>
                     </tr>
                     <tr class="spaceUnder">
-                        <td> <img src="../img/irr_settling_green.png" class="float-left"> </td>
+                        <td> <img src="../img/irrigation/state_4.png" class="float-left"  width="50"> </td>
                         <td class="tdspace"> @lang('dashboard.waitingforwater')</td>
                     </tr>
                     <tr class="spaceUnder">
-                        <td> <img src="../img/irr_irrigation_green.png" class="float-left"> </td>
+                        <td> <img src="../img/irrigation/state_5.png" class="float-left"  width="50"> </td>
                         <td class="tdspace"> @lang('dashboard.irrigationmode')</td>
                     </tr>
                     <tr class="spaceUnder">
