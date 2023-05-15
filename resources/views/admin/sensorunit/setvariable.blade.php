@@ -10,24 +10,28 @@
         <div class="row justify-content-center mb-3">
             <div class="col-12">
                 <div class="row pl-2 pr-2">
-                    <div class="col-6 card card-rounded bg-grey">
-                        <div class="row justify-content-center mt-2 mb-2">
-                            <div class="col-12 text-center">
-                                <h5>Settling</h5>
-                                <hr>
-                            </div>
-                            <div class="col-4 text-center">
-                                <button class="btn-secondary-filled" id="vibration_settling"><strong>Vibration</strong></button>
-                            </div>
-                            <div class="col-4 text-center">
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="vibration"><strong>Vibration</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="reset_tilt"><strong>Reset Tilt</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="state_idle"><strong>Set State IDLE</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="state_presettling"><strong>Set State Pre-Settling</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="send_packet"><strong>Send packet</strong></button>
+                    </div>
+                            {{-- <div class="col-4 text-center">
                                 <button class="btn-secondary-filled" id="pressure_settling"><strong>Pressure</strong></button>
                             </div>
                             <div class="col-6 text-center mt-2">
                                 <button class="btn-secondary-filled" id="settling_idle"><strong>Time to Idle,Irrigation</strong></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 card card-rounded bg-grey">
+
+                    {{-- <div class="col-6 card card-rounded bg-grey">
                         <div class="row justify-content-center mt-2 mb-2">
                             <div class="col-12 text-center">
                                 <h5>Irrigation</h5>
@@ -42,14 +46,14 @@
                             <div class="col-4 text-center">
                                 <button class="btn-secondary-filled" id="tilt_irrigation"><strong>Tilt</strong></button>
                             </div>
-                            {{-- <div class="col-6 text-center mt-2">
+                            <div class="col-6 text-center mt-2">
                                 <button class="btn-secondary-filled" id="gnss_irrigation"><strong>GNSS</strong></button>
                             </div>
                             <div class="col-6 text-center mt-2">
                                 <button class="btn-secondary-filled" id="battery_irrigation"><strong>Battery</strong></button>
-                            </div> --}}
+                            </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -67,7 +71,9 @@
             <input type="hidden" name="serialnumber" value="{{$variable['unit']['serialnumber']}}">
         
             <div class="row justify-content-center">
-                <button type="submit" class="btn-primary-filled"><strong>Send Command</strong></button>
+                <div class="col-12 text-center" >
+                    <button type="submit" class="btn-7s px-5"><strong>Send Command</strong></button>
+                </div>
             </div>
         </form>
         
@@ -75,48 +81,48 @@
 </div>
 
 <script>
-$('#vibration_settling').click( function () {
+$('#vibration').click( function () {
     var cmd = $('#commandline').val()
     if(cmd) {
-        $('#commandline').val(cmd + ';7,1,nan,0.100');
+        $('#commandline').val(cmd + ';10,19,0.15;10,25,0.1');
     } else {
-        $('#commandline').val('7,1,nan,0.100');
+        $('#commandline').val('10,19,0.15;10,25,0.1');
     }
 });
 
-$('#pressure_settling').click( function () {
+$('#reset_tilt').click( function () {
     var cmd = $('#commandline').val()
     if(cmd) {
-        $('#commandline').val(cmd + ';7,4,nan,2.000');
+        $('#commandline').val(cmd + ';3');
     } else {
-        $('#commandline').val('7,4,nan,2.000');
+        $('#commandline').val('3');
     }
 });
 
-$('#settling_idle').click( function () {
+$('#state_idle').click( function () {
     var cmd = $('#commandline').val()
     if(cmd) {
-        $('#commandline').val(cmd + ';6,600,2700');
+        $('#commandline').val(cmd + ';state_id,1');
     } else {
-        $('#commandline').val('6,600,2700');
+        $('#commandline').val('state_id,1');
     }
 });
 
-$('#vibration_irrigation').click( function () {
+$('#state_presettling').click( function () {
     var cmd = $('#commandline').val()
     if(cmd) {
-        $('#commandline').val(cmd + ';8,1,0,nan,0.100');
+        $('#commandline').val(cmd + ';state_id,4');
     } else {
-        $('#commandline').val('8,1,0,nan,0.100');
+        $('#commandline').val('state_id,4');
     }
 });
 
-$('#pressure_irrigation').click( function () {
+$('#send_packet').click( function () {
     var cmd = $('#commandline').val()
     if(cmd) {
-        $('#commandline').val(cmd + ';8,4,0,nan,2.000');
+        $('#commandline').val(cmd + ';send_status');
     } else {
-        $('#commandline').val('8,4,0,nan,2.000');
+        $('#commandline').val('send_status');
     }
 });
 

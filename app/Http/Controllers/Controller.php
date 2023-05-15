@@ -193,50 +193,55 @@ class Controller extends BaseController
         }
         $acc = request()->accuracy;
         $irrigationunits = Session::get('irrigation');
-        foreach ($irrigationunits as $unit) {
-            $owner = in_array($serial, $unit);
-            if ($owner == true) {
-                $data = Unit::getCurrentRun($serial);
-                $variables = Unit::getVariables($serial);
-                $state = 0;
-                foreach ($variables['result'] as $variable) {
-                    $variables[$variable['variable']] = trim($variable['value']);
-                }
-                $sorted = array();
-                if (is_array($data)) {
-                    foreach ($data as $interval) {
-                        if ($interval['lat'] != 0 && $interval['lng'] != 0) {
-                            $sorted[] = $interval; 
-                        }
-                    }    
-                }
-                if(!isset($phone_lat_lng)) {
-                    if (isset($result['irrigation_state'])) {
-                        $state = $result['irrigation_state'];
-                        if (count($sorted) == 0 && $state == 2) {
-                            $message = '1E: Waiting for first GPS Position.';
-                        } else if (count($sorted) == 0 && $state == 1) {
-                            $message = '0E: Press the button or start the sensor remote.';
-                        } else if (count($sorted) == 0 && $state == 2 && $result['irrigation_endpoint'] == '0,0') {
-                            $message = '2E: Waiting for first GPS Position.';
-                        } 
-                        //else if (count($sorted) == 0 && $state == 3) {
-                        //     return view('pages.map')->with('serial', $serial)->with('errormessage', 'Something went wrong, please restart the sensor by pushing the button.');
-                        // }
+        if(is_array($irrigationunits)) {
+            foreach ($irrigationunits as $unit) {
+                $owner = in_array($serial, $unit);
+                if ($owner == true) {
+                    $data = Unit::getCurrentRun($serial);
+                    $variables = Unit::getVariables($serial);
+                    $state = 0;
+                    foreach ($variables['result'] as $variable) {
+                        $variables[$variable['variable']] = trim($variable['value']);
                     }
-                }
-                
-                $irrigationrun = Unit::getNewestIrrigationLog($serial);
-                if(isset($phone_lat_lng)) {
-                    return view('pages.map')->with('serial', $serial)->with('phone_lat_lng', $phone_lat_lng)->with('irrigationrun', $irrigationrun)->with('variables', $variables)->with('data', $sorted);
-                } else {
-                    if(isset($message)) {
-                        return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted)->with('message', $message);
+                    $sorted = array();
+                    if (is_array($data)) {
+                        foreach ($data as $interval) {
+                            if ($interval['lat'] != 0 && $interval['lng'] != 0) {
+                                $sorted[] = $interval; 
+                            }
+                        }    
+                    }
+                    if(!isset($phone_lat_lng)) {
+                        if (isset($result['irrigation_state'])) {
+                            $state = $result['irrigation_state'];
+                            if (count($sorted) == 0 && $state == 2) {
+                                $message = '1E: Waiting for first GPS Position.';
+                            } else if (count($sorted) == 0 && $state == 1) {
+                                $message = '0E: Press the button or start the sensor remote.';
+                            } else if (count($sorted) == 0 && $state == 2 && $result['irrigation_endpoint'] == '0,0') {
+                                $message = '2E: Waiting for first GPS Position.';
+                            } 
+                            //else if (count($sorted) == 0 && $state == 3) {
+                            //     return view('pages.map')->with('serial', $serial)->with('errormessage', 'Something went wrong, please restart the sensor by pushing the button.');
+                            // }
+                        }
+                    }
+                    
+                    $irrigationrun = Unit::getNewestIrrigationLog($serial);
+                    if(isset($phone_lat_lng)) {
+                        return view('pages.map')->with('serial', $serial)->with('phone_lat_lng', $phone_lat_lng)->with('irrigationrun', $irrigationrun)->with('variables', $variables)->with('data', $sorted);
                     } else {
-                        return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted);
+                        if(isset($message)) {
+                            return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted)->with('message', $message);
+                        } else {
+                            return view('pages.map', compact('variables', 'irrigationrun', 'serial'))->with('data', $sorted);
+                        }
                     }
                 }
             }
+        } else {
+            Session::flash('errormessage', 'Something went wrong. Refresh and try again.');
+            return Redirect::to('dashboard');
         }
         //return 'Not premissions to set endpoint for this sensor';
         Session::flash('errormessage', 'You do not have premissions to view this unit');

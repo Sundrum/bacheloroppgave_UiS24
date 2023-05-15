@@ -2,7 +2,7 @@
     <div class="row justify-content-center my-md-4 my-1">
         <div class="row">
             <div class="col-12">
-                <p class="text-white text-center"> We use essential cookies to make our site work. By clicking "Accept" or "Login", you agree to our website's cookie use as described in our <a href="https://7sense.no/privacy" target="_blank" class="text-white"> <u>Cookie Policy</u></a>.</p>
+                <p class="text-white text-center"> We use essential cookies to make our site work. By clicking "Accept" or "Login", you agree to our website's cookie use as described in our <a href="#" class="text-white"> <u>Cookie Policy</u></a>.</p>
             </div>
             <div class="col-12 text-center">
                 <button type="button" onclick="removeCookies()" class="btn-7g">Accept</button>

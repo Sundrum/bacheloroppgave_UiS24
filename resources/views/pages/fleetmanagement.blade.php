@@ -47,13 +47,15 @@
  
                                 </div>
                             </div>
-                            @isset($unit['percent'])
-                                <div class="col-md-3 float-end">
-                                    <div class="semi-donut-full float-end" style="--percentage : {{$unit['percent'] ?? '0'}}; --fill: #00265a;">
-                                        {{$unit['percent'] ?? '0'}}
-                                    </div>   
-                                </div> 
-                            @endisset         
+                            @if(Auth::user()->user_id == 153)
+                                @isset($unit['percent_done'])
+                                    <div class="col-md-3 float-end">
+                                        <div class="semi-donut-full" style="--percentage : {{round($unit['percent_done'],1) ?? '0'}}; --fill: #00265a;">
+                                            {{round($unit['percent_done'],0) ?? '0'}}
+                                        </div>   
+                                    </div> 
+                                @endisset         
+                            @endif
                         </div>
                     </div>
                 </div>

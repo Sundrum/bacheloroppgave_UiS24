@@ -18,19 +18,19 @@
     </span>
     @auth
     <ul class="dropdown-menu bg-7g">
-      <a onclick="loadContent('{{route('dashboard')}}')" class="dropdown-item">
+      <a onclick="loadContent('{{route('dashboard')}}')" href="{{route('dashboard')}}" class="dropdown-item">
         <i class="fas fa-desktop"></i> @lang('navbar.dashboard')
       </a>
-      <a onclick="loadContent('{{route('getGraph')}}')" class="dropdown-item">
+      <a onclick="loadContent('{{route('getGraph')}}')" href="{{route('getGraph')}}"  class="dropdown-item">
         <i class="fas fa-chart-bar"></i> @lang('navbar.graph')
       </a>
-      <a onclick="loadContent('{{route('messages')}}')" class="dropdown-item">
+      <a onclick="loadContent('{{route('messages')}}')" href="{{route('messages')}}"  class="dropdown-item">
         <i class="fas fa-envelope"></i> @lang('navbar.messages')
       </a>
-      <a onclick="loadContent('{{route('myaccount')}}')" class="dropdown-item">
+      <a onclick="loadContent('{{route('myaccount')}}')" href="{{route('myaccount')}}"  class="dropdown-item">
         <i class="fas fa-user"></i> @lang('navbar.myaccount')
       </a>
-      <a onclick="loadContent('{{route('settings')}}')" class="dropdown-item">
+      <a onclick="loadContent('{{route('settings')}}')" href="{{route('settings')}}"  class="dropdown-item">
         <i class="fas fa-cog"></i> @lang('navbar.settings')
       </a>
       <hr class="my-0 mx-3">
@@ -41,10 +41,10 @@
       <form id="logout-form" action="/logout" method="POST" style="display: none;"> @csrf </form>
       @if (Auth::user()->roletype_id_ref > 80)
         <hr class="my-0 mx-3">
-        <a onclick="loadContent('{{route('selectuser')}}')" class="dropdown-item">
+        <a onclick="loadContent('{{route('selectuser')}}')" href="{{route('selectuser')}}" class="dropdown-item">
           <i class="fas fa-sync-alt"></i> @lang('navbar.selectuser')
         </a>
-        <a href="{{route('admin')}}" class="dropdown-item">
+        <a onclick="loadContent('{{route('admin')}}')" href="{{route('admin')}}" class="dropdown-item">
           <i class="fas fa-lock"></i> @lang('navbar.admin')
         </a>
       @endif

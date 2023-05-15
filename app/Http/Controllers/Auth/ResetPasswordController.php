@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use App\User;
-use App\PasswordReset;
+use App\Models\User;
+use App\Models\PasswordReset;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -49,7 +49,7 @@ class ResetPasswordController extends Controller
         $passwordconfirm = $request->input('password_confirmation');
 
         if ($password == $passwordconfirm) {
-            $passwordreset = PasswordReset::where('user_email',$request->input('email'))->first();
+            $passwordreset = PasswordReset::where('user_email',$email)->first();
             if ($passwordreset) {
                 $current_date_time = Carbon::now()->toDateTimeString();
                 $currenttime = strtotime($current_date_time);

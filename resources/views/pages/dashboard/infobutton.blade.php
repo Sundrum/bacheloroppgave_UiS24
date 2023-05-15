@@ -6,7 +6,7 @@
             data-toggle="modal" onclick="showInfoBox();" data-target="#myInfowindow">
         </i>
         @if(count(Session::get('irrigation')) > 1)
-            <button class="btn-7g float-end" onclick="loadContent('{{route('fleetmanagment')}}')"><strong>@lang('general.fleetmanagment')</strong></button>
+            <a onclick="loadContent('{{route('fleetmanagment')}}')" href="{{route('fleetmanagment')}}"><button class="btn-7g float-end" href=""><strong>@lang('general.fleetmanagment')</strong></button></a>
         @endif
     </div>
 </div>

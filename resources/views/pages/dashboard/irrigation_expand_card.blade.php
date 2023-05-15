@@ -126,7 +126,7 @@
                 </div>
             @endif
             <div class="col text-center">
-                <form action="/unit/{{trim($irrUnit['serialnumber'])}}"><input type="submit" class="btn-7s float-right" value="@lang('dashboard.openmap')"></form>
+                <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'><button class="btn-7s float-right">@lang('dashboard.openmap')</button></a>
             </div>
             <div class="col text-center">
                 @if(isset($irrUnit['water_lost']) && $irrUnit['water_lost']) <span class="text-r"><strong>Waterlost</strong></span> @endif

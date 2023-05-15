@@ -2,9 +2,14 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
 
 @section('content')
+
+<script>
+  setTitle(@json($unit->sensorunit_location ?? $serial));
+</script>
+
 <h2 id="name_unit" style="display: none;">{{$unit->sensorunit_location ?? $serial}} - ({{$serial}})</h2>
 <div class="row justify-content-center">
-  <div class="col-md-6 col-sm-12 card-rounded bg-grey mt-2">
+  <div class="col-md-6 col-sm-12 card-rounded bg-white mt-2">
     <div class="row">
       <div class="col">
         <h4 class="text-center mt-2 mb-2">
@@ -57,7 +62,7 @@
 <input type="hidden" name="lat" id="lat" value="{{$unit['lat'] ?? ''}}">
 <input type="hidden" name="lng" id="lng" value="{{$unit['lng'] ?? ''}}">
 <div class="row justify-content-center mt-3">
-  <div class="col-md-12 card card-rounded bg-grey">
+  <div class="col-md-12 card card-rounded bg-white">
     <div class="row mb-3 mt-3">
         <div class="col">
           <div class="col-xs-4">

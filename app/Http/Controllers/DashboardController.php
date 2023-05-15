@@ -302,7 +302,7 @@ class DashboardController extends Controller
                     $lower = Sensorprobevariable::select('value')->where('serialnumber', $probe['serialnumber'])->where('variable', 'sensorprobe_lower_threshold')->where('sensorprobe_number', $probe['probenumber'])->first();
 
                     if(isset($lower->value) && $lower->value) {
-                        $probe['lowerthreshold'] = round($lower->value, $probe['unittype_decimals']);
+                        $probe['lowerthreshold'] = round((float)$lower->value, $probe['unittype_decimals']);
                     } else {
                         $probe['lowerthreshold'] = 0;
                     }

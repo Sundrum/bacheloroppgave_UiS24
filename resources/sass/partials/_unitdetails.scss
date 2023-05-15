@@ -46,14 +46,14 @@
     width: 75px;
     height: 75px;
     border: 10px solid;
-    border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) var(--fill)
-      var(--fill);
+    border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) var(--fill) var(--percentage);
     position: absolute;
     border-radius: 50%;
     left: 0;
     top: 0;
     box-sizing: border-box;
     transform: rotate(calc(1deg * (-45 + var(--percentage) * 1.8)));
+    animation: fillAnimation 1s ease-in;
   }
 }
 
