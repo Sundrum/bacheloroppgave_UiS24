@@ -93,6 +93,11 @@ $(document).ready(function () {
                 defaultContent: "<i>NaN</i>" 
             },
             { 
+                title: "Bar",
+                data: "21",
+                defaultContent: "<i>NaN</i>" 
+            },
+            { 
                 title: "Vbat",
                 data: "15",
                 defaultContent: "<i>NaN</i>" 

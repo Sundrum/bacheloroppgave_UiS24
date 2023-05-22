@@ -232,7 +232,9 @@ class CustomerController extends Controller
         try { 
             $result = DB::connection('7sensor')->select('SELECT * FROM messages'); 
         } catch(\Illuminate\Database\QueryException $ex){ 
-            Log::info($ex->getMessage()); 
+            Log::info($ex->getMessage());
+            $string = 'CREATE DATABASE sensordata_'.$number.' WITH TEMPLATE=sensordata_template';
+            $result = DB::statement($string);
             // Note any method of class PDOException can be called on $ex.
         }
 
