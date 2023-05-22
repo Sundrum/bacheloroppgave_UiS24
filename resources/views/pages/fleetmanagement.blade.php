@@ -88,6 +88,7 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 59.390982, lng: 10.460590},
         mapTypeControl: true,
+        mapTypeId: 'satellite',
         zoom: 16,
         streetViewControl: false,
         tilt: 0,
