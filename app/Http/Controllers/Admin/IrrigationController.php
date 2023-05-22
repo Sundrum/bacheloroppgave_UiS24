@@ -91,7 +91,7 @@ class IrrigationController extends Controller
         $temp = array();
         if (isset($data) && is_array($data['result'])) {
             foreach ($data['result'] as $row) {
-                $temp[$row['timestamp']]['timestamp'] = self::convertToSortableDate($row['timestamp']);
+                $temp[$row['timestamp']]['timestamp'] = self::convertToSortableTimestamp($row['timestamp']);
                 $temp[$row['timestamp']][$row['probenumber']] = (float)$row['value'];
             }
         }
@@ -205,7 +205,7 @@ class IrrigationController extends Controller
         $result = array();
 
         foreach($api['result'] as $row) {
-            $result[$row['timestamp']]['timestamp'] = self::convertToSortableDate($row['timestamp']);
+            $result[$row['timestamp']]['timestamp'] = self::convertToSortableTimestamp($row['timestamp']);
             if($row['probenumber'] == 0) {
                 if($row['value']) {
                     $result[$row['timestamp']]['img'] = '<img src="/img/irrigation/state_'.$row['value'].'.png" width="30" height="30">';

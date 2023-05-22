@@ -71,6 +71,7 @@ Route::post('/admin/customer', [App\Http\Controllers\Admin\CustomerController::c
 Route::get('/admin/customer/edit/{id}', [App\Http\Controllers\Admin\CustomerController::class, 'getCustomer']);
 Route::get('/admin/customer/{id}', [App\Http\Controllers\Admin\CustomerController::class, 'getOverview']);
 Route::post('/admin/subscription', [App\Http\Controllers\Admin\CustomerController::class, 'customerSubscription']);
+Route::post('/admin/order/confirmation', [App\Http\Controllers\Admin\CustomerController::class, 'sendOrderInformation']);
 
 Route::get('/admin/unittypes', [App\Http\Controllers\AdminController::class, 'getUnittypes'])->name('unittype');
 Route::get('/admin/newunittype', [App\Http\Controllers\UnittypeController::class, 'newUnittype'])->name('newunittype');
@@ -206,7 +207,7 @@ Route::get('/verify/testmail', [App\Http\Controllers\Auth\VerificationController
 /*** 
  * E-mail 
 ***/
-//Route::get('/email', 'MailController@index');
+// Route::get('/email', [App\Http\Controllers\MailController::class, 'index']);
 //Route::post('/specific', 'MailController@specific');
 
 // Route::get('/dbsensorunit', 'TestController@dbtest');

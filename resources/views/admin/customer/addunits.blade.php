@@ -14,8 +14,10 @@
                 @csrf
                 <input type="hidden" name="customer_id_ref" value="{{$customer->customer_id}}">
                 <div class="row justify-content-center">
-                    <div id="sensorTable" class="input-group col">
-                        
+                    <div class="input-group row">
+                        <div id="sensorTable" class="col">
+                            
+                        </div>
                     </div>
 
                 </div>
@@ -27,11 +29,12 @@
 
                 <div class="row justify-content-center">
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary-filled"> Upload </button>
+                        <button type="submit" class="btn-7s"> Upload </button>
                     </div>
                 </div>
             </form>
         </div> 
+    </div>
     </div>
 </div>
 

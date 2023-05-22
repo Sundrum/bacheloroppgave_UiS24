@@ -28,6 +28,7 @@ function addOldRuns(){
                 strokeColor: '#a7c49d',
                 strokeOpacity: 0.8,
                 strokeWeight: 33,
+                zIndex: 2,
                 map: map
             });
     
@@ -46,6 +47,7 @@ function addOldRuns(){
                 strokeColor: '#fed16d',
                 strokeOpacity: 0.8,
                 strokeWeight: 33,
+                zIndex: 2,
                 map: map
             });
     

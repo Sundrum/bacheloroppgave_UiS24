@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+<script>setTitle('Sensorenhet');</script>
 <section class="">
     <div class="row">
         <div class="col-md-12">
@@ -11,9 +11,8 @@
     <div class="col-12">
         <div class="mt-3 mb-3">
             <div class="row">
-                <div class="@if(isset($unit))col-md-6 @else col-md-12 @endif card card-rounded">
-                    <h5 class="m-4 text-center">Sensorenhet</h5>
-                    <h5 class="text-center">{{$unit->serialnumber ?? ''}}</h5>
+                <div class="@if(isset($unit))col-md-6 @else col-md-12 @endif card card-rounded pt-2">
+                    <h5 class="text-center pt-2">{{$unit->serialnumber ?? ''}}</h5>
                     <div class="mt-3 mb-3">
                         <p>{{$unit->sensorunit_lastconnect ?? ''}}</p>
                         <form method="POST" name="userupdate" id="userupdate" action="{{route('updateSensorunit')}}">
@@ -56,11 +55,9 @@
                             </div>
                             <input type="hidden" id="sensorunit_id" name="sensorunit_id" value="{{$unit->sensorunit_id ?? ''}}">
                             <div class="form-row justify-content-center">
-                                <div class="col-2">
-                                    <button type="submit" id="userform" class="btn-primary-filled"> Lagre </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-danger btn justify-content-right" onclick="deleteSensorunit({{trim($unit->sensorunit_id)}})">Slett</button>
+                                <div class="col-12 text-center">
+                                    <button class="btn-7r col-5" onclick="deleteSensorunit({{trim($unit->sensorunit_id)}})">Slett</button>
+                                    <button type="submit" id="userform" class="btn-7g col-5"> Lagre </button>
                                 </div>
                             </div>
                           
@@ -86,8 +83,8 @@
     @endif --}}
 </section>
 
-<section class="container-fluid">
-        <div class="col-12 card card-rounded">
+<section class="row card card-rounded p-1">
+        <div class="col-12">
             <h5 class="mt-2 mb-2">Brukertilganger</h5>
             <div class="row">
                 <div class="col-4">
@@ -131,10 +128,10 @@
         </div>
 </section>
 <section>
-    <div class="row justify-content-center mt-3">
+    <div class="row card-rounded bg-white p-2 mt-3">
         <div class="col-md-12">
             <div class="col-12">
-                <div class="card card-rounded">
+                <div class="">
                     <div class="col-md-12 mt-3">
                         <div class="row">
                             <div class="col">
@@ -353,6 +350,8 @@ function goTo(id) {
         
             enabled: true,
             layout: 'vertical',
+            itemHiddenStyle: {"fontWeight": "normal","text-decoration": "none"},
+            itemStyle: {"fontWeight": "bold"},   
             floating: false,
             align: 'right',
             x: 10,
@@ -445,7 +444,7 @@ function goTo(id) {
     }
     // New delete sensor unit
     function deleteSensorunit(id) {
-      var confirmed = confirm('Vil du fjerne denne sensorenheten?');
+      var confirmed = confirm('Vil du fjerne denne sensorenheten? Slett aldri en sensorenhet.... med mindre du vet hvorfor.');
       if(confirmed) {
           $.ajax({
               url: "/admin/sensorunit/delete",

@@ -243,8 +243,6 @@ function refreshgraph()
     var probetype = document.getElementById("probetype");
     valgtsensortype = probetype.options[probetype.selectedIndex].value;
 
-    var projects = document.getElementById("projects");
-    valgtprojects = projects.options[projects.selectedIndex].value || null;
   
     seriesCounter=0;
     countnames=0;

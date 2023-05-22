@@ -276,7 +276,7 @@ class Unit extends Model
                     if (is_array($currentRun)) {
                         $index = 0;
                         foreach ($currentRun as $run) {
-                            if ($run['lat'] != 0 && $run['lng'] != 0) {
+                            if (isset($run['lat']) && $run['lat'] != 0 && isset($run['lng']) && $run['lng'] != 0) {
                                 $coordinates[$index] = $run;
                                 $index++;
                             }
@@ -308,6 +308,11 @@ class Unit extends Model
                                 $unit['irrigation_meters'] = $distance_diff;
                                 $time_left = ( $distance_diff / $meter_time);
                                 $unit['percent_done'] = (1 -  ($distance_diff / $distance_total)) * 100;
+                                if($unit['percent_done'] > 100) {
+                                    $unit['percent_done'] = 100;
+                                } else if ($unit['percent_done'] < 0) {
+                                    $unit['percent_done'] = 0;
+                                }
                                 $var = $time_left*3600;
                                 $eta = self::timestampUserTimezone($coordinates[$coordinates_length-1]['timestamp'], $var);
                                 $unit['eta'] = $eta;
@@ -555,25 +560,31 @@ class Unit extends Model
         $unittype = substr($serialnumber,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
             $data = Unit::getNewestIrrigationLog($serialnumber);
-            $starttime = $data['irrigation_starttime'];
-            $stoptime = $data['irrigation_endtime'];
-
+            if(isset($data['irrigation_starttime']) && $data['irrigation_starttime']) {
+                $starttime = $data['irrigation_starttime'];
+            } else {
+                $starttime = date('Y-m-d h:m:s', strtotime("-2 days", strtotime(now())));
+                Log::info('Could not find irrigation_starttime for '. $serialnumber);
+            }
+            if(isset($data['irrigation_endtime']) && $data['irrigation_endtime']) {
+                $stoptime = $data['irrigation_endtime'];
+            }
             
             $timestamp = str_replace('+00', '', $starttime);
-            if($stoptime) {
+            if(isset($stoptime) && $stoptime) {
                 $stop = substr($stoptime, 0, 19);
                 $unitinformation = Api::getApi('sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);
-                // Log::info('Has stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
+                Log::info('Has stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
             } else {
                 if(strtotime($starttime) < strtotime('-3 days')){
                     $starttime = date('Y-m-d h:m:s', strtotime("-2 days", strtotime(now())));
-                    // Log::info('New start time for irrigation: '.$starttime);  
+                    Log::info('New start time for irrigation: '.$starttime);  
                 }
                 $mytime = now();
                 $now = $mytime->toDateTimeString();
                 $stop = str_replace('+00', '', $now);
                 $unitinformation = Api::getApi('sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);
-                // Log::info('Dont have stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
+                Log::info('Dont have stoptime sensorunits/data?serialnumber='.$serialnumber.'&timestart='.$timestamp.'&timestop='.$stop);  
 
             }
             $sorted = array();
@@ -599,6 +610,8 @@ class Unit extends Model
                         $sorted[] = ['timestamp' => $row['timestamp'], 'lat' =>$row['value'], 'sequencenumber' => $row['sequencenumber']];
                     } else if ($row['probenumber'] == 14) {
                         $sorted[] = ['timestamp' => $row['timestamp'], 'lng' =>$row['value'] , 'sequencenumber' => $row['sequencenumber']];
+                    } else if ($row['probenumber'] == 1) {
+                        $sorted[] = ['timestamp' => $row['timestamp'], 'vibration' =>$row['value'] , 'sequencenumber' => $row['sequencenumber']];
                     }
                 }
                 return $sorted;

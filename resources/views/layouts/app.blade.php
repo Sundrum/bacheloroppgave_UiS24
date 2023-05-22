@@ -8,7 +8,7 @@
 <script src="{{ asset('js/jquery-3-3-1.js') }}"></script>
 <script src="{{ asset('js/sortable.min.js') }}"></script>
 <script src="{{ asset('js/fontawesome-5-13-0.min.js') }}"></script>
-<script src="{{ asset('js/select2.min.js') }}"></script>
+<script src="{{ asset('js/select2.min.js') }}" defer></script>
 <script src="{{ asset('js/datatables.js') }}" defer></script>
 <script src="{{ asset('js/datatables.buttons.min.js') }}" defer></script>
 

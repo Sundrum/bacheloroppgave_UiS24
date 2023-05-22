@@ -206,7 +206,7 @@ class Controller extends BaseController
                     $sorted = array();
                     if (is_array($data)) {
                         foreach ($data as $interval) {
-                            if ($interval['lat'] != 0 && $interval['lng'] != 0) {
+                            if (isset($interval['lat']) && $interval['lat'] != 0 && isset($interval['lng']) && $interval['lng'] != 0) {
                                 $sorted[] = $interval; 
                             }
                         }    
@@ -297,6 +297,13 @@ class Controller extends BaseController
         $datetime->setTimezone(new DateTimeZone(self::getUserTimezone()));
 
         return $datetime->format('Y.m.d H:i');
+    }
+
+    public static function convertToSortableTimestamp($timestamp) {
+        $datetime = new DateTime($timestamp);
+        $datetime->setTimezone(new DateTimeZone(self::getUserTimezone()));
+
+        return $datetime->format('Y.m.d H:i:s');
     }
 
     public static function getTimestampDifference($timestamp) {

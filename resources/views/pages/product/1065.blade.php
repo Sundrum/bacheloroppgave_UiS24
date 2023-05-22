@@ -246,6 +246,8 @@ function createChart() {
     
       enabled: true,
       layout: 'vertical',
+      itemHiddenStyle: {"fontWeight": "normal","text-decoration": "none"},
+      itemStyle: {"fontWeight": "bold"},
       floating: false,
       align: 'right',
       x: 10,

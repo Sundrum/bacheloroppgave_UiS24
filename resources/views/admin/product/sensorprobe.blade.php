@@ -66,7 +66,6 @@
 </div>
 
 <script>
-var token = "{{ csrf_token() }}";
 var counter = $('#probestable').find('.object').length;
 var code2 = '<option value="">Velg enhet</option>';
 var code3 = '';

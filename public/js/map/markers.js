@@ -16,7 +16,7 @@ function getLatestRun(serialnumber) {
       console.log(data);
       if (data != -1) {
         for (var i in data) {
-          positions.push({lat: data[i].lat, lng: data[i].lng, timestamp: data[i].timestamp});
+          positions.push({lat: data[i].lat, lng: data[i].lng, timestamp: data[i].timestamp, vibration: data[i].vibration});
         }
         addMarkers();
       }
@@ -72,7 +72,7 @@ function addEndMarker(currentLatLng) {
   
 function addMarkers(){
   for (i = positions.length - 1; i >= 0; i--) {
-    var check = 0;
+    let zindex = 5;
     if (i == 0) {
       iconR = startIcon;
     } else if (i == positions.length-1){
@@ -83,16 +83,19 @@ function addMarkers(){
       activeMarker = new google.maps.Marker({
         position: new google.maps.LatLng(positions[i]),
         icon: runIcon,
+        zIndex: 5,
         map: map
       }); 
+      zindex = 50;
 
     } else {
       iconR = runIcon;
     }
-    check = 1;
+
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(positions[i]),
       icon: iconR,
+      zIndex: zindex,
       map: map
     });
     
@@ -116,7 +119,7 @@ function addMarkers(){
       var diff2 = moment.duration(moment(now2).diff(moment(then2)));
       var mt2 = (distance2 / (diff2/1000))*3600;*/
 
-      infowindow.setContent(positions[i].timestamp);
+      infowindow.setContent(positions[i].timestamp+ '<br> Vibration: ' + positions[i].vibration);
       
       infowindow.open(map, marker);
       }

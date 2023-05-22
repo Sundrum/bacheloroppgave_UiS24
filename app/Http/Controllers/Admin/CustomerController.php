@@ -47,6 +47,28 @@ class CustomerController extends Controller
         return view('admin.customer.detailes', compact('customertypes','countries', 'customer'));
     }
 
+    public function sendOrderInformation(Request $req) {
+        $user = User::find($req->order_user_id);
+        $passwd = explode("@",$user->user_email);
+        $user_passwd = $passwd[0]."123";
+        $data = array(
+            'name'=>$user->user_name, 
+            'email'=>$user->user_email,
+            'password'=>$user_passwd,
+            'tracking'=>$req->tracking
+        );
+        $email = $user->user_email;
+        $name = $user->user_name;
+
+        Mail::send(['html' => 'email.salessensorunit'], $data, function($message) use ($email, $name)
+        {
+            $message->from(env('MAIL_FROM_ADDRESS', 'no-reply@portal.7sense.no'), env('MAIL_FROM_NAME', '7Sense Portal'));
+            $message->to($email, $name)->cc('sales@7sense.no')->subject('Din vanningssensor fra 7Sense er på vei');
+        });
+        $response ="Mail sent";
+        return $response;
+    }
+
     public static function getOverview($id) {
         $customer = Customer::find($id);
         $customertypes = Customer::getCustomerTypes();

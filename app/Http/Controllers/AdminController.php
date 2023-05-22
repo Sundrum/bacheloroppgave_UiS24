@@ -17,7 +17,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UnittypeController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\DB;
-use Auth, Redirect, Session;
+use Auth, Redirect, Session, Log;
 
 class AdminController extends Controller {
     public function __construct() {
@@ -87,7 +87,7 @@ class AdminController extends Controller {
         $data = Sensorunit::select('sensorunits.*', 'customer.customer_name')->where('serialnumber', 'LIKE', '%21-1020-AC%' )->join('customer', 'customer.customer_id', 'sensorunits.customer_id_ref')->get();
         $sorted = array();
         $result = array();
-
+        $timing = now();
         foreach ($data as &$unit) {
             if (isset($unit['serialnumber'])) {
                 $serial = trim($unit['serialnumber']);
@@ -96,7 +96,7 @@ class AdminController extends Controller {
                 //     $status = $status->value ?? '';
                 // } else {
                 
-                $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
+                // $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
                 $status = $record[0]->value ?? '';
 
                 if (isset($unit['sensorunit_lastconnect'])) {
@@ -175,6 +175,8 @@ class AdminController extends Controller {
 
             $i++;
         }
+        $timing_2 = now();
+        Log::info($timing." and ". $timing_2);
         $data = json_encode($dataset);
         return view('admin.irrigationstatus',  compact('data', 'variable'));
     }

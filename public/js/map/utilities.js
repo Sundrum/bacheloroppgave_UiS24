@@ -22,7 +22,8 @@ var irrigationpath = new google.maps.Polyline({
 	geodesic: true,
 	strokeColor: '#214466',
 	strokeOpacity: 0.8,
-	strokeWeight: 2
+	strokeWeight: 2,
+	zIndex: 30
 });
 
 var irrigationpath2 = new google.maps.Polyline({
@@ -30,7 +31,8 @@ var irrigationpath2 = new google.maps.Polyline({
 	geodesic: true,
 	strokeColor: '#00265a',
 	strokeOpacity: 0.8,
-	strokeWeight: 33
+	strokeWeight: 33,
+	zIndex: 30
 });
 
 

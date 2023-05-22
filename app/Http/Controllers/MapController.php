@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Http\Controllers\DashboardController;
 
-use DateTime;
+use DateTime, Log;
 
 class MapController extends Controller {
 
@@ -72,10 +72,11 @@ class MapController extends Controller {
         $i = 0;
         foreach ($data as &$interval) {
            $interval['timestamp'] = self::convertTimestampToUserTimezone($interval['timestamp']);
-            if ($interval['lat'] != 0 && $interval['lng'] != 0) {
+            if (isset($interval['lat']) && $interval['lat'] != 0 && $interval['lng'] && $interval['lng'] != 0) {
                 $sorted[$i]['lat'] = (float)$interval['lat'];
                 $sorted[$i]['lng'] = (float)$interval['lng'];
                 $sorted[$i]['timestamp'] = $interval['timestamp'];
+                $sorted[$i]['vibration'] = (float)$interval['vibration'];
                 $i++;
             }
         }
