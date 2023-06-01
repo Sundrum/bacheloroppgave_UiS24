@@ -24,6 +24,8 @@ Route::get('/admin/apibilling', [App\Http\Controllers\AdminController::class, 'a
 Route::get('/admin/billing/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getBilling']);
 Route::get('/admin/billing/summary/{customer}/{quarter}/{detailed}', [App\Http\Controllers\ApiSmartsensorController::class, 'getSummary']);
 Route::get('/admin/proxy', [App\Http\Controllers\ApiSmartsensorController::class, 'proxyApi'])->name('proxy');
+Route::get('/admin/proxy/variables', [App\Http\Controllers\ApiSmartsensorController::class, 'getProxyViewVariables'])->name('proxyvariables');
+Route::post('/admin/proxy/getvariables', [App\Http\Controllers\ApiSmartsensorController::class, 'getProxyVariables']);
 Route::post('/admin/proxy/fota', [App\Http\Controllers\ApiSmartsensorController::class, 'fotaQueue'])->name('fotaproxy');
 Route::post('/admin/proxy/queue/delete',  [App\Http\Controllers\ApiSmartsensorController::class, 'deleteQueue'])->name('deletequeue');
 
@@ -108,7 +110,8 @@ Route::get('/admin/irrigationstatus/irrigation/run/{id}', [App\Http\Controllers\
 Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateRun'])->name('runupdate');
 
 
-Route::get('/admin/irrigationstatus/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
+Route::get('/admin/irrigationstatusupdate', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
+Route::post('/admin/irrigation/removepoistion', [App\Http\Controllers\Admin\IrrigationController::class, 'removePosition']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);
 Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus'])->name('irrigationstatus');
 Route::post('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandController::class, 'irrigationFota']);
@@ -172,8 +175,9 @@ Route::post('/updatePoint', [App\Http\Controllers\MapController::class, 'updateP
 Route::get('/oldruns/{serial}/{days}', [App\Http\Controllers\MapController::class, 'oldIrrigaitonRun']);
 Route::get('/run/{serial}', [App\Http\Controllers\MapController::class, 'oldRunMap']);
 Route::get('/map', [App\Http\Controllers\Controller::class, 'testmap']);
-Route::get('/irrigation/log',  [App\Http\Controllers\Controller::class, 'irrigationRuns']);
+Route::get('/irrigation/log',  [App\Http\Controllers\Controller::class, 'irrigationRuns'])->name('irrigationLog');
 Route::get('/irrigation/run',  [App\Http\Controllers\Controller::class, 'getIrrigationEvents']);
+Route::get('/irrigation/runlog/{id}', [App\Http\Controllers\MapController::class, 'getRun']);
 Route::get('/fleetmanagement', [App\Http\Controllers\MapController::class, 'fleetmanagement'])->name('fleetmanagment');
 
 

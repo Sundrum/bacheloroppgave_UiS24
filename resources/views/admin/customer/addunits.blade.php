@@ -1,4 +1,4 @@
-<div class="modal" id="updateUnit">
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="updateUnit">
     <div class="modal-dialog modal-lg">
       <div class="modal-content bg-a-grey">
       
@@ -11,13 +11,14 @@
         <!-- Modal body -->
         <div class="modal-body mt-3 mb-3">
             <form method="POST" action="/admin/sensorunit/updatecustomer">
+                <div class="card-rounded">
+                    <span>Select the serialnumber you want to add to {{$customer->customer_name ?? $customer->customer_id}}. The sensorunit will be added to every user connected to this customer.</span>
+                </div>
                 @csrf
                 <input type="hidden" name="customer_id_ref" value="{{$customer->customer_id}}">
                 <div class="row justify-content-center">
-                    <div class="input-group row">
-                        <div id="sensorTable" class="col">
-                            
-                        </div>
+                    <div id="sensorTable" class="input-group col">
+                        
                     </div>
 
                 </div>
@@ -29,12 +30,11 @@
 
                 <div class="row justify-content-center">
                     <div class="col-md-2">
-                        <button type="submit" class="btn-7s"> Upload </button>
+                        <button type="submit" class="btn-7g"> Upload </button>
                     </div>
                 </div>
             </form>
         </div> 
-    </div>
     </div>
 </div>
 
@@ -76,7 +76,9 @@ function checkCustomer() {
 }
 
 function makeSearchable(){
-    $('.seriallist').select2();
+    $('.seriallist').select2({
+        dropdownParent: $('#updateUnit'),
+    });
 }
 
 </script>

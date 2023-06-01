@@ -11,6 +11,12 @@
                     @lang('admin.billing')
                 </button>
             </div>
+            <div class="row m-1 justify-content-center">
+                <button class="btn-7s" onclick="window.location='{{ route('proxyvariables') }}'">
+                    Variables
+                </button>
+            </div>
+            
         </div>
     </div>
     <div class="col-md-6 col-lg-3">

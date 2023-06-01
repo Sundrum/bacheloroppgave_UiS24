@@ -249,12 +249,17 @@ class Controller extends BaseController
     }
 
     public function irrigationRuns() {
-        $irrigationunits = Session::get('irrigation');
         return view('pages.irrigationlog');
     }
 
     public function getIrrigationEvents() {
-        $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00096')->get();
+        $irrigationunits = Session::get('irrigation');
+        $response = array();
+        foreach($irrigationunits as $unit) {
+            $response[] = Irrigationrun::where('serialnumber', $unit['serialnumber'])->get();
+        }
+        // $irrigationruns = Irrigationrun::where('serialnumber', '21-1020-AA-00096')->get();
+        $irrigationruns = json_encode($response);
         return $irrigationruns;
     }
 

@@ -6,6 +6,19 @@
     height: 80%;
 }
 
+.travelersmap-container .marker-cluster-medium {
+    background-color: rgba(181, 226, 140, 0.6); // this is the outside of the medium cluster
+}
+.travelersmap-container .marker-cluster-medium div {
+    background-color: rgba(181, 226, 140, 0.6); // this is the inside of the medium cluster
+}
+.travelersmap-container .marker-cluster-large {
+    background-color: rgba(181, 226, 140, 0.6); // this is the outside of the large cluster
+}
+.travelersmap-container .marker-cluster-large div {
+    background-color: rgba(181, 226, 140, 0.6); // this is the inside of the large cluster
+}
+
 .contextmenu{
     visibility:hidden;
     background:#ffffff;

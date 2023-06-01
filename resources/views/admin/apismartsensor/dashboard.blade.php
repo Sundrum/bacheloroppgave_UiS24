@@ -1,11 +1,11 @@
-@extends('layouts.dev')
+@extends('layouts.app')
 
 @section('content')
 <section class="">
     <div class="bg-white card-rounded p-2 mb-3">
-        <div class="card-body target">
+        <div class="card-body target p-3">
             <div class="form-group row">
-                <label for="customer" class="col-md-3 col-form-label text-left"><h5>Select Customer</h5></label>
+                <label for="customer" class="col-form-label text-left"><h5>Select Customer</h5></label>
                 <select class="col-md-4 form-control" name="customer" id="customer">
                     @foreach ($customers as $customer)
                         <option value="{{$customer->customernumber}}">{{$customer->customername}}</option>

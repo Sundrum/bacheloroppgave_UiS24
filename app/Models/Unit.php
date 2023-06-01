@@ -230,9 +230,9 @@ class Unit extends Model
                 else if ($probe['probenumber'] == '14') $unit['latest']['lng'] = trim($probe['value']); // LNG
                 else if ($probe['probenumber'] == '15') $unit['latest']['vbat'] = trim($probe['value']); // Vbat
                 // else if ($probe['probenumber'] == '16') $result['tilt_relative'] = trim($probe['value']); // tilt relative
-                // else if ($probe['probenumber'] == '17') $result['tilt'] = trim($probe['value']); // tilt abs
-                else if ($probe['probenumber'] == '22') $unit['latest']['pressure'] = trim($probe['value']); // Pressure
-                else if ($probe['probenumber'] == '23') $unit['latest']['flow_velocity'] = trim($probe['value']); // Flow Velocity
+                else if ($probe['probenumber'] == '20') $result['heartbeat_lis'] = trim($probe['value']); // heartbeat_lis
+                else if ($probe['probenumber'] == '21') $unit['latest']['pressure'] = trim($probe['value']); // Pressure
+                else if ($probe['probenumber'] == '22') $unit['latest']['flow_velocity'] = trim($probe['value']); // Flow Velocity
                 //else if ($probe['probenumber'] == '21') $result['flowrate'] = trim($probe['value']); // Flow rate
             }
             

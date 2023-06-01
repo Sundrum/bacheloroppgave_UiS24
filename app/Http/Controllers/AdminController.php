@@ -91,12 +91,6 @@ class AdminController extends Controller {
         foreach ($data as &$unit) {
             if (isset($unit['serialnumber'])) {
                 $serial = trim($unit['serialnumber']);
-                // if( substr($unit['serialnumber'], 0,10) == "21-1020-AA" ||  substr($unit['serialnumber'], 0,10) == "21-1020-AB") {
-                //     $status = Status::where('serialnumber', $serial)->where('variable', 'swversion')->first();
-                //     $status = $status->value ?? '';
-                // } else {
-                
-                // $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
                 $status = $record[0]->value ?? '';
 
                 if (isset($unit['sensorunit_lastconnect'])) {
@@ -128,7 +122,7 @@ class AdminController extends Controller {
             }
         }
         
-        $allirrigation = self::processIrrigationArray($result);
+        $allirrigation = AdminController::processIrrigationArray($result);
 
         $dataset = array();
         $variable = array();

@@ -10,3 +10,23 @@ body {
 .bg-grey {
     background-color: $warm-grey;
 }
+
+.fc{
+    a {
+        color: $black !important;
+        text-decoration: none !important;
+    }
+}
+
+.fc-button-primary {
+    background-color: $primary !important;
+    border-radius:50%;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.border-7s{
+    border-style: solid;
+    border-radius: 25px;
+    border-color: $primary;
+}

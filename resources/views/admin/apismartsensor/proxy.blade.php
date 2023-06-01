@@ -70,6 +70,9 @@ $(document).ready(function () {
             { title: "ICCID",
                 data: "iccid",
                 defaultContent: "<i>NaN</i>" },
+            { title: "MDMHW",
+                data: "mdmhwver",
+                defaultContent: "<i>NaN</i>" },
         ],
     });
 

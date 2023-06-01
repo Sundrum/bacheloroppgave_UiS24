@@ -43,6 +43,16 @@
                                 </div>
                             </div>
                         @endif
+                        @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] > '-1' && isset($irrUnit['latest']['state']) && $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] == '4' || $irrUnit['latest']['state'] == '5' || $irrUnit['latest']['state'] == '6'))
+                            <div class="col text-center">
+                                <img src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Speed" rel="tooltip" alt="">
+                                <div class="row">
+                                    <div class="col">
+                                        <span>{{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] < '4' || $irrUnit['latest']['state'] == '7'))
                             <div class="col text-center">
                                 <label class="switch">
@@ -139,3 +149,4 @@
         }
     }
 </script>
+

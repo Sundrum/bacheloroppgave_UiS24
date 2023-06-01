@@ -8,26 +8,20 @@
 <script src="{{ asset('js/jquery-3-3-1.js') }}"></script>
 <script src="{{ asset('js/sortable.min.js') }}"></script>
 <script src="{{ asset('js/fontawesome-5-13-0.min.js') }}"></script>
-<script src="{{ asset('js/select2.min.js') }}" defer></script>
 <script src="{{ asset('js/datatables.js') }}" defer></script>
 <script src="{{ asset('js/datatables.buttons.min.js') }}" defer></script>
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js" defer></script>
 
-{{-- <script src="https://nightly.datatables.net/js/jquery.dataTables.js" defer></script> --}}
-{{-- <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js" defer></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js" defer></script>
 <script src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.js" defer></script>
 
-{{-- <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" /> --}}
 <link href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.css" rel="stylesheet" type="text/css" />
 <link  href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 <link  href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css">
 
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>

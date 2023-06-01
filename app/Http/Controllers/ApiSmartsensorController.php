@@ -90,7 +90,7 @@ class ApiSmartsensorController extends AdminController
     }
 
     public function proxyApi() {
-        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc') ORDER BY serialnumber ASC");
+        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc', 'mdmhwver') ORDER BY serialnumber ASC");
         $result = array();
         foreach ($data as $row) {
             // dd(substr(trim($row->serialnumber), 11,17));
@@ -106,7 +106,6 @@ class ApiSmartsensorController extends AdminController
 
             // }
         }
-
         $result = array_values($result);
 
         foreach ($result as &$row) {
@@ -172,5 +171,14 @@ class ApiSmartsensorController extends AdminController
     public function deleteQueue(Request $req) {
         $in_queue = DB::connection('sensordata')->select("DELETE FROM queue WHERE serialnumber='$req->serialnumber' AND typeid='2' ");
         return response()->json($in_queue);
+    }
+
+    public function getProxyViewVariables() {
+        return view('admin.apismartsensor.variables');
+    }
+
+    public function getProxyVariables(Request $req) {
+        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='imei' AND serialnumber='$req->serialnumber'");
+        return $check;
     }
 }

@@ -155,7 +155,7 @@
                         <hr class="mb-2">
                         <div class="row mt-1">
                             <div class="col-6">
-                                <button class="btn-7s col-12" data-toggle="modal" data-target="#sendOrderConfirmation">Send Order Confirmation</button>
+                                <button class="btn-7s col-12" data-toggle="collapse" aria-expanded="false" aria-controls="sendOrderConfirmation" data-target="#sendOrderConfirmation">Send Order Confirmation</button>
                             </div>
                             <div class="col-6">
                                 <a class="" href="/admin/customer/edit/{{$customer->customer_id ?? ''}}"><button class="btn-7g col-12">Edit</button></a>
@@ -164,10 +164,12 @@
                     </div>
                 </div>
             </div>
-        
         </div>
     </div>
 </div>
+
+@include('admin.customer.modalOrderMail')
+
 <div class="row justify-content-center mt-2">
     <div class="col-md-6">
         <h3>Sensorunits</h3>
@@ -247,8 +249,8 @@
     </div>
 </div>
 
-@include('admin.customer.modalOrderMail')
 @include('admin.customer.addunits')
+
 <script>
 setTitle(@json( __('admin.customer')));
 

@@ -3,12 +3,12 @@
     <div class="px-3">
         <div class="row mt-3">
 
-            @if (isset($irrUnit['tilt']))
+            @if (isset($irrUnit['latest']['tilt']))
                 <div class="col text-center">
-                    <img src="https://storage.portal.7sense.no/images/dashboardicons/tilt.png" width="40" height="40" title="Tilt / Angle" rel="tooltip" style="transform: rotate({{ $irrUnit['tilt'] }}deg);">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/tilt.png" width="40" height="40" title="Tilt / Angle" rel="tooltip" style="transform: rotate({{ $irrUnit['latest']['tilt'] }}deg);">
                     <div class="row">
                         <div class="col">
-                            <span>{{ round($irrUnit['tilt']) }} &deg;</span>
+                            <span>{{ round($irrUnit['latest']['tilt']) }} &deg;</span>
                         </div>
                     </div>
                     <div class="row">
@@ -50,12 +50,12 @@
                 </div>
             @endif
 
-            @if (isset($irrUnit['flowrate']) && $irrUnit['flowrate'] !== '0')
+            @if (isset($irrUnit['latest']['flowrate']) && $irrUnit['latest']['flowrate'] !== '0')
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/moisture.png" width="40" height="40" title="Flowrate" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ $irrUnit['flowrate'] ?? 'NaN'}}m<sup>3</sup>/h</span>
+                            <span>{{ $irrUnit['latest']['flowrate'] ?? 'NaN'}}m<sup>3</sup>/h</span>
                         </div>
                     </div>
                     <div class="row">
@@ -65,12 +65,12 @@
                     </div>
                 </div>
             @endif
-            @if (isset($irrUnit['pressure']) && $irrUnit['pressure'] > '-1')
+            @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] > '-1')
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Pressure" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ $irrUnit['pressure'] ?? 'NaN'}}Bar</span>
+                            <span>{{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar</span>
                         </div>
                     </div>
                     <div class="row">
@@ -81,12 +81,12 @@
                 </div>
             @endif
 
-            @if (isset($irrUnit['vibration']))
+            @if (isset($irrUnit['latest']['vibration']))
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/vibration.png" width="40" height="40" title="Vibration" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ $irrUnit['vibration'] ?? 'NaN'}}%</span>
+                            <span>{{ $irrUnit['latest']['vibration'] ?? 'NaN'}}%</span>
                         </div>
                     </div>
                     <div class="row">
@@ -97,12 +97,12 @@
                 </div>
             @endif
 
-            @if (isset($irrUnit['flow_velocity']))
+            @if (isset($irrUnit['latest']['flow_velocity']))
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/speed.png" width="40" height="40" title="Flow Velocity" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ $irrUnit['flow_velocity'] ?? 'NaN'}}m/s</span>
+                            <span>{{ $irrUnit['latest']['flow_velocity'] ?? 'NaN'}}m/s</span>
                         </div>
                     </div>
                     <div class="row">

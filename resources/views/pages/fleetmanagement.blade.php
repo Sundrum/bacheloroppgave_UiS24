@@ -18,7 +18,12 @@
     
     <section class="col-md-6 col-lg-6">
         <div class="row">
-            <p class="text-left text-muted">More information will be displayed if you click on one of your sensors</p>
+            <div class="col-8">
+                <p class="text-left ">More information will be displayed if you click on one of your sensors</p>
+            </div>
+            <div class="col-4 text-end">
+                <a onclick="loadContent('{{route('irrigationLog')}}')" href="{{route('irrigationLog')}}" ><button class="btn-7s"><i class="fa fa-book"></i> Irrigation Log</button></a>
+            </div>
             @foreach ($irrigationunits as $unit)
                 <div class="col-md-12 mt-1">
                     <div class="card-rounded bg-white irrigationlist" id="{{$unit['serialnumber']}}" onclick="loadContent('/include/view_irrigation.php?unit={{$unit['serialnumber']}}')">
@@ -50,9 +55,9 @@
                             @if(Auth::user()->user_id == 153)
                                 @isset($unit['percent_done'])
                                     <div class="col-md-3 float-end">
-                                        <div class="semi-donut-full" style="--percentage : {{round($unit['percent_done'],1) ?? '0'}}; --fill: #00265a;">
+                                        {{-- <div class="semi-donut-full" style="--percentage : {{round($unit['percent_done'],1) ?? '0'}}; --fill: #00265a;">
                                             {{round($unit['percent_done'],0) ?? '0'}}
-                                        </div>   
+                                        </div>    --}}
                                     </div> 
                                 @endisset         
                             @endif

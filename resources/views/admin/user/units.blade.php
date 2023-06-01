@@ -1,10 +1,11 @@
 @if(isset($user))
 <div class="col-md-6">
     <div class="card card-rounded">
-        <h5 class="m-4 text-center">@lang('admin.devices')</h5>
+        <h5 class="m-4 text-center">@lang('admin.devices') (@if(isset($user['sensorunits']) && count($user['sensorunits']) > 0) {{count($user['sensorunits']) ?? '0'}} @endif)</h5>
         <div id="sensorTable">
             @if(isset($user['sensorunits']) && count($user['sensorunits']) > 0)
-                    <?php $counter = 1 ?>
+                    <?php $counter = 1;
+                    ?>
                     @foreach($user['sensorunits'] as $unit)
                         <div class="object" id="{{$counter}}">
                             <div class="row m-2">
@@ -39,7 +40,6 @@
 </div>
 
 <script>
-var token = "{{ csrf_token() }}";
 var counter = $('#sensorTable').find('.object').length;
 var code2 = '<option value="">Velg serienummer</option>';
 var code3 = '';

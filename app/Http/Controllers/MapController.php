@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Http\Controllers\DashboardController;
+use App\Models\Irrigationrun;
+use App\Models\Api;
 
 use DateTime, Log;
 
@@ -43,7 +45,7 @@ class MapController extends Controller {
         
         $sorted = array();
         foreach ($data as $interval) {
-            if ($interval['lat'] != 0 && $interval['lng'] != 0) {
+            if (isset($interval['lat']) && $interval['lat'] != 0 && isset($interval['lng']) && $interval['lng'] != 0) {
                 $sorted[] = $interval; 
             }
         }
@@ -191,4 +193,22 @@ class MapController extends Controller {
 
         return $datediff->format('%a');
     }
+
+    public static function getRun($id) {
+        $run = Irrigationrun::find($id);
+        $url_1 = 'sensorunits/data?serialnumber='.trim($run->serialnumber).'&timestart='.substr($run->irrigation_starttime, 0, 19).'&timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp';
+        $data = Api::getApi($url_1);
+        $i = 0;
+        $temp = array();
+        if (isset($data) && is_array($data['result'])) {
+            foreach ($data['result'] as $row) {
+                $temp[$row['timestamp']][0] =$row['timestamp'];
+                $temp[$row['timestamp']][$row['probenumber']] = (float)$row['value'];
+            }
+        }
+        $response['run'] = $run;
+        $response['log'] = array_values($temp);
+        return json_encode($response);
+    }
+
 }

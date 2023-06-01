@@ -30,10 +30,9 @@ $(document).ready(function () {
         data: dataSet,
         pageLength: 25, // Number of entries
         responsive: true, // For mobile devices
-        columnDefs : [
-            { 
-                responsivePriority: 1, targets: 5 }
-            ],
+        columnDefs : [{ 
+            responsivePriority: 1, targets: 5 
+        }],
         columns: [
             { title: "User ID" },
             { title: "Name" },

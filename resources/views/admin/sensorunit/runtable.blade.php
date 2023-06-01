@@ -2,6 +2,8 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry" type="text/javascript"></script>
 
 @section('content')
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 
 <div class="mt-3 mb-3">
     <div class="row justify-content-center">
@@ -31,6 +33,7 @@ var startMarker;
 var startpoint;
 var endpoint;
 var log_id;
+let serialnumber;
 var startIcon = new google.maps.MarkerImage("/img/irrigation/start.png", null, null, null, new google.maps.Size(54,85.5));
 var endIcon = new google.maps.MarkerImage("/img/irrigation/finish.png", null, null, null, new google.maps.Size(54,85.5));
 var poiIcon = new google.maps.MarkerImage("/img/irrigation/sms.png", null, null, null, new google.maps.Size(54,85.5));
@@ -61,6 +64,7 @@ function getLatestRun(id) {
             log_id = data.log_id;
             console.log('irrigation_run_id: ' + data.irrigation_run_id);
             console.log('serialnumber: ' + data.serialnumber);
+            serialnumber = data.serialnumber;
             console.log('irrigation_starttime: ' + data.irrigation_starttime);
             console.log('irrigation_endtime: ' + data.irrigation_endtime);
             console.log('irrigation_startpoint: ' + data.irrigation_startpoint);
@@ -94,7 +98,7 @@ function getLatestRun(id) {
 
 function generateMarkers(item) {
     if(item[13] && item[13] !== 0) {
-        positions.push({lat: item[13], lng: item[14], timestamp: item['timestamp'] });
+        positions.push({lat: item[13], lng: item[14], timestamp: item['timestamp'], tilt: item[4], tilt_relative: item[5], pressure: item[21], vibration: item[1], state: item[0] });
     } else {
         console.log('Not started')
     }
@@ -122,6 +126,7 @@ function pushMarker() {
     } else {
         if (i == 0) {
             console.log(positions[i]);
+            iconR = runIcon;
         } else {
             iconR = runIcon;
         }
@@ -134,13 +139,46 @@ function pushMarker() {
     
         google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
+                let point = positions[i];
+                console.log(point);
+                const main_info = document.createElement("div");
+                main_info.className = "p-3";
+                main_info.innerHTML ='<div class="row"><span class="col-6">Vibration</span><span class="col-5">'+point.vibration+'</span></div>';
+                main_info.innerHTML +='<div class="row"><span class="col-6">Tilt</span><span class="col-5">'+point.tilt+'</span></div>';
+                main_info.innerHTML +='<div class="row"><span class="col-6">Tilt relative</span><span class="col-5">'+point.tilt_relative+'</span></div>';
+                main_info.innerHTML +='<div class="row"><span class="col-6">Pressure</span><span class="col-5">'+point.pressure+'</span></div>';
+                main_info.innerHTML +='<div class="row"><div class="col-12"><button class="btn-7r" onclick="removePosition('+i+');">Remove position</button></div></div>';
 
-            infowindow.setContent(positions[i].timestamp);
-            
-            infowindow.open(map, marker);
+                infowindow.setContent('<div class="row"><strong>Readings at '+positions[i].timestamp+'</strong></div><hr class="m-0">' + main_info.innerHTML);
+                infowindow.open(map, marker);
             }
         })(marker, i));
     }
+}
+
+function removePosition(index) {
+    console.log(positions[index])
+    
+    $.ajax({
+        url: "/admin/irrigation/removepoistion",
+        type: 'POST',
+        dataType: 'json',
+        data: { 
+            "serialnumber": serialnumber,
+            "point": positions[index],
+            "_token": token,
+        },
+        success: function(data) {
+            console.log(data);
+            successMessage('Success');
+            
+        },   
+        error: function(data) {
+            console.log(data);
+            errorMessage('Something went wrong');
+
+        }
+    });
 }
 
 function endPoint(item) {
@@ -281,7 +319,7 @@ function update_point(lat, lng, point_id) {
 
 function closeContextmenu() {
 	$('.contextmenu').remove();
-    alert('The markers position is not changed...');
+    errorMessage('The markers position is not changed...');
     console.log("Clicked");
 }
 
@@ -349,6 +387,9 @@ function generateTable(data) {
             defaultContent: "<i>Not set</i>" },
             { title: "Vbat",
             data: "15",
+            defaultContent: "<i>Not set</i>" },
+            { title: "Bar",
+            data: "21",
             defaultContent: "<i>Not set</i>" },
             { title: "RSSI",
             data: "16",
