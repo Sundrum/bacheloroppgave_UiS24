@@ -55,8 +55,8 @@
                         @endif
                         @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] < '4' || $irrUnit['latest']['state'] == '7'))
                             <div class="col text-center">
-                                <label class="switch" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')">
-                                    <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
+                                <label class="switch">
+                                    <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
                                     <span class="slider round"></span>
                                 </label>
                             </div>
