@@ -34,7 +34,7 @@
         <i class="fas fa-cog"></i> @lang('navbar.settings')
       </a>
       <a onclick="loadContent('https://portal.7sense.no/demo_uk')" href="https://portal.7sense.no/demo_uk"  class="dropdown-item">
-        <i class="fas fa-cog"></i> @lang('Demo')
+        <i class="fas fa-list"></i> @lang('Demo')
       </a>
       <hr class="my-0 mx-3">
       <a class="dropdown-item" href="/logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
