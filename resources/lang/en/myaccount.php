@@ -14,6 +14,7 @@ return [
     'name'  => 'Name',
     'phonenumber' => 'Phonenumber',
     'language' => 'Language',
+    'measurement' => 'Units of Measure',
     'savesettings' => 'Save Settings',
 
 ];

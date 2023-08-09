@@ -382,7 +382,6 @@ function goTo(id) {
     }
     
     function getProbes(serialnumber) {
-        var token = $("meta[name='csrf-token']").attr("content");
         $.ajax({
         url: "/graph/getprobeinfo/" + serialnumber,
         type: 'GET',
@@ -401,7 +400,6 @@ function goTo(id) {
     }
     
     function getData(serialnumber,probenr, name, unittype_id){
-        var token = $("meta[name='csrf-token']").attr("content");
         console.log(serialnumber + '   ' + valgtnumbdays + '    '+ probenr);
         $.ajax({
         url: '/graph/getsensordata/' + serialnumber +'/' + valgtnumbdays + '/' + probenr + '/' + unittype_id + '/1',

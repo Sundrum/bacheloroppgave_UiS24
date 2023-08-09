@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+
 <div class="row">
     <a class="mb-2" href="/admin/irrigationstatus/{{$serial}}" style="color: black; text-decoration: none;"><button class="btn-outline-7r"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til {{$serial}}</strong></button></a>
 </div>
@@ -98,6 +102,11 @@ $(document).ready(function () {
                 defaultContent: "<i>NaN</i>" 
             },
             { 
+                title: "Velocity",
+                data: "22",
+                defaultContent: "<i>NaN</i>" 
+            },
+            { 
                 title: "Vbat",
                 data: "15",
                 defaultContent: "<i>NaN</i>" 
@@ -105,6 +114,11 @@ $(document).ready(function () {
             { 
                 title: "RSSI",
                 data: "16",
+                defaultContent: "<i>NaN</i>"  
+            },
+            { 
+                title: "Seq",
+                data: "seq",
                 defaultContent: "<i>NaN</i>"  
             },
         ],

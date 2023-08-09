@@ -60,6 +60,7 @@ class UserController extends Controller
             $user->user_alternative_email = $req->user_alternative_email;
             $user->roletype_id_ref = $req->roletype_id_ref;
             $user->user_language = $req->user_language;
+            $user->measurement = $req->measurement;
             if($user->customer_id_ref != $req->customer_id) {
                 Sensoraccess::where('user_id', $req->user_id)->delete();
                 $sensorunits = Sensorunit::where('customer_id_ref', $req->customer_id)->get();
@@ -91,6 +92,7 @@ class UserController extends Controller
             $user->roletype_id_ref = $req->roletype_id_ref;
             $user->customer_id_ref = $req->customer_id;
             $user->user_language = $req->user_language;
+            $user->measurement = $req->measurement;
             $customer = Customer::find($req->customer_id);
             $user->customernumber = $customer->customernumber;
             $user->user_language = 1;

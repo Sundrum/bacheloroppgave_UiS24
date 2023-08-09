@@ -1,23 +1,10 @@
-@extends('layouts.demo')
+@extends('layouts.app')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/scss" href="../resources/sass/app.scss">
-    <link rel="stylesheet" type="text/css" href="css/demo.css">
 
-    <title>Demo Norge</title>
-</head>
-<body>
-    <main id="app" class="py-4 bg-white">
-        <div class="container-fluid"></div>
-    </main>
-</body>
-</html>
+<main id="app" class="bg-grey">
+    <div class="container-fluid"></div>
+</main>
 
 <script>
 /* 2022 | Anne-Stine Gjervoldstad */
@@ -34,7 +21,6 @@ mm = d.getMonth() + 1
 dd = d.getDate()
 hours = d.getHours()
 minutes = d.getMinutes()
-
 if (mm < 10) mm = "0" + mm
 if (dd < 10) dd = "0" + dd
 if (hours < 10) hours = "0" + hours
@@ -42,14 +28,15 @@ if (minutes < 10) minutes = "0" + minutes
 
 const newTime = "I dag " + hours + ":" + minutes
 const oldTime = dd + "." + mm + "." + yyyy + " " + "06:00"
-const futureTime = (hours + 3) + ":" + minutes
-
+const futureTime = "14" + ":" + minutes;
+const oldIrrTime = "23" + ":" + minutes;
 /* Sensor status colors */
 
 const colors =
 {
-    green: "#159864",
-    red: "#D10D0D"
+    green: "#a7c49d",
+    red: "#efa6a5",
+    blue: "#00265a"
 }
 
 /* Button texts - Displayed in dropdown section of a sensor's element */
@@ -182,14 +169,23 @@ const irrigationSensors =
 [
     {
         name: "Ocmis",
-        isActive: true
-    },
-    {
-        name: "Bauer",
+        serialnumber: "21-1020-AC-99999",
         isActive: true
     },
     {
         name: "Sovehjelpen",
+        serialnumber: "21-1020-AC-99998",
+        isActive: true
+    },
+    {
+        name: "Bauer",
+        serialnumber: "21-1020-AC-99997",
+        isActive: false
+    }
+    ,
+    {
+        name: "Ocmis",
+        serialnumber: "21-1020-AC-99996",
         isActive: false
     }
 ]
@@ -205,6 +201,7 @@ const groups =
             {
                 name: "Skifte 1",
                 isActive: true,
+                serialnumber: "21-1065-AB-99998",
                 details:
                 {
                     temperature: 14.8,
@@ -218,6 +215,7 @@ const groups =
             {
                 name: "Skifte 2",
                 isActive: true,
+                serialnumber: "21-1065-AB-99999",
                 details:
                 {
                     temperature: 13,
@@ -237,6 +235,7 @@ const groups =
             {
                 name: "Veksthus 1",
                 isActive: true,
+                serialnumber: "21-1001-AA-99999",
                 details:
                 {
                     temperature: 24.4,
@@ -248,6 +247,7 @@ const groups =
             {
                 name: "Veksthus 2",
                 isActive: false,
+                serialnumber: "21-1001-AA-99998",
                 details:
                 {
                     temperature: 20.5,
@@ -265,6 +265,7 @@ const groups =
             {
                 name: "Ute",
                 isActive: true,
+                serialnumber: "21-1001-AA-99997",
                 details:
                 {
                     temperature: -4.4,
@@ -276,6 +277,7 @@ const groups =
             {
                 name: "Toppkasse",
                 isActive: true,
+                serialnumber: "21-1001-AA-99996",
                 details:
                 {
                     temperature: 5.43,
@@ -287,6 +289,7 @@ const groups =
             {
                 name: "Bunnkasse",
                 isActive: true,
+                serialnumber: "21-1001-AA-99995",
                 details:
                 {
                     temperature: 3.98,
@@ -298,6 +301,7 @@ const groups =
             {
                 name: "Kanal",
                 isActive: true,
+                serialnumber: "21-1001-AA-99994",
                 details:
                 {
                     temperature: 3.37,
@@ -309,6 +313,7 @@ const groups =
             {
                 name: "Rom",
                 isActive: true,
+                serialnumber: "21-1003-AA-99999",
                 details:
                 {
                     temperature: 3.86,
@@ -327,6 +332,7 @@ const groups =
             {
                 name: "Kjøler 1",
                 isActive: true,
+                serialnumber: "21-1001-AA-99993",
                 details:
                 {
                     temperature: 2.4,
@@ -338,6 +344,7 @@ const groups =
             {
                 name: "Kjøler 2",
                 isActive: true,
+                serialnumber: "21-1001-AA-99992",
                 details:
                 {
                     temperature: 1.7,
@@ -355,6 +362,7 @@ const groups =
             {
                 name: "Kyllinghus",
                 isActive: true,
+                serialnumber: "21-1003-AA-99998",
                 details:
                 {
                     temperature: 24.88,
@@ -366,6 +374,7 @@ const groups =
             {
                 name: "Under fiberduk",
                 isActive: true,
+                serialnumber: "21-1001-AA-99991",
                 details:
                 {
                     temperature: 32.2,
@@ -377,6 +386,7 @@ const groups =
             {
                 name: "Frostvakt",
                 isActive: true,
+                serialnumber: "21-1001-AA-99990",
                 details:
                 {
                     temperature: 0.27,
@@ -388,6 +398,7 @@ const groups =
             {
                 name: "Utstyrsbod",
                 isActive: true,
+                serialnumber: "21-1001-AA-99989",
                 details:
                 {
                     temperature: 18.52,
@@ -399,6 +410,7 @@ const groups =
             {
                 name: "Tunnel",
                 isActive: true,
+                serialnumber: "21-1001-AA-99988",
                 details:
                 {
                     temperature: 27.38,
@@ -410,37 +422,43 @@ const groups =
         ]
     }
 ]
-
+setTitle('Dashboard');
 const renderInfoButton = () =>
 {
     html += `
-    <svg class="info-btn svg-inline--fa fa-info-circle fa-w-16 fa-3x fa-fw float-right" style="margin-right: 10px;" data-toggle="modal" data-target="#myInfowindow" aria-hidden="true" focusable="false" data-prefix="fa" data-icon="info-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
-        <path fill="#212529" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path>
-    </svg>
-    <img class="mt-1 mb-0 mr-2 btn-flag image-responsive" src="${icons.flagUK.src}" onclick="window.location='demo_uk';">
-    <img class="mt-1 mb-0 ml-2 btn-flag-active image-responsive" src="${icons.flagNorway.src}">
+    <div class="row justify-content-end mb-2">
+        <div class="col-12 float-end">
+
+        <svg class="info-btn svg-inline--fa fa-info-circle fa-w-16 fa-3x fa-fw float-end" style="margin-right: 10px;" data-toggle="modal" data-target="#myInfowindow" aria-hidden="true" focusable="false" data-prefix="fa" data-icon="info-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+            <path fill="#212529" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path>
+        </svg>
+        <img class="btn-flag image-responsive float-end m-1" width="50" src="${icons.flagUK.src}">
+
+        <img class="btn-flag image-responsive float-end m-1"width="50" src="${icons.flagNorway.src}" onclick="window.location='demo_norway';">
+    </div>
+    </div>
     <div class="modal fade" id="myInfowindow" role="dialog" style="display: none;" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Irrigation-informasjon</h5>
+                    <h5 class="modal-title">Irrigation information</h5>
                 </div>
                 <div class="modal-body">
                     <table>
                         <tbody><tr class="spaceUnder">
-                            <td> <img src="../img/irr_idle_yellow.png" class="float-left"> </td>
+                            <td> <img src="../img/irrigation/state_0.png" width="50" height="50" class="float-left"> </td>
                             <td class="tdspace"> Ingen kontakt med sensor</td>
                         </tr>
                         <tr class="spaceUnder">
-                            <td> <img src="../img/irr_idle_green.png" class="float-left"> </td>
+                            <td> <img src="../img/irrigation/state_1.png" width="50" height="50" class="float-left"> </td>
                             <td class="tdspace"> Sovemodus</td>
                         </tr>
                         <tr class="spaceUnder">
-                            <td> <img src="../img/irr_settling_green.png" class="float-left"> </td>
+                            <td> <img src="../img/irrigation/state_4.png" width="50" height="50" class="float-left"> </td>
                             <td class="tdspace"> Venter på stabil vanning</td>
                         </tr>
                         <tr class="spaceUnder">
-                            <td> <img src="../img/irr_irrigation_green.png" class="float-left"> </td>
+                            <td> <img src="../img/irrigation/state_5.png" width="50" height="50" class="float-left"> </td>
                             <td class="tdspace"> Vanningsmodus</td>
                         </tr>
                         <tr class="spaceUnder">
@@ -470,39 +488,37 @@ const renderInfoButton = () =>
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <br>`
+    </div>`
 }
 
 const renderIrrigationSensors = () =>
 {
     html += `
-        <div class="card bg-light mb-1 mt-2">`
+        <div class="row">`
 
     irrigationSensors.forEach(sensor =>
     {
         if (sensor.isActive)
         {
-            icon = "irr_irrigation_green.png"
+            icon = "irrigation/state_5.png"
             timeStamp = newTime
             details = `
-                <tr>
-                    <th>
-                        <img class="image-responsive" src="${icons.eta.src}" width="40" height="40" title="${icons.eta.title}" rel="tooltip" alt="" style="margin-top: -20px;">
-                    </th>
-                    <th>
-                        <img class="image-responsive" src="${icons.speed.src}" width="40" height="40" title="${icons.speed.title}" rel="tooltip" alt="" style="margin-top: -20px;">
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        <p><strong>${futureTime}</strong></p>
-                    </th>
-                    <th>
-                        <p><strong>21 </strong>m/h</p>
-                    </th>
-                </tr>`
+                <div class="col text-center my-0">
+                    <img class="image-responsive" src="${icons.eta.src}" width="40" height="40" title="${icons.eta.title}" rel="tooltip" alt="">
+                    <div class="row">
+                        <div class="col my-0">
+                            <span><strong>${futureTime}</strong></span>
+                        </div>
+                    </div>    
+                </div>
+                <div class="col text-center my-0">
+                    <img class="image-responsive" src="${icons.speed.src}" width="40" height="40" title="${icons.speed.title}" rel="tooltip" alt="">
+                    <div class="row">
+                        <div class="col my-0">
+                            <span><strong>21 m/h</strong></span>
+                        </div>
+                    </div>    
+                </div>`
             collapsableDetails = `
                 <table align="center" style="position: static; text-align:center; width:100%;">
                     <tbody>
@@ -539,7 +555,7 @@ const renderIrrigationSensors = () =>
                     </th>
                     <th>
                         <form>
-                            <input type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#demoIrrMap" value="${irrigationSensorBtn}">
+                            <input type="button" class="btn-7s float-right" data-toggle="modal" data-target="#demoIrrMap" value="${irrigationSensorBtn}">
                         </form>
                     </th>
                 </tr>
@@ -551,7 +567,7 @@ const renderIrrigationSensors = () =>
         }
         else
         {
-            icon = "irr_idle_yellow.png"
+            icon = "irrigation/state_1.png"
             timeStamp = oldTime
             details = `
                 <tr> 
@@ -567,38 +583,71 @@ const renderIrrigationSensors = () =>
                 <tr>
                     <th>
                         <form action="">
-                            <input type="button" class="btn btn-primary float-right" value="${irrigationSensorBtn}">
+                            <input type="button" class="btn-7s float-right" value="${irrigationSensorBtn}">
                         </form>
                     </th>
                 </tr>`
         }
 
         html +=`
-            <div class="card-header">
-                <a class="collapse-toggle" data-toggle="collapse" aria-hidden="true"></a>
-                <h5>${sensor.name}</h5>
-                <p>${timeStamp}</p>
-                <a data-toggle="modal" data-target="#demoIrrMap"><img src="../img/${icon}" class="float-left"></a>                                 
-                <svg class="caret svg-inline--fa fa-caret-down fa-w-10 fa-3x fa-fw float-right" data-toggle="collapse" style="color: ${colors.green};" aria-hidden="true" focusable="false" data-prefix="fa" data-icon="caret-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
-                    <path fill="currentColor" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path>
-                </svg>
-                <table align="center" style="position: static; text-align:center; width:60%;">
-                    <tbody>
-                        ${details}
-                    </tbody>
-                </table>
-            </div>
-            <div class="bg-white collapse">
-                <div class="card-body">
-                    ${collapsableDetails}
-                    <br>
-                    <table align="left" style="position: static; text-align:center; width:40%;">
-                        <tbody>
-                            ${buttons}
-                        </tbody>
-                    </table>
+            <div class="col-md-6">
+                <div class="col-12 bg-white card-rounded mb-2">
+                    <div class="p-3">
+                        <a class="collapse-toggle" data-toggle="collapse" aria-hidden="true"></a>
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <h5>${sensor.name}</h5>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span class="float-end">${timeStamp}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col my-0">
+                                <a data-toggle="modal" data-target="#demoIrrMap"><img src="../img/${icon}" class="float-left"></a>
+                            </div>                            
+                            ${details}
+                            <div class="col my-0">
+                                <svg class="caret svg-inline--fa fa-caret-down fa-w-10 fa-3x fa-fw float-end" data-toggle="collapse" style="color: ${colors.blue};" aria-hidden="true" data-target="#collapse${sensor.serialnumber}" focusable="false" data-prefix="fa" data-icon="caret-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path>
+                                </svg>
+                            </div>
+                        </div>`
+                        if (sensor.isActive) {
+                            html += `
+                            <div class="row mt-2 mb-0">
+                                <div class="col-12 mb-0">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h6>${oldIrrTime}</h6>
+                                        </div>
+            
+                                        <div class="col-6 text-end">
+                                            <h6>${futureTime}</h6>
+                                        </div>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-line" style="width: 60%;"></div>
+                                    </div>
+                                </div>
+                            </div>`
+                        }
+
+            html += `
+                        <div class="bg-white collapse" id="collapse${sensor.serialnumber}">
+                            <div class="pt-4 pb-5 mb-3">
+                                ${collapsableDetails}
+                                <table align="left" style="position: static; text-align:center; width:40%;">
+                                    <tbody>
+                                        ${buttons}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>`
+
     })
     html += `
         </div>`
@@ -606,19 +655,18 @@ const renderIrrigationSensors = () =>
 
 const renderGroupSensors = () =>
 {
+    html += `<div class="row px-2">`
     groups.forEach(group =>
     {
         html += `
-        <div class="card bg-light mb-2 numberOfgroups">
-            <div class="card-header">
+        <div class="col-12 col-lg-6">
+            <div class="card-rounded bg-white mb-2 numberOfgroups">
                 <div class="row">
-                    <div class="col-12 col-md-8">
-                        <h4>${group.name}</h4>
+                    <div class="col-12">
+                        <h3 class="pt-3 px-3">${group.name}</h3>
                     </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <ul class="card bg-light" style="list-style-type: none; padding-left: 0;">`
+                <ul class="px-2 py-2" style="list-style-type: none;">`
         
         group.sensors.forEach(sensor =>
         {
@@ -634,45 +682,39 @@ const renderGroupSensors = () =>
             }
 
             html += `
-            <li class="card-header">
-                <div class="row">
-                    <div class="col-7">
-                        <strong>${sensor.name}</strong>
-                    </div>
-                    <div class="col-5 text-right">
-                        ${timeStamp}
+            <hr class="my-0">
+            <li class="bg-white row mx-1 py-1" data-toggle="collapse" data-target="#collapse${sensor.serialnumber}">
+                <div class="col-12 col-md-5" style="cursor: pointer;">
+                    <div class="row">
+                        <span class="circle-1" style="background-color: ${color};"></span>
+                        <div class="col mt-0 pt-0 mb-0">
+                            <h5 class="mt-0 pt-0 mb-0">${sensor.name}</h5>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-3 mt-2">
-                        <a><span class="dot" style="background-color: ${color};"></span></a>
-                    </div>
-                    <div class="col">
-                        <div class="row">
-                            <img class="image-responsive" src="${icons.temperature.src}" width="30" height="30" title="${icons.temperature.title}" rel="tooltip" alt="" style="margin-top: -20px;">
-                        </div>
-                        <div class="row text-center">
-                            ${sensor.details.temperature.toFixed(1)} ${icons.temperature.unit}
-                        </div>
-                    </div>
-                    <div class="col mt-4">
-                        <div class="row">
-                            <img class="image-responsive" src="${icons.humidity.src}" width="30" height="30" title="${icons.humidity.title}" rel="tooltip" alt="" style="margin-top: -20px;">
-                        </div>
-                        <div class="row text-center">
-                            ${sensor.details.humidity.toFixed(0)} ${icons.humidity.unit}
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <svg class="caret svg-inline--fa fa-caret-down fa-w-10 fa-3x fa-fw float-right" data-toggle="collapse" style="color: ${color};" aria-hidden="true" focusable="false" data-prefix="fa" data-icon="caret-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
-                            <path fill="currentColor" d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path>
-                        </svg>
-                    </div>
+                <div class="col-12 col-md-7 text-end" style="cursor: pointer;">
+                    <span class="px-1">
+                            <img class="image-responsive" src="${icons.temperature.src}" width="25" height="25" title="${icons.temperature.title}" rel="tooltip" alt="" >
+                            <span class="sensor-icon-front px-1">${sensor.details.temperature.toFixed(1)} ${icons.temperature.unit}</span>
+                    </span>
+                    <span class="px-1">
+                            <img class="image-responsive" src="${icons.humidity.src}" width="25" height="25" title="${icons.humidity.title}" rel="tooltip" alt="" >
+                            <span class="sensor-icon-front px-1">${sensor.details.humidity.toFixed(0)} ${icons.humidity.unit}</span>
+                    </span>
                 </div>
-                <div class="collapse">
-                    <hr>
-                    <div class="row justify-content-center">`
+                <div class="collapse" id="collapse${sensor.serialnumber}">
+                    <div class="row justify-content-center">
+                        <div class="col-6 text-right">
+                            <span class="sensor-subtitle">${sensor.serialnumber}</span>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="sensor-subtitle">${timeStamp}</span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        `
 
+                        
             for (i = 0; i < Object.keys(sensor.details).length; i++)
             {
                 const key = Object.keys(sensor.details)[i]
@@ -738,23 +780,29 @@ const renderGroupSensors = () =>
                 else console.error("No details found")
     
                 html += `
-                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
-                    <div class="row justify-content-center">
-                        <p>${title}</p>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center">
+                    <div class="row justify-content-center my-0">
+                        <div class="col my-0">
+                            <span>${title}</span>
+                        </div>
                     </div>
-                    <div class="row justify-content-center">
-                        <img class="image-responsive" src="${src}" width="40" height="40" title="${title}" rel="tooltip" alt="" style="margin-top: -20px;">
+                    <div class="row justify-content-center my-0">
+                        <div class="col my-0">
+                            <img class="image-responsive" src="${src}" width="30" height="30" title="${title}" rel="tooltip" alt="">
+                        </div>
                     </div>
-                    <div class="row justify-content-center">
-                        <p>${value.toFixed(1)} ${unit}</p>
+                    <div class="row justify-content-center my-0">
+                        <div class="col my-0">
+                            <span>${value.toFixed(1)} ${unit}</span>
+                        </div>
                     </div>
                 </div>`
 
             }
             /* Sensor closing tags */
             html +=`
-                        <div class="col-12">
-                            <p><a class="btn btn-primary" href="#">${groupSensorBtn}</a></p>
+                        <div class="col-12 text-center">
+                            <button class="btn-7g" href="#">${groupSensorBtn}</button>
                         </div>
                     </div>
                 </div>
@@ -765,7 +813,8 @@ const renderGroupSensors = () =>
                 </ul>
             </div>
         </div>`
-    })   
+    })
+    html += `</div>`   
 }
 
 /* Reused modal to display irrigation map demo image */
@@ -779,7 +828,7 @@ const renderIrrigationMap = () =>
                     <div class="modal-body">
                         <img class="image-responsive" src="/img/demo_irr_map_mobile.webp" width="100%">
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">${modalBtn}</button>
+                            <button type="button" class="btn-7g" data-dismiss="modal">${modalBtn}</button>
                         </div>
                     </div>
                 </div>
@@ -880,4 +929,5 @@ document.addEventListener('click', (e) =>
     }
     
 </style>
+
 @endsection

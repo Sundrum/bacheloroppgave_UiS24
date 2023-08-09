@@ -24,12 +24,12 @@
           <div class="border-7s p-3 mb-2">
             <div class="row">
               <div class="col-12">
-                <h4 class="text-center">Summary</h4>
+                <h4 class="text-center">@lang('general.summary')</h4>
               </div>
             </div>
             <div class="row">
               <div class="col-6">
-                <span>Total distance</span>
+                <span>@lang('general.totaldistance')</span>
               </div>
               <div class="col-6">
                 <span id="totalMeters"></span>
@@ -38,10 +38,19 @@
             <hr class="my-1">
             <div class="row">
               <div class="col-6">
-                <span>Time</span>
+                <span>@lang('general.time')</span>
               </div>
               <div class="col-6">
                 <span id="totalTime"></span>
+              </div>
+            </div>
+            <hr class="my-1">
+            <div class="row">
+              <div class="col-6">
+                <span>ID #</span>
+              </div>
+              <div class="col-6">
+                <span id="runid"></span>
               </div>
             </div>
           </div>
@@ -52,6 +61,7 @@
 </div>
 
 <script>
+const user = @json(Auth::user());
 setTitle('Calendar');
 getIrrigationLog();
 function getIrrigationLog() {    
@@ -126,6 +136,7 @@ function initCalendar(irrigationEvents) {
         success: function( data ) {
           console.log(data)
           removeMarkers();
+          document.getElementById("runid").innerText = data.run.irrigation_run_id + " ("+ data.run.log_id+") ";
 
           startpoint = data.run.irrigation_startpoint.split(",");
           endpoint = data.run.irrigation_endpoint.split(",");
@@ -133,8 +144,11 @@ function initCalendar(irrigationEvents) {
           var endtime = new Date(data.run.irrigation_endtime).getTime();
 
           let totaltime = toHoursAndMinutes((endtime-starttime)/1000);
-          document.getElementById("totalTime").innerText = totaltime.h +" hours " + totaltime.m + " minutes";
-
+          if(user.user_language == 1) {
+            document.getElementById("totalTime").innerText = totaltime.h +" timer " + totaltime.m + " minutter";
+          } else {
+            document.getElementById("totalTime").innerText = totaltime.h +" hours " + totaltime.m + " minutes";
+          }
           setPoints(startpoint, endpoint);
         },
         error: function( data ) {
@@ -231,7 +245,12 @@ function setPoints(itemstart, itemstop) {
     });
     
     var distance = google.maps.geometry.spherical.computeDistanceBetween(startMarker.position, endMarker.position);
-    document.getElementById("totalMeters").innerText = distance.toFixed(0) +" m";
+    if(user.measurement == 2) {
+      var total_distance = distance *3.28084;
+      document.getElementById("totalMeters").innerText = total_distance.toFixed(0) +" ft";
+    } else {
+      document.getElementById("totalMeters").innerText = distance.toFixed(0) +" m";
+    }
 
     map.setCenter(bounds.getCenter());
 }

@@ -54,6 +54,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="measurement" class="col-md-4 col-form-label">{{ __('Units of Measure') }}</label>
+                        <div class="input-group col-md-8">
+                            <select class="custom-select col-md-12 form-control" id="measurement" name="measurement" required>
+                                <option value="1" @if(isset($user) && $user->measurement == 1) selected="selected" @endif> Metric System </option>
+                                <option value="2" @if(isset($user) && $user->measurement == 2) selected="selected" @endif> Imperial System </option>
+                            </select>
+                        </div>
+                    </div>
                     <hr>
                     <div class="form-group row">
                         <label for="roletype_id_ref" class="col-md-4 col-form-label">Usertype</label>

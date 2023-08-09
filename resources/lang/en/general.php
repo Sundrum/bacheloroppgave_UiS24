@@ -38,5 +38,8 @@ return [
 
     'fleetmanagment' => 'Fleet Managment',
     'somethingwentwrong' => 'Something went wrong! We were not able to load your data. Please try again!',
-
+    'irrigationlog' => 'Irrigation Log',
+    'summary' => 'Summary',
+    'totaldistance' => 'Total distance',
+    'time' => 'Time',
 ];

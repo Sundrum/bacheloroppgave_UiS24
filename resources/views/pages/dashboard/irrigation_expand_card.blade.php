@@ -3,12 +3,12 @@
     <div class="px-3">
         <div class="row mt-3">
 
-            @if (isset($irrUnit['latest']['tilt']))
+            @if (isset($irrUnit['latest']['tilt_relative']))
                 <div class="col text-center">
-                    <img src="https://storage.portal.7sense.no/images/dashboardicons/tilt.png" width="40" height="40" title="Tilt / Angle" rel="tooltip" style="transform: rotate({{ $irrUnit['latest']['tilt'] }}deg);">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/tilt.png" width="40" height="40" title="Tilt / Angle" rel="tooltip" style="transform: rotate({{ $irrUnit['latest']['tilt_relative'] ?? '' }}deg);">
                     <div class="row">
                         <div class="col">
-                            <span>{{ round($irrUnit['latest']['tilt']) }} &deg;</span>
+                            <span>{{ round($irrUnit['latest']['tilt_relative']) ?? '0' }} &deg;</span>
                         </div>
                     </div>
                     <div class="row">
@@ -39,16 +39,32 @@
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/distance.png" width="40" height="40" title="Meters from target" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ $irrUnit['irrigation_meters'] ?? 'NaN'}}m</span>
+                            <span>@if(Auth::user()->measurement == 2) {{ round($irrUnit['irrigation_meters']*3.28084,0) ?? 'NaN'}} ft @else {{ $irrUnit['irrigation_meters'] ?? 'NaN'}} m @endif</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <span><strong>Meters left</strong></span>
+                            <span><strong>Distance to travel</strong></span>
                         </div>
                     </div>
                 </div>
             @endif
+
+            @if (isset($irrUnit['total_meters']) && trim($irrUnit['total_meters']))
+            <div class="col text-center">
+                <img src="https://storage.portal.7sense.no/images/dashboardicons/distance.png" width="40" height="40" title="Meters from target" rel="tooltip">
+                <div class="row">
+                    <div class="col">
+                        <span>@if(Auth::user()->measurement == 2) {{ round($irrUnit['total_meters']*3.28084,0) ?? 'NaN'}} ft @else {{ round($irrUnit['total_meters'],0) ?? 'NaN'}} m @endif</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <span><strong>Total distance</strong></span>
+                    </div>
+                </div>
+            </div>
+        @endif
 
             @if (isset($irrUnit['latest']['flowrate']) && $irrUnit['latest']['flowrate'] !== '0')
                 <div class="col text-center">
@@ -65,12 +81,12 @@
                     </div>
                 </div>
             @endif
-            @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] > '-1')
+            @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] !== '0')
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Pressure" rel="tooltip">
                     <div class="row">
                         <div class="col">
-                            <span>{{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar</span>
+                            <span>@if(Auth::user()->measurement == 2) {{ round($irrUnit['latest']['pressure']*14.503773773,0) ?? 'NaN'}} PSI @else {{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar @endif</span>
                         </div>
                     </div>
                     <div class="row">
@@ -97,7 +113,7 @@
                 </div>
             @endif
 
-            @if (isset($irrUnit['latest']['flow_velocity']))
+            @if (isset($irrUnit['latest']['flow_velocity']) && $irrUnit['latest']['flow_velocity'] !== '0')
                 <div class="col text-center">
                     <img src="https://storage.portal.7sense.no/images/dashboardicons/speed.png" width="40" height="40" title="Flow Velocity" rel="tooltip">
                     <div class="row">
@@ -114,10 +130,14 @@
             @endif
         </div>
         <div class="row mt-3">
-            @if(isset($irrUnit['irrigation_state']) && ($irrUnit['irrigation_state'] === '5'))
+            <div class="col text-center">
+                <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'><button class="btn-7s float-right">@lang('dashboard.openmap')</button></a>
+            </div>
+            
+            @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] == '4' || $irrUnit['latest']['state'] == '5' || $irrUnit['latest']['state'] == '6'))
                 <div class="col text-center">
                     <label class="switch">
-                        <input type="checkbox" @if(isset($irrUnit['irrigation_portalstop']) && $irrUnit['irrigation_portalstop'] !== '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
+                        <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstop']) && $irrUnit['variable']['irrigation_portalstop'] == '1') @else checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
                         <span class="slider round"></span>
                     </label>
                     <div class="row">
@@ -125,9 +145,12 @@
                     </div>
                 </div>
             @endif
-            <div class="col text-center">
-                <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'><button class="btn-7s float-right">@lang('dashboard.openmap')</button></a>
+
+            @if (Auth::user()->roletype_id_ref > 80)
+            <div class="col">
+               <a href='/admin/irrigationstatus/{{$irrUnit['serialnumber']}}'><button class="btn-7r float-right">ADMIN</button></a>
             </div>
+            @endif
             <div class="col text-center">
                 @if(isset($irrUnit['water_lost']) && $irrUnit['water_lost']) <span class="text-r"><strong>Waterlost</strong></span> @endif
             </div>

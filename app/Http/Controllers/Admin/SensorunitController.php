@@ -190,7 +190,7 @@ class SensorunitController extends Controller
                 $unit->custom_id = 1;
                 $unit->sensorunit_installdate = now();
                 $unit->sensorunit_lastconnect = now();
-                $unit->dbname = 'sensordata_onstock';
+                $unit->dbname = 'sensordata_0000';
                 $unit->customernumber = '10-0000-AA';
                 $unit->sensorunit_status = 1;
                 $unit->customer_id_ref = 18;
@@ -269,21 +269,6 @@ class SensorunitController extends Controller
             $unit->customernumber = $customer->customernumber;
             $temp = explode('-',$customer->customernumber);
             $customnum = $temp[1];
-            if ($customnum == '1000') {
-                $customnum = '7products';
-            } else if ($customnum == '0000') {
-                $customnum = 'onstock';
-            } else if ($customnum == '1010') {
-                $customnum = 'eftedal';
-            } else if ($customnum == '1014') {
-                $customnum = 'stenersen';
-            } else if ($customnum == '1015') {
-                $customnum = 'linnes';
-            } else if ($customnum == '1016') {
-                $customnum = 'bjertnaes';
-            } else if ($customnum == '9000') {
-                $customnum = 'demo';
-            }
             $unit->dbname = 'sensordata_'.$customnum;
             $unit->customer_id_ref = $customer->customer_id;
             $unit->save();
@@ -313,21 +298,6 @@ class SensorunitController extends Controller
             $unit->customernumber = $customer->customernumber;
             $temp = explode('-',$customer->customernumber);
             $customnum = $temp[1];
-            if ($customnum == '1000') {
-                $customnum = '7products';
-            } else if ($customnum == '0000') {
-                $customnum = 'onstock';
-            } else if ($customnum == '1010') {
-                $customnum = 'eftedal';
-            } else if ($customnum == '1014') {
-                $customnum = 'stenersen';
-            } else if ($customnum == '1015') {
-                $customnum = 'linnes';
-            } else if ($customnum == '1016') {
-                $customnum = 'bjertnaes';
-            } else if ($customnum == '9000') {
-                $customnum = 'demo';
-            }
             $unit->dbname = 'sensordata_'.$customnum;
             $unit->customer_id_ref = $customer->customer_id;
             $unit->save();

@@ -38,10 +38,9 @@ class CustomerController extends Controller
                 $sorted[$i][3] = '-';
             }
 
-            if (isset($data[$i]['customer_id'])) {
-                $customerid = trim($data[$i]['customer_id']);
-            } else {
-                $customerid= '-';
+            $variables = Customervariables::where('customernumber', $data[$i]['customer_name'])->get();
+            foreach($variables as $row) {
+                $customer[trim($row->variable)] = trim($row->value);
             }
             if ($action == 1) {
                 $sorted[$i][4] = '<button class="btn btn-7s"><a href="/admin/customer/'.$customerid.'" style="color:#FFFFFF;">Edit</a></button>';

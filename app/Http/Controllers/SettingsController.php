@@ -83,25 +83,23 @@ class SettingsController extends Controller
         return Redirect::to('settings/1');
     }
 
-    public function changeaccount(Request $request)
+    public function changeaccount(Request $req)
     {
-        $name = $request->input('name');
-        $email = strtolower($request->input('email'));
-        $work = $request->input('phone_work');
-        $home = $request->input('phone_home');
-        $prefix_work = $request->input('prefixphonework');
-        $prefix_home = $request->input('prefixphonehome');
+        $user = User::find($req->user_id);
+        $user->user_name = $req->name;
+        $user->user_email = strtolower($req->email);
+        $user->user_language = $req->language;
+        $user->measurement = $req->measurement;
+        $work = $req->phone_work;
+        $prefix_work = $req->prefixphonework;
         if($work) {
             $phone_work = '%2B'.$prefix_work.$work;
         } else {
             $phone_work = null;
         }
-        
-        $user_alternative_email = $request->input('altemail');
-        $language = $request->input('language');
-
-        $data = User::changeAccountSettings($name, $email, $phone_work, $user_alternative_email, $language);
-        return Redirect::to('myaccount');
+        $user->user_phone_work = $work;
+        $user->save();
+        return redirect('/myaccount')->with('message', 'Your settings have been updated');
     }
 
     public function shareunit (Request $request)

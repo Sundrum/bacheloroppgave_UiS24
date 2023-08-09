@@ -40,6 +40,7 @@
                 <div class="card-body justify-content-center">
                     <form method="POST" action="{{ route('changeaccount') }}">
                         @csrf
+                        <input type="hidden" name="user_id" id="user_id" value="{{Auth::user()->user_id}}">
                         <div class="form-group">
                             <span id="email_helptext" class="mx-5">@lang('myaccount.username')</span>
                             <div class="input-group pb-2">
@@ -94,7 +95,22 @@
                                     <option value="2" @if(Auth::user()->user_language == 2) selected="selected" @endif> English </option>
                                     <option value="1" @if(Auth::user()->user_language == 1) selected="selected" @endif> Norwegian </option>
                                     <option value="3" @if(Auth::user()->user_language == 3) selected="selected" @endif> French </option>
-                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group pb-4">
+                            <span id="measurement_helptext" class="mx-5" >@lang('myaccount.measurement')
+                            </span>
+                            <div class="input-group"> 
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-7s h-100">
+                                        <i class="fa fa-globe fa-fw icon-color"></i>
+                                    </span>
+                                </div>
+                                <select class="custom-select form-control" id="measurement" name="measurement">
+                                    <option value="1" @if(Auth::user()->measurement == 1) selected="selected" @endif> Metric System </option>
+                                    <option value="2" @if(Auth::user()->measurement == 2) selected="selected" @endif> Imperial System </option>
                                 </select>
                             </div>
                         </div>

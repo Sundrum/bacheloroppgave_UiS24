@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 
 <section class="row mb-3">
     <div class="col-6">
@@ -10,13 +12,87 @@
             <a class="btn-7g" href="/admin/irrigationdebug/{{$variable['unit']['serialnumber'] }}" style="color: black; text-decoration: none;"><strong>Waterlost Debug</strong></a>
     </div>
     <div class="col-md-6 mt-2">
+        <div class="col-md-12 bg-white card-rounded p-3 mb-2">
+            <div class="row">
+                <div class="col">
+                    <h5>Latest</h5>
+                </div>
+
+            </div>
+            <div class="row px-3 text-center">
+                <div class="col text-center">
+                    <img src="/img/irrigation/state_{{$variable['latest']['state'] ?? '0'}}.png" width="40" height="40" title="Vibration" rel="tooltip">
+                    <div class="row">
+                        <span class="text-center">State</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['state'] ?? '0'}}</span>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/tilt.png" width="40" height="40" title="Tilt / Angle" rel="tooltip" style="transform: rotate({{ $variable['latest']['tilt_relative'] ?? '0' }}deg);">
+                    <div class="row">
+                        <span class="text-center">Tilt relative</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['tilt_relative'] ?? 'No data'}}&deg;</span>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/vibration.png" width="40" height="40" title="Vibration" rel="tooltip">
+                    <div class="row">
+                        <span class="text-center">Vibration</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['vibration'] ?? ''}}rms</span>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Speed" rel="tooltip" alt="">
+                    <div class="row">
+                        <span class="text-center">Pressure</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['pressure'] ?? ''}}Bar</span>
+                    </div>
+                </div>
+
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/humidity.png" width="40" height="40" title="Vibration" rel="tooltip">
+                    <div class="row">
+                        <span class="text-center">RH</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['rh'] ?? ''}}% </span>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/temperature.png" width="40" height="40" title="Vibration" rel="tooltip">
+                    <div class="row">
+                        <span class="text-center">Temperature</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['temperature'] ?? ''}}&deg;C</span>
+                    </div>
+                </div>
+                <div class="col text-center">
+                    <img src="https://storage.portal.7sense.no/images/dashboardicons/vibration.png" width="40" height="40" title="Vibration" rel="tooltip">
+                    <div class="row">
+                        <span class="text-center">Flow Velocity</span>
+                    </div>
+                    <div class="row">
+                        <span class="text-center">{{$variable['latest']['vibration'] ?? ''}}m/s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12 bg-white card-rounded p-3">
+
             <div class="row">
                 <div class="col">
                     <h5 class="">Innstillinger</h5>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-6">
                     Serialnumber
@@ -62,7 +138,72 @@
     </div>
 
     <div class="col-md-6 mt-2">
-        <div class="col-md-12 card card-rounded p-3">
+        <div class="col-md-12 bg-white card-rounded p-3 mb-2">
+            <div class="row">
+                <div class="col">
+                    <h5>Battery Consumption</h5>
+                </div>
+            </div>
+            <div class="row px-3 text-center">
+                <div class="col">
+                    <div class="row">
+                        Sleep
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['sleep'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        Boot 
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['boot'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        Packets 
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['packets'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        Sensors 
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['sensors'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        GNSS 
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['gnss'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        Led 
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['led'] ?? ''}}mAh
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        Battery used
+                    </div>
+                    <div class="row">
+                        {{$variable['latest']['battery_mah'] ?? ''}}mAh
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 bg-white card-rounded p-3">
             <h5 class="mt-2 mb-2">Irrigation Innstillinger</h5>
             @isset($variable['unit']['config'])
                 @foreach($variable['unit']['config'] as $row)
@@ -80,13 +221,13 @@
 
             <h5 class="mb-2">Kommandoer</h5>
             <div class="row justify-content-center mb-2">
-                <div class="col-4 center-block">
+                <div class="col-3 center-block">
                     <button class="btn-7s" data-toggle="collapse" href="#collapseVariable" aria-expanded="false" aria-controls="collapseVariable"><strong>Set Variables</strong></button>
                 </div>
-                <div class="col-4 center-block">
+                <div class="col-3 center-block">
                     <button class="btn-7s" onclick="variables('{{$variable['unit']['serialnumber']}}')"><strong>Get Variables</strong></button>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="btn-group">
                         <button type="button" class="btn-7s dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <strong>FOTA</strong>
@@ -111,6 +252,9 @@
                         </div>
 
                         </div>
+                </div>
+                <div class="col-3 center-block">
+                    <button class="btn-7s" onclick="startNewRun('{{$variable['unit']['serialnumber']}}')"><strong>New Run</strong></button>
                 </div>
             </div>
             {{-- <div class="row justify-content-center mb-2">
@@ -169,6 +313,38 @@
         </div>
     </div>
 
+    <div class="col-12 mt-3">
+        <div class="col-12 card card-rounded p-3">
+            <div class="row">
+                <div class="col">
+                    <div class="col-xs-4">
+                    <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/temperature.png" height="40" alt="" >
+                    <img class="image-responsive" src="https://storage.portal.7sense.no/images/dashboardicons/humidity.png" height="40" alt="">
+                    </div>
+                </div>
+                <div class="col">
+                    Tidsperiode(dager)
+                    {{-- @lang('graph.header.periodlabel') --}}
+                    <select id="days" onchange="refreshgraph()">
+                        <option value="10">10 dager</option>  
+                        <option selected="selected" value="31">1 mnd</option>                           
+                        <option value="91">3 mnd</option>
+                        <option value="182">6 mnd</option>
+                        <option value="274">9 mnd</option>
+                        <option value="365">1 år</option>
+                        <option value="548">1,5 år</option>
+                        <option value="720">2 år</option>
+                        <option value="1095">3 år</option>
+                        <option value="1826">5 år</option>   
+                        <option value="3652">10 år</option>                          
+                    </select>
+                </div>
+            </div>
+            <div class="">        
+                <div id="container" style="height: 500px; min-width: 310px"></div>
+            </div>
+        </div>
+    </div>
 </div>
     @include('admin.sensorunit.changeserialnumber')
     {{-- @include('admin.firmware.upload') --}}
@@ -207,6 +383,38 @@ function FOTA(serial, fw){
                 errorMessage('A command failed');
             } else {
                 errorMessage('E2 - Something went wrong. Please try again later.');
+            }
+        },   
+        error: function(data) {
+            console.log(data);
+            errorMessage('Something went wrong. Please try again later.');
+        }
+    });
+}
+
+function startNewRun(serial){
+    console.log(token);
+    $.ajax({
+        url: "/admin/irrigation/fota",
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token
+        },
+        dataType: 'json',
+        data: { 
+            "serialnumber": serial,
+            "cmd": 'startnewrun'
+        },
+        success: function(msg) {
+            console.log(msg);
+            if (msg == 1) {
+                successMessage('New run will start at the next report interval');
+            } else if(msg == 2) {
+                successMessage('The unit will not restart, click again if you would like to start');
+            } else if(msg == 3){
+                successMessage('Variable created, New run will start at the next report interval');
+            } else {
+                errorMessage('Something went wrong. Please try again later.');
             }
         },   
         error: function(data) {
@@ -397,5 +605,216 @@ function variables(serial){
             window.location='irrigationrun/'+id;
         });
     });
+
+    var now = new Date();
+    var strDateTimeStart = Date.now();
+    
+    let seriesOptions = [],
+    seriesCounter = 0;
+    let sensorenheter = [];
+    let sensornames = [];
+    let antenheter=0;
+    let probenr=0;
+    let antsenprobes=0;
+    let valgtsensortype=0;
+    let valgtnumbdays=31;
+    let countnames=0;
+    let nodata_count=0;
+    
+    // Lang Rangeselector
+    /*var columtxt_1 = @json( __('graph.graphrange.colum1') );
+    var columtxt_2 = @json( __('graph.graphrange.colum2') );
+    var columtxt_3 = @json( __('graph.graphrange.colum3') );
+    var columtxt_4 = @json( __('graph.graphrange.colum4') );
+    var columtxt_5 = @json( __('graph.graphrange.colum5') );*/
+    
+    var columtxt_1 = '12t';
+    var columtxt_2 = 'Dag';
+    var columtxt_3 = 'Uke';
+    var columtxt_4 = 'Måned';
+    var columtxt_5 = 'Alt';
+    var shortlabel = '°C';
+    
+    /**
+     * Create the chart when all data is loaded
+     * @returns {undefined}
+     */
+    $(document).ready(function () {
+        getProbes(@json($variable['unit']['serialnumber']));
+    });
+    
+    
+    function createChart() {
+        Highcharts.stockChart('container', {
+        rangeSelector: {
+            selected: 4
+        },
+        yAxis: {
+            labels: {
+            formatter: function () {
+                return (this.value > 0 ? ' + ' : '') + this.value;
+            }
+            },
+            plotLines: [{
+            value: 0,
+            width: 2,
+            color: 'silver'
+            }]
+        },
+        rangeSelector: {
+            buttonTheme: { // styles for the buttons
+            fill: 'none',
+            stroke: 'none',
+            'stroke-width': 0,
+            r: 8,
+            style: {
+            color: '#039',
+            fontWeight: 'bold'
+            },
+            states: {
+            hover: {
+            },
+            select: {
+                fill: '#039',
+                style: {
+                color: 'white'
+                }
+            }
+            // disabled: { ... }
+            }
+        },
+        inputBoxBorderColor: 'gray',
+        inputBoxWidth: 120,
+        inputBoxHeight: 18,
+        inputStyle: {
+            color: '#039',
+            fontWeight: 'bold'
+        },
+        labelStyle: {
+            color: 'silver',
+            fontWeight: 'bold'
+        },
+        buttons: [{
+            count: 12,
+            type: 'hour',
+            text: columtxt_1
+            }, {
+            count: 24,
+            type: 'hour',
+            text: columtxt_2
+            }, {
+            count: 7,
+            type: 'day',
+            text: columtxt_3
+            }, {
+            count: 1,
+            type: 'month',
+            text: columtxt_4
+            }, {
+            type: 'all',
+            text: columtxt_5
+            }],
+            inputEnabled: true,
+            selected: 4
+        },
+        legend: {
+            labels: {
+                filter: (legendItem, data) => {
+                return false; // this should hide all legends
+                }
+                },
+        
+            enabled: true,
+            layout: 'vertical',
+            itemHiddenStyle: {"fontWeight": "normal","text-decoration": "none"},
+            itemStyle: {"fontWeight": "bold"},   
+            floating: false,
+            align: 'right',
+            x: 10,
+            verticalAlign: 'top',
+            y: 70
+        },
+        credits: {
+            enabled: false
+        },
+        
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} </b><br/>',
+            valueDecimals: 2,
+            split: true
+        },
+    
+        series: seriesOptions
+        });
+    }
+    
+    function refreshgraph() {
+        var days = document.getElementById("days");
+        valgtnumbdays = days.options[days.selectedIndex].value;
+        seriesCounter=0;
+        countnames=0;
+        seriesOptions=[];
+        getProbes('{{$unit->serialnumber ?? ''}}');
+    }
+    
+    function getProbes(serialnumber) {
+        $.ajax({
+        url: "/graph/getprobeinfo/" + serialnumber,
+        type: 'GET',
+        data: {
+            "_token": token,
+        },
+        success: function (data) {
+            for (var i in data) {
+            var unittype_id = data[i].unittype_id;
+            var probenr = data[i].sensorprobes_number;
+            var name = data[i].unittype_description;
+            getData(serialnumber,probenr, name, unittype_id);
+            } 
+        },
+        })
+    }
+    
+    function getData(serialnumber,probenr, name, unittype_id){
+        console.log(serialnumber + '   ' + valgtnumbdays + '    '+ probenr);
+        $.ajax({
+        url: '/graph/getsensordata/' + serialnumber +'/' + valgtnumbdays + '/' + probenr + '/' + unittype_id + '/1',
+        dataType: 'json',      
+        data: {
+            "_token": token,
+        }, 
+        success: function( data ) {
+            if (!Array.isArray(data)) return;  // if -1 and not array skip code
+            if (seriesCounter == 0) {
+            seriesOptions[seriesCounter] = {
+                name: name,
+                data: data,
+                visible: true
+            };
+            } else {
+            seriesOptions[seriesCounter] = {
+                name: name,
+                data: data,
+                visible: false
+            };
+            }  
+            // As we're loading the data asynchronously, we don't know what order it
+            // will arrive. So we keep a counter and create the chart when all the data is loaded.
+            seriesCounter++;
+
+            // func for name sort alfabetical
+            seriesOptions.sort(function (a, b) {
+                return a.name > b.name ? 1 : -1;
+            })
+    
+            if (seriesCounter > 0) {
+            createChart();
+            }
+        },
+        error: function( data ) {
+            nodata_count++;
+        }
+        });
+    }
     </script>
 @endsection

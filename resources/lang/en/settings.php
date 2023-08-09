@@ -77,5 +77,6 @@ return [
     'nozzlewidthinfo' => 'Nozzle width in mm',
     'nozzlebar' => 'Nozzle bar',
     'nozzlebarinfo' => 'Estimated bar at the spreader in bar',
-    
+    'accountssettings' => 'Account Settings',
+
 ];

@@ -65,7 +65,9 @@ class ApiSmartsensorController extends AdminController
         $data = DB::connection('sensordata')->select('SELECT serialnumber, SUM(connectcounter) AS connectcounter FROM connect_log WHERE customernumber = ? AND log_time BETWEEN ? AND ? GROUP BY serialnumber', [$customer, $time1, $time2]);
         
         $units = 0;
+        $units_10 = 0;
         $connections = 0;
+        $connections_10 = 0;
         $total_units = 0;
         $total_connenections = 0;
 
@@ -75,22 +77,27 @@ class ApiSmartsensorController extends AdminController
                 $units++;
                 $connections += $item->connectcounter;
             }
+            if($item->connectcounter >= 10) {
+                $units_10++;
+                $connections_10 += $item->connectcounter;
+            }
         }
 
         $total_units = count($data);
         $units = number_format($units, 0, ',', ' ');
         $connections = number_format($connections, 0, ',',' ');
+        $connections_10 = number_format($connections_10, 0, ',',' ');
         $total_connenections = number_format($total_connenections, 0, ',',' ');
         $total_units = number_format($total_units, 0, ',',' ');
         
 
-        $text = '<b>Summary of Q'.$quarter.' - '.$year.'</b> <hr><div class="row"><div class="col-md-6">Active Units ( > 5<sup>*</sup>): ' .$units. '</div><div class="col-md-6">Active Connections : ' .$connections.' </div></div><hr><div class="row"><div class="col-md-6">Total Units ( >1<sup>*</sup> ): ' .$total_units. '</div><div class="col-md-6">Total Connections: ' .$total_connenections.' </div></div> <hr> <div class="row mt-3 mb-0"><div class="col-12"> <p class="muted"><sup>*</sup> Connections in calculation</p></div></div>';
+        $text = '<b>Summary of Q'.$quarter.' - '.$year.'</b> <hr><div class="row"><div class="col-md-6">Active Units ( > 5<sup>*</sup>): ' .$units. '</div><div class="col-md-6">Active Connections : ' .$connections.' </div></div><hr><div class="row"><div class="col-md-6">Active Units ( > 10<sup>*</sup>): ' .$units_10. '</div><div class="col-md-6">Active Connections : ' .$connections_10.' </div></div><hr><div class="row"><div class="col-md-6">Total Units ( >1<sup>*</sup> ): ' .$total_units. '</div><div class="col-md-6">Total Connections: ' .$total_connenections.' </div></div> <hr> <div class="row mt-3 mb-0"><div class="col-12"> <p class="muted"><sup>*</sup> Connections in calculation</p></div></div>';
         
         return json_encode($text);
     }
 
     public function proxyApi() {
-        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc', 'mdmhwver') ORDER BY serialnumber ASC");
+        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc','sequencenumber', 'rebootcounter', 'mdmhwver') ORDER BY serialnumber ASC");
         $result = array();
         foreach ($data as $row) {
             // dd(substr(trim($row->serialnumber), 11,17));
@@ -129,12 +136,16 @@ class ApiSmartsensorController extends AdminController
     }
 
     public function fotaQueue(Request $req) {
-        if ($req->swversion == 'V1.3.7') {
-            return response()->json('V1.3.7');
+        if ($req->swversion == 'V1.3.8') {
+            return response()->json('V1.3.8');
         }
 
+        // if ($req->swversion == 'V1.3.7') {
+        //     return response()->json('V1.3.7');
+        // }
+
         $aa_cmd = "105,0,0,21-9030/app_update.bin";
-        $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v137.bin";
+        $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v138.bin";
         $productnumber = substr($req->serialnumber, 0,10);
         $comment = 'FOTA to V1.3.7';
 
@@ -178,7 +189,7 @@ class ApiSmartsensorController extends AdminController
     }
 
     public function getProxyVariables(Request $req) {
-        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='imei' AND serialnumber='$req->serialnumber'");
+        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber='$req->serialnumber'");
         return $check;
     }
 }

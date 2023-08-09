@@ -14,6 +14,7 @@ return [
     'name'  => 'Navn',
     'phonenumber' => 'Telefonnummer',
     'language' => 'Språk',
+    'measurement' => 'Måleenheter',
     'savesettings' => 'Lagre Innstillinger',
 
 ];

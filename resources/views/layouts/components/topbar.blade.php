@@ -4,10 +4,10 @@
   </div>
   <div id="user-text-info" class="col-xl-3 col-md-3 col-sm-3 col-4 float-end">
     <div class="row">
-      <h2 class="topnav-name" id="top-name">{{$data['user_name'] ?? Auth::user()->user_name ?? ''}}</h2>
+      <h2 class="topnav-name" id="top-name">{{Session::get('customer_site_title') ?? Auth::user()->customernumber ?? 'Customer'}}</h2>
     </div>
     <div class="row">
-      <h5 class="topnav-job" id="top-customer">{{$data['user_id'] ?? Auth::user()->customernumber ?? 'Customer'}}</h5>
+      <h5 class="topnav-job" id="top-customer">{{$data['user_name'] ?? Auth::user()->user_name ?? ''}}</h5>
     </div>
   </div>
   <div class="col-xl-1 col-md-1 col-sm-2 col-2">
@@ -32,6 +32,9 @@
       </a>
       <a onclick="loadContent('{{route('settings')}}')" href="{{route('settings')}}"  class="dropdown-item">
         <i class="fas fa-cog"></i> @lang('navbar.settings')
+      </a>
+      <a onclick="loadContent('https://portal.7sense.no/demo_uk')" href="https://portal.7sense.no/demo_uk"  class="dropdown-item">
+        <i class="fas fa-cog"></i> @lang('Demo')
       </a>
       <hr class="my-0 mx-3">
       <a class="dropdown-item" href="/logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

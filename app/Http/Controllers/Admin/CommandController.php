@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Api;
 use App\Models\Product;
+use App\Models\SensorunitVariable;
 use Auth, Log;
 use DateTime, Redirect;
 
@@ -82,7 +83,32 @@ class CommandController extends Controller
         if($req->cmd == 'fota') $response[0] = Api::postProxy('firmware/upgrade?serialnumber='.$req->serialnumber.'&firmware_id='.$req->fw);
         else if ($req->cmd == 'settings') $response[0] = Api::postProxy('queue/add?serialnumber='.$req->serialnumber.'&typeid=2&comment='.rawurlencode('Get user settings from unit').'&data='.base64_encode('11'));
         else if($req->cmd == 'setsettings') $response[0] = Api::postProxy('queue/add?serialnumber='.$req->serialnumber.'&typeid=2&comment='.rawurlencode(Auth::user()->user_name. ' added command to Queue.').'&data='.base64_encode($req->commandline));
+        else if($req->cmd == 'startnewrun') {
+            $unitvariable = SensorunitVariable::where('serialnumber', $req->serialnumber)->where('variable', 'irrigation_portalstart')->first();
+            if($unitvariable) {
+                if($unitvariable->value == 0) {
+                    $unitvariable->value = 1;
+                    $unitvariable->dateupdated = now();
+                    $unitvariable->save();
+                    return '1';
 
+                } else {
+                    $unitvariable->value = 0;
+                    $unitvariable->dateupdated = now();
+                    $unitvariable->save();
+                    return '2';
+                }
+            } else {
+                $unitvariable = new SensorunitVariable;
+                $unitvariable->variable = 'irrigation_portalstart';
+                $unitvariable->value = 1;
+                $unitvariable->serialnumber = $req->serialnumber;
+                $unitvariable->dateupdated = now();
+                $unitvariable->save();
+
+                return '3';
+            }
+        }
         if(count($response) > 0) {
             $feedback;
             $feedcounter = 0;

@@ -11,7 +11,9 @@ use App\Models\Api;
 use App\Models\Product;
 use App\Models\Status;
 use App\Models\Cases;
+use App\Models\Sensorlatestvalues;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\IrrigationController;
 use App\Http\Controllers\SensorunitController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UnittypeController;
@@ -158,14 +160,32 @@ class AdminController extends Controller {
             } else if ($row['sortstate'] == 'state7') {
                 $variable['off_season'] += 1;
             }
+            if ($row['sortstate'] !== 'state-1') {
+                $variable['seq'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'sequencenumber']);
+                if(isset($variable['seq']) && count($variable['seq']) > 0) {
+                    $row['seq'] = $variable['seq'][0]->value;
+                }
+                $variable['resetcode'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'resetcode']);
+                if(isset($variable['resetcode']) && count($variable['resetcode']) > 0) {
+                    $row['resetcode'] = $variable['resetcode'][0]->value;
+                }
+                // DB::connection('sensordata')->select('UPDATE status SET value = ? WHERE serialnumber = ? AND variable = ? ', [0,$row['serialnumber'], 'rebootcounter']);
+
+                $variable['rebootcounter'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'rebootcounter']);
+                if(isset($variable['rebootcounter']) && count($variable['rebootcounter']) > 0) {
+                    $row['rebootcounter'] = $variable['rebootcounter'][0]->value;
+                }
+            }
             if($row['serialnumber']) { $dataset[$i][1]=$row['serialnumber']; } else { $dataset[$i][1] = null; }
             if($row['sensorunit_location']) { $dataset[$i][2]=$row['sensorunit_location']; } else { $dataset[$i][2] = null; }
-            if(isset($row['swversion'])) { $dataset[$i][3]=trim($row['swversion']) ?? null; } else { $dataset[$i][3] = null; }
 
-            $dataset[$i][4]=$row->customer_name; 
-    
-            if($row['sensorunit_lastconnect']) { $dataset[$i][5]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][5] = null; }
-            $dataset[$i][6] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
+            $dataset[$i][3]=$row->customer_name; 
+            if(isset($row['seq'])) { $dataset[$i][4]=trim($row['seq']) ?? null; } else { $dataset[$i][4] = null; }
+            if(isset($row['resetcode'])) { $dataset[$i][5]=trim($row['resetcode']) ?? null; } else { $dataset[$i][5] = null; }
+            if(isset($row['rebootcounter'])) { $dataset[$i][6]=trim($row['rebootcounter']) ?? null; } else { $dataset[$i][6] = null; }
+
+            if($row['sensorunit_lastconnect']) { $dataset[$i][7]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][7] = null; }
+            $dataset[$i][8] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
 
             $i++;
         }
@@ -311,7 +331,7 @@ class AdminController extends Controller {
                         $irrUnit['sortstate'] = 'state7';
                     }
                 } else {
-                    if ($irrUnit['sensorunit_lastconnect'] > '2023-03-07 11:10:09.60511+00') {
+                    if ($irrUnit['sensorunit_lastconnect'] > '2023-05-07 11:10:09.60511+00') {
                         $irrUnit['img'] = '../img/irrigation/state_0.png';
                         $irrUnit['display'] = 'none';
                         $irrUnit['class'] = 'all_units';

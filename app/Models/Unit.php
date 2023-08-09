@@ -281,7 +281,15 @@ class Unit extends Model
                                 $index++;
                             }
                         }
-    
+                        // if (count($coordinates) > 1 && isset($unit['variable']['irrigation_endpoint']) && $unit['variable']['irrigation_endpoint'] !== '0,0') {
+                        //     // $distance_to_active = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $coordinates[$coordinates_length-1]['lat'],$coordinates[$coordinates_length-1]['lng']);
+                        //     // $distance_diff = round($distance_total - $distance_to_active, 1);
+                        //     // $unit['irrigation_meters'] = $distance_diff;
+
+                        //     $endpoint = explode(",",$unit['variable']['irrigation_endpoint']);
+                        //     $distance_total = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $endpoint[0], $endpoint[1]);
+                        //     $unit['total_meters'] = round($distance_total,0);
+                        // }
                         if (count($coordinates) > 3) {
                             $coordinates_length = count($coordinates);
                             $distance_current = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $coordinates[$coordinates_length-1]['lat'],$coordinates[$coordinates_length-1]['lng']);
@@ -303,7 +311,7 @@ class Unit extends Model
                             if (isset($unit['variable']['irrigation_endpoint']) && $unit['variable']['irrigation_endpoint'] !== '0,0') {
                                 $endpoint = explode(",",$unit['variable']['irrigation_endpoint']);
                                 $distance_total = self::getDistance($coordinates[0]['lat'],$coordinates[0]['lng'], $endpoint[0], $endpoint[1]);
-                                $unit['total_meters'] = $distance_total;
+                                $unit['total_meters'] = round($distance_total,0);
                                 $distance_diff = round($distance_total - $distance_to_active, 1);
                                 $unit['irrigation_meters'] = $distance_diff;
                                 $time_left = ( $distance_diff / $meter_time);

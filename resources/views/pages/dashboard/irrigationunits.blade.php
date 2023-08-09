@@ -38,25 +38,25 @@
                                 <img src="https://storage.portal.7sense.no/images/dashboardicons/speed.png" width="40" height="40" title="Speed" rel="tooltip" alt="">
                                 <div class="row">
                                     <div class="col">
-                                        <span><strong>{{ $irrUnit['speed'] ?? 'NaN'}}m/h</strong></span>
+                                        <span><strong>@if(Auth::user()->measurement == 2) {{ round($irrUnit['speed']*3.28084,0) ?? 'NaN'}} ft/h @else {{ $irrUnit['speed'] ?? 'NaN'}} m/h @endif</strong></span>
                                     </div>
                                 </div>
                             </div>
                         @endif
-                        @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] > '-1' && isset($irrUnit['latest']['state']) && $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] == '4' || $irrUnit['latest']['state'] == '5' || $irrUnit['latest']['state'] == '6'))
+                        @if (isset($irrUnit['latest']['pressure']) && $irrUnit['latest']['pressure'] !== '0' && isset($irrUnit['latest']['state']) && $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] == '4' || $irrUnit['latest']['state'] == '5' || $irrUnit['latest']['state'] == '6'))
                             <div class="col text-center">
                                 <img src="https://storage.portal.7sense.no/images/dashboardicons/gas.png" width="40" height="40" title="Speed" rel="tooltip" alt="">
                                 <div class="row">
                                     <div class="col">
-                                        <span>{{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar</span>
+                                        <span>@if(Auth::user()->measurement == 2) {{ round($irrUnit['latest']['pressure']*14.503773773,0) ?? 'NaN'}} PSI @else {{ round($irrUnit['latest']['pressure'],1) ?? 'NaN'}} Bar @endif</span>
                                     </div>
                                 </div>
                             </div>
                         @endif
                         @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] < '4' || $irrUnit['latest']['state'] == '7'))
                             <div class="col text-center">
-                                <label class="switch">
-                                    <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
+                                <label class="switch" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')">
+                                    <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
                                     <span class="slider round"></span>
                                 </label>
                             </div>
@@ -72,18 +72,26 @@
                     </div>
 
                     @if(isset($irrUnit['percent_done']))
-                        <div class="row mt-2">
-                            <div class="col-12 mb-1">
+                        <div class="row mt-2 mb-0">
+                            <div class="col-12 mb-0">
                                 <div class="row">
                                     <div class="col-6">
                                         <h6>{{$irrUnit['starttime'] ?? 'NaN'}}</h6>
                                     </div>
+           
                                     <div class="col-6">
                                         <h6 class="float-end">{{$irrUnit['eta'] ?? 'NaN'}}</h6>
                                     </div>
                                 </div>
                                 <div class="progress-bar">
                                     <div class="progress-line" style="width: {{$irrUnit['percent_done'] ?? '100'}}%;"></div>
+                                </div>
+                                <div class="row mb-0 pb-0">
+                                    {{-- @if (isset($irrUnit['total_meters']) && trim($irrUnit['total_meters']))
+                                        <div class="col-12 text-center mb-0 pb-0">
+                                            <span>Total distance: @if(Auth::user()->measurement == 2) {{ round($irrUnit['total_meters']*3.28084,0) ?? 'NaN'}} ft @else {{ round($irrUnit['total_meters'],0) ?? 'NaN'}} m @endif</span>
+                                        </div>
+                                    @endif --}}
                                 </div>
                             </div>
                         </div>

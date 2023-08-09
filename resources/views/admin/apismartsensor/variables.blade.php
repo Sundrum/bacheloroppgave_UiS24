@@ -24,13 +24,13 @@ function getVariables() {
         },
         success: function(data) {
             console.log(data);
-            if(data[0]) {
-                let point = data[0];
-                const main_info = document.createElement("div");
-                main_info.innerHTML +='<div class="row"><span class="col-3">'+point.serialnumber+',</span><span class="col-3">'+point.variable+':</span><span class="col-3">'+point.value+',</span></div>';
-                document.getElementById('serialinput').appendChild(main_info);
-                document.getElementById('serialnumber').value = '';
-            }
+            // if(data[0]) {
+            //     let point = data[0];
+            //     const main_info = document.createElement("div");
+            //     main_info.innerHTML +='<div class="row"><span class="col-3">'+point.serialnumber+',</span><span class="col-3">'+point.variable+':</span><span class="col-3">'+point.value+',</span></div>';
+            //     document.getElementById('serialinput').appendChild(main_info);
+            //     document.getElementById('serialnumber').value = '';
+            // }
             
         },   
         error: function(data) {

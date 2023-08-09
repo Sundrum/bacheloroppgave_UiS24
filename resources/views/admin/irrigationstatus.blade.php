@@ -4,54 +4,72 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 
-
-
 <section class="bg-white card-rounded">
     <div class="m-3">
         <div class="col-12 pt-3">
-            <div id="map" style="height: 600px; border-radius: 25px;"></div>
+            <div id="map" style="height: 580px; border-radius: 25px;"></div>
         </div>
         <div class="col-12 mt-3 mb-3">
             <div class="row justify-content-center">
                 <div class="col text-center">
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <img src="{{asset('/img/irrigation/state_7.png')}}" onclick="setSearch('state7');">
-                        </div>
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                        Off Season
                     </div>
-                    <div class="row justify-content-center" id="off_season">
-                        <div class="col text-center">
-                            {{$variable['off_season'] ?? '0'}}
-                        </div>
-                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                      <div class="col">
+                          <img src="{{asset('/img/irrigation/state_7.png')}}" onclick="setSearch('state7');">
+                      </div>
+                  </div>
+                  <div class="row justify-content-center" id="off_season">
+                      <div class="col text-center">
+                          {{$variable['off_season'] ?? '0'}}
+                      </div>
+                  </div>
                 </div>
                 <div class="col text-center">
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <img src="{{asset('/img/irrigation/state_6.png')}}" onclick="setSearch('state6');">
-                        </div>
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                        Post Settling
                     </div>
-                    <div class="row justify-content-center" id="post_settling">
-                        <div class="col text-center">
-                            {{$variable['post_settling'] ?? '0'}}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col text-center">
-                    <div class="row justify-content-center">
-                        <div class="col">
-                            <img src="{{asset('/img/irrigation/state_5.png')}}" onclick="setSearch('state5');">
-                        </div>
-                    </div>
-                    <div class="row justify-content-center" id="irrigation">
-                        <div class="col">
-                            {{$variable['irrigation'] ?? '0'}}
-                        </div>
-                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                      <div class="col">
+                          <img src="{{asset('/img/irrigation/state_6.png')}}" onclick="setSearch('state6');">
+                      </div>
+                  </div>
+                  <div class="row justify-content-center" id="post_settling">
+                      <div class="col text-center">
+                          {{$variable['post_settling'] ?? '0'}}
+                      </div>
+                  </div>
                 </div>
 
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Irrigation
+                    </div>
+                  </div>
+                  <div class="row justify-content-center">
+                      <div class="col">
+                          <img src="{{asset('/img/irrigation/state_5.png')}}" onclick="setSearch('state5');">
+                      </div>
+                  </div>
+                  <div class="row justify-content-center" id="irrigation">
+                      <div class="col">
+                          {{$variable['irrigation'] ?? '0'}}
+                      </div>
+                  </div>
+                </div>
+
+                <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Pre Settling
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state_4.png')}}" onclick="setSearch('state4');">
@@ -64,6 +82,11 @@
                     </div>
                 </div>
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Idle Activity
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state_3.png')}}" onclick="setSearch('state3');">
@@ -76,6 +99,11 @@
                     </div>
                 </div>
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Idle Clock Wait
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state_2.png')}}" onclick="setSearch('state2');">
@@ -88,6 +116,11 @@
                     </div>
                 </div>
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Idle
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state_1.png')}}" onclick="setSearch('state1');">
@@ -100,6 +133,11 @@
                     </div>
                 </div>
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Idle
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state_0.png')}}" onclick="setSearch('state0');">
@@ -112,6 +150,11 @@
                     </div>
                 </div>
                 <div class="col text-center">
+                  <div class="row justify-content-center">
+                    <div class="col text-center">
+                      Production
+                    </div>
+                  </div>
                     <div class="row justify-content-center">
                         <div class="col">
                             <img src="{{asset('/img/irrigation/state.png')}}" onclick="setSearch('state-1');">
@@ -167,8 +210,10 @@
                 },
                 { title: "Serienummer" },
                 { title: "Navn" },
-                { title: "Versjon" },
                 { title: "Kunde" },
+                { title: "Seq" },
+                { title: "Resetcode" },
+                { title: "Reset count" },
                 { title: "Siste levert" },
                 { title: "", orderable: false, searchable: false },
             ],
@@ -236,8 +281,10 @@
                         },
                         { title: "Serienummer" },
                         { title: "Navn" },
-                        { title: "Versjon" },
                         { title: "Kunde" },
+                        { title: "Seq" },
+                        { title: "Resetcode" },
+                        { title: "Reset count" },
                         { title: "Siste levert" },
                         { title: "", orderable: false, searchable: false },
                     ],
@@ -336,14 +383,14 @@
           }
         ]
       },
-      {
-        "elementType": "labels",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
+      // {
+      //   "elementType": "labels",
+      //   "stylers": [
+      //     {
+      //       "visibility": "off"
+      //     }
+      //   ]
+      // },
       {
         "elementType": "labels.icon",
         "stylers": [
@@ -438,14 +485,14 @@
           }
         ]
       },
-      {
-        "featureType": "road",
-        "stylers": [
-          {
-            "visibility": "off"
-          }
-        ]
-      },
+      // {
+      //   "featureType": "road",
+      //   "stylers": [
+      //     {
+      //       "visibility": "off"
+      //     }
+      //   ]
+      // },
       {
         "featureType": "road",
         "elementType": "geometry",

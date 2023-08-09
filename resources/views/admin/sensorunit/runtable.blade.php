@@ -4,7 +4,9 @@
 @section('content')
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-
+<div class="row">
+    <a class="mb-2" href="/admin/irrigationstatus/{{$run->serialnumber ?? ''}}" style="color: black; text-decoration: none;"><button class="btn-outline-7r"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til {{$run->serialnumber ?? ''}}</strong></button></a>
+</div>
 <div class="mt-3 mb-3">
     <div class="row justify-content-center">
         <div class="col-md-10 bg-white card-rounded px-3">

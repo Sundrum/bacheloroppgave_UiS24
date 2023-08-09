@@ -33,6 +33,9 @@ return [
 
     'fleetmanagment' => 'Flåtestyring',
     'somethingwentwrong' => 'Noe gikk galt. Data ble ikke lastet korrekt. Vennligst prøv igjen.',
-
+    'irrigationlog' => 'Irrigation Logg',
+    'summary' => 'Sammendrag',
+    'totaldistance' => 'Total distance',
+    'time' => 'Tid',
 
 ];
