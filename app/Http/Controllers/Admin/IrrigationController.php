@@ -60,10 +60,13 @@ class IrrigationController extends Controller
             else if ($probe['probenumber'] == '35') $variable['latest']['led'] = trim($probe['value']); // Flow Velocity
         }
         $variable['unit'] = Sensorunit::where('serialnumber', $serial)->first();
+        $variable_temp = SensorunitVariable::where('serialnumber', $serial)->get();
+        foreach($variable_temp as $var) {
+            $variable['unit'][$var->variable] = $var->value;
+        }
         $variable['products'] = Product::all();
         $variable['unit']['status'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? ORDER BY variable ASC', [$serial]);
         $variable['unit']['config'] = DB::connection('sensordata')->select('SELECT * FROM config WHERE serialnumber = ? ORDER BY variable ASC', [$serial]);
-        // dd($variable['unit']['config']);
         $variable['unit']['last_time'] = self::convertToSortableDate($variable['unit']->sensorunit_lastconnect);
 
         foreach ($data as $row) {
@@ -284,6 +287,46 @@ class IrrigationController extends Controller
         }
         $latlngs = array_values($latlngs);
         return $latlngs;
+    }
+
+    public function autoStart(Request $req) {
+        $autostart = SensorunitVariable::where('variable','irrigation_autostart')->where('serialnumber', $req->serialnumber)->first();
+        $threshold = SensorunitVariable::where('variable','irrigation_autostart_threshold')->where('serialnumber', $req->serialnumber)->first();
+        $probe = SensorunitVariable::where('variable','irrigation_autostart_probe')->where('serialnumber', $req->serialnumber)->first();
+
+        if($autostart) {
+            $autostart->value = $req->autostart;
+            $autostart->save();    
+        } else {
+            $autostart = new SensorunitVariable();
+            $autostart->variable = 'irrigation_autostart';
+            $autostart->value = $req->autostart;
+            $autostart->serialnumber = $req->serialnumber;
+            $autostart->save();
+        }
+
+        if($threshold) {
+            $threshold->value = $req->threshold;
+            $threshold->save();
+        } else {
+            $threshold = new SensorunitVariable();
+            $threshold->variable = 'irrigation_autostart_threshold';
+            $threshold->value = $req->threshold;
+            $threshold->serialnumber = $req->serialnumber;
+            $threshold->save();
+        }
+
+        if($probe) {
+            $probe->value = $req->probenumber;
+            $probe->save();
+        } else {
+            $probe = new SensorunitVariable();
+            $probe->variable = 'irrigation_autostart_probe';
+            $probe->value = $req->probenumber;
+            $probe->serialnumber = $req->serialnumber;
+            $probe->save();
+        }
+        return true;
     }
 
     public function debug($serial){

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Emailverification;
 use Illuminate\Support\Str;
-use Auth, Mail;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Auth, Mail, Log;
 
 class VerificationController extends Controller
 {
@@ -19,14 +21,43 @@ class VerificationController extends Controller
     | be re-sent if the user didn't receive the original email message.
     |
     */
+    public function getValidation() {
+        $validation['mail'] = Emailverification::where('verify_user_id', Auth::user()->user_id)->first();
+        $validation['sms'] = 0;
+        return $validation;
+    }
 
-    public function requestValidation() 
+    public function requestValidationMail(Request $req) 
     {
-        $validation = Emailverification::where('verify_user_id', Auth::user()->user_id)->first();
+        $validation = Emailverification::where('verify_user_id', $req->user_id)->first();
+        $user = User::find($req->user_id);
 
         if($validation) {
+            $validation->verify_email = $user->user_email;
+            $validation->verify_token = Str::random(30);
+            $validation->save();
             self::sendVerificationEmail($validation);
-            dd('Requested', $validation);
+        } else {
+            $verify = new Emailverification;
+            $verify->verify_email = $user->user_email;
+            $verify->verify_token = Str::random(30);
+            $verify->verify_user_id = $user->user_id;
+            $verify->save();
+
+            self::sendVerificationEmail($verify);
+        }
+        return 1;
+    }
+
+    public function requestValidationSMS(Request $req) 
+    {
+        $validation = Emailverification::where('verify_user_id', $req->user_id)->first();
+        $user = User::find($req->user_id);
+        if($validation) {
+            $validation->verify_email = $user->user_email;
+            $validation->verify_token = Str::random(30);
+            $validation->save();
+            self::sendVerificationEmail($validation);
         } else {
             $verify = new Emailverification;
             $verify->verify_email = Auth::user()->user_email;
@@ -35,9 +66,8 @@ class VerificationController extends Controller
             $verify->save();
 
             self::sendVerificationEmail($verify);
-            dd('Not requested', $verify);
         }
-        dd($validation);
+        return 1;
     }
 
     public static function sendVerificationEmail ($verify) 
@@ -52,9 +82,10 @@ class VerificationController extends Controller
 
         Mail::send(['html' => 'email.verifyemail'], $data, function($message) use ($email, $name)
         {
-            $message->from(env('MAIL_FROM_ADDRESS', 'no-replay@portal.7sense.no'), env('MAIL_FROM_NAME', '7Sense Portal'));
+            $message->from(env('MAIL_FROM_ADDRESS', 'no-reply@portal.7sense.no'), env('MAIL_FROM_NAME', '7Sense Portal'));
             $message->to($email, $name)->subject('Verify your email');
         });
+        Log::info('User ID: '.Auth::user()->user_id. ' asked for verification of email ('.$verify->verify_email.')');
     }
 
     public function testmail () 

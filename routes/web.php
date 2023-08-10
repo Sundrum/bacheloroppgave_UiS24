@@ -108,6 +108,8 @@ Route::get('/admin/irrigationstatus/{serial}', [App\Http\Controllers\Admin\Irrig
 Route::get('/admin/irrigationstatus/irrigationrun/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getRun']);
 Route::get('/admin/irrigationstatus/irrigation/run/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getIrrigationRun']);
 Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateRun'])->name('runupdate');
+Route::post('/admin/irrigationstatus/autostart', [App\Http\Controllers\Admin\IrrigationController::class, 'autoStart']);
+
 
 
 Route::get('/admin/irrigationstatusupdate', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
@@ -205,7 +207,10 @@ Route::get('/demo_uk', [App\Http\Controllers\TestDashboardController::class, 'uk
 
 
 Auth::routes();
-Route::get('/verify/email', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidation']);
+
+Route::get('/myaccount/validation', [App\Http\Controllers\Auth\VerificationController::class, 'getValidation']);
+Route::post('/verify/email', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidationMail']);
+Route::post('/verify/phone', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidationSMS']);
 Route::get('/verify/testmail', [App\Http\Controllers\Auth\VerificationController::class, 'testMail']);
 
 /*** 

@@ -29,7 +29,7 @@
                         <i class="far fa-address-card fa-3x icon-color"></i>
                     </div>
                 </div>
-                <div class="row text-center mt-5">
+                <div class="row text-center mt-3">
                     <h1>@lang('myaccount.myaccount')</h1>
                 </div>
                 <div class="row text-center">
@@ -51,9 +51,7 @@
                                 </div>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="@lang('myaccount.username')" value="{{trim(Auth::user()->user_email)}}" required>
                             </div>
-                            {{-- <div class="card-rounded bg-7r mx-4 mt-0 mb-2 px-4 py-2">
-                                <span class="">Not validated. You need to verify your email adress</span>
-                            </div> --}}
+                            <div id="email_append"></div>
                         </div>
     
                         <div class="form-group pb-2">
@@ -79,6 +77,7 @@
                                 </div>
                                 <input type="tel" placeholder="@lang('myaccount.phonenumber')" value="{{trim(Auth::user()->user_phone_work)}}" id="phone_work" class="form-control" required>
                             </div>
+                            <div id="sms_append"></div>
                         </div>
     
                         <div class="form-group pb-4">
@@ -129,19 +128,40 @@
 
 
 <script>
+    // $(document).ready(function () {
+    //     //checkVerifyStatus();
+    // });
+
+    function checkVerifyStatus() {
+        $.ajax({
+            url: "/myaccount/validation",
+            type: 'GET',
+            success: function (data) {
+                console.log(data.mail.email_verified)
+                if(!data.mail.email_verifyed) {
+                    const notverifiedmail = '<div class="card-rounded bg-7r mx-0 mt-0 mb-2 px-3 py-2"><a style="text-decoration: underline;" onclick="sendVerificationMail()">Click here to verify your email</a> </div>';
+                    document.getElementById('email_append').innerHTML = notverifiedmail;
+                }
+                if(!data.sms.sms_verified) {
+                    const notverifiedsms = '<div class="card-rounded bg-7r mx-0 mt-0 mb-2 px-3 py-2"><a style="text-decoration: underline;" onclick="sendVerificationSMS()">Click here to verify your phonenumber</a> </div>';
+                    document.getElementById('sms_append').innerHTML = notverifiedsms;
+                }
+                console.log(data);  
+            },
+        })
+    }
+
     let telworkInput = $("#phone_work");
-    let telhomeinput = $("#phone_home");
-    let prefixhome = 47;
     let prefixwork = 47;
     setTitle(@json(__('myaccount.myaccount')));
      // initialize
     intlTelInput(telworkInput.get(0), {
         hiddenInput: 'phone_work',
-        // separateDialCode: true,
+        separateDialCode: true,
         initialCountry: 'no',
-        preferredCountries: ['no','se','dk','fr','us','gb'],
+        preferredCountries: ['no','us','fr','gb','dk','se'],
         autoPlaceholder: 'aggressive',
-        formatOnDisplay: true,
+        formatOnDisplay: false,
         autoHideDialCode: true,
         nationalMode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.15/js/utils.min.js",
@@ -162,41 +182,45 @@
         }
     })
 
-    // initialize
-    intlTelInput(telhomeinput.get(0), {
-        hiddenInput: 'phone_home',
-        separateDialCode: true,
-        initialCountry: 'no',
-        preferredCountries: ['no','se','dk','fr','us','gb'],
-        autoPlaceholder: 'aggressive',
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.15/js/utils.min.js",
-        geoIpLookup: function(callback) {
-            fetch('https://ipinfo.io/json', {
-                cache: 'reload'
-            }).then(response => {
-                if ( response.ok ) {
-                     return response.json()
+    function sendVerificationMail() {
+        $.ajax({
+            url: "/verify/email",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'user_id': @json(Auth::user()->user_id),
+                '_token': token
+            },
+            success: function (data) {
+                console.log(data) 
+                successMessage("An mail has been sent to your email.");                      
+            },
+            error: function (data) {
+                errorMessage('Something went wrong. Please try again later');
+            }
+        })
 
-                }
-                throw new Error('Failed: ' + response.status)
-            }).then(ipjson => {
-                callback(ipjson.country)
+    }
 
-            }).catch(e => {
-                callback('no')
-            })
-        }
-    })
+    function sendVerificationSMS() {
+        $.ajax({
+            url: "/verify/sms",
+            type: 'GET',
+            success: function (data) {
+                console.log(data) 
+                successMessage("A text has been sent to your phonenumber.");                      
+            },
+            error: function (data) {
+                errorMessage('Something went wrong. Please try again later');
+            }
+        })
+
+    }
 
     function updatephoneprefix() {
         prefixwork = telworkInput.intlTelInput('getSelectedCountryData').dialCode;
-        prefixhome = telhomeinput.intlTelInput('getSelectedCountryData').dialCode;
-
         document.getElementById('prefixphonework').value=telworkInput.intlTelInput('getSelectedCountryData').dialCode;
-        document.getElementById('prefixphonehome').value=telhomeinput.intlTelInput('getSelectedCountryData').dialCode;
-
         console.log("Prefix work : " + prefixwork);
-        console.log("Prefix home : " + prefixhome);
     }
 </script>
 @endsection

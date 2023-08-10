@@ -148,7 +148,7 @@
                                 <label class="switch">
                                     <input type="checkbox" id="paid_subscription" name="paid_subscription" onclick="toggleSubscription()" @if(isset($customer->paid_subscription)) @if($customer->paid_subscription) checked @endif @else checked @endif>
                                     <span class="slider round"></span>
-                                    </label>
+                                </label>
                             </div>
                             <input type="hidden" name="customer_id" id="customer_id" value="{{$customer->customer_id}}">
                         </div>

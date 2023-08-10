@@ -17,7 +17,6 @@
                 <div class="col">
                     <h5>Latest</h5>
                 </div>
-
             </div>
             <div class="row px-3 text-center">
                 <div class="col text-center">
@@ -117,6 +116,56 @@
                 </div>
                 <div class="col-6">
                     {{$variable['unit']['last_time'] ?? ''}}
+                </div>
+            </div>
+            <hr class="m-0">
+            <div class="row">
+                <div class="col-6">
+                    Auto Start
+                </div>
+                <div class="col-6 float-end">
+                    <label class="switch" for="auto_start">
+                        <input type="checkbox" id="auto_start" name="auto_start" onclick="toggleAutoStart('{{$variable['unit']['serialnumber'] }}')" @if(isset($variable['unit']->irrigation_autostart) && $variable['unit']->irrigation_autostart == 1) checked @endif>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 text-center"> 
+                    <div class="row">
+                        <div class="col-12">
+                            Status
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="autostart_status">
+                            {{$variable['unit']->irrigation_autostart ?? 'autostart not enabled'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 text-center"> 
+                    <div class="row">
+                        <div class="col-12 ">
+                            Threshold
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {{$variable['unit']->irrigation_autostart_threshold ?? 'autostart no threshold'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 text-center"> 
+                    <div class="row">
+                        <div class="col-12">
+                            Probe
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {{$variable['unit']->irrigation_autostart_probe ?? 'autostart no probe'}}
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr class="mt-0">
@@ -424,6 +473,46 @@ function startNewRun(serial){
     });
 }
 
+function toggleAutoStart(serial) {
+    let toggle = 0;
+    if(document.getElementById('auto_start').checked) toggle = 1;
+    $.ajax({
+        url: "/admin/irrigationstatus/autostart",
+        type: 'POST',
+        dataType: 'json',
+        data: { 
+            "serialnumber": serial,
+            "probenumber": 1,
+            "threshold": 0.2,
+            "autostart": toggle,
+            "_token": token,
+        },
+        success: function(msg) {
+            console.log(msg);
+            if (msg == 1) {
+                if(document.getElementById('auto_start').checked) {
+                    successMessage('Successfully enabled');
+                    document.getElementById('autostart_status').innerHTML = '1';
+                } else {
+                    successMessage('Successfully disabled');
+                    document.getElementById('autostart_status').innerHTML = '0';
+                }
+            } else {
+                const infoMessage = document.createElement('div');
+                infoMessage.className = "message-r";
+                infoMessage.appendChild(document.createTextNode("Something went wrong. Please try again later."));
+                document.getElementById("content-main").appendChild(infoMessage);
+                $(".message-r").fadeTo(4000, 0.8).slideUp(500, function() {
+                    $(".message-r").remove();
+                });
+            }        
+        },   
+        error: function(data) {
+            console.log(data);
+        }
+    });
+}
+
 function defaultSettings(serial){
     $.ajax({
         url: "/admin/irrigation/fota",
@@ -503,7 +592,6 @@ function variables(serial){
         },   
         error: function(data) {
             console.log(data);
-
         }
     });
 }
@@ -759,19 +847,19 @@ function variables(serial){
     
     function getProbes(serialnumber) {
         $.ajax({
-        url: "/graph/getprobeinfo/" + serialnumber,
-        type: 'GET',
-        data: {
-            "_token": token,
-        },
-        success: function (data) {
-            for (var i in data) {
-            var unittype_id = data[i].unittype_id;
-            var probenr = data[i].sensorprobes_number;
-            var name = data[i].unittype_description;
-            getData(serialnumber,probenr, name, unittype_id);
-            } 
-        },
+            url: "/graph/getprobeinfo/" + serialnumber,
+            type: 'GET',
+            data: {
+                "_token": token,
+            },
+            success: function (data) {
+                for (var i in data) {
+                var unittype_id = data[i].unittype_id;
+                var probenr = data[i].sensorprobes_number;
+                var name = data[i].unittype_description;
+                getData(serialnumber,probenr, name, unittype_id);
+                } 
+            },
         })
     }
     

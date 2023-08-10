@@ -147,7 +147,7 @@ class ApiSmartsensorController extends AdminController
         $aa_cmd = "105,0,0,21-9030/app_update.bin";
         $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v138.bin";
         $productnumber = substr($req->serialnumber, 0,10);
-        $comment = 'FOTA to V1.3.7';
+        $comment = 'FOTA to V1.3.8';
 
         $in_queue = DB::connection('sensordata')->select("SELECT * FROM queue WHERE serialnumber='$req->serialnumber' AND typeid='2' ");
         if ($in_queue) {
