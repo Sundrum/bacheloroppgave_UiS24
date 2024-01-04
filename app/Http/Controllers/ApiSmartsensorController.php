@@ -97,55 +97,65 @@ class ApiSmartsensorController extends AdminController
     }
 
     public function proxyApi() {
-        $data = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber LIKE '%21-9030%' AND  variable IN ('rssi','swversion','lastconnect','fota_137', 'imei', 'imsi', 'iccid', 'mccmnc','sequencenumber', 'rebootcounter', 'mdmhwver') ORDER BY serialnumber ASC");
-        $result = array();
-        foreach ($data as $row) {
-            // dd(substr(trim($row->serialnumber), 11,17));
-            // if(substr($row->serialnumber, 11,17) > 1173 && substr($row->serialnumber, 11,17) < 1580) {
-                if(strcmp(trim($row->variable),'fota_137') == 0) {
-                    $result[trim($row->serialnumber)]['queue_at'] = substr($row->dateupdated,0,16). ' / ' . $row->value ?? null;
-                } if(strcmp(trim($row->variable),'lastconnect') == 0) {
-                    $result[trim($row->serialnumber)]['lastconnect'] = substr($row->value,0,16) ?? null;
-                } else {
-                    $result[trim($row->serialnumber)][trim($row->variable)] = trim($row->value) ?? null;
-                }
-                $result[trim($row->serialnumber)]['serialnumber'] = trim($row->serialnumber);
-
-            // }
-        }
-        $result = array_values($result);
-
-        foreach ($result as &$row) {
-            $serial = $row['serialnumber'];
-            $queue_data = DB::connection('sensordata')->select("SELECT statusid, dateupdated from queue WHERE serialnumber='$serial' AND typeid='2'");
-
-            if($queue_data) {
-                $row['fota_in_queue'] = $queue_data[0]->statusid ?? null;
-                $row['queue_updated_at'] = substr($queue_data[0]->dateupdated,0,16) ?? null;
-                $row['fota_in_queue_count'] = count($queue_data) ?? null;
+        if(isset(request()->product)) {
+            $product = request()->product;
+            if(strlen($product) == 7) {
+                $status = DB::connection('sensordata')->select("SELECT status.serialnumber, 
+                                                                max(case when(status.variable='rssi') then status.value else NULL end) as rssi, 
+                                                                max(case when(status.variable='swversion') then status.value else NULL end) as swversion,
+                                                                max(case when(status.variable='lastconnect') then status.value else NULL end) as lastconnect,
+                                                                max(case when(status.variable='fota_137') then status.value else NULL end) as fota_137, 
+                                                                max(case when(status.variable='imei') then status.value else NULL end) as imei,
+                                                                max(case when(status.variable='iccid') then status.value else NULL end) as iccid,
+                                                                max(case when(status.variable='imsi') then status.value else NULL end) as imsi,
+                                                                max(case when(status.variable='mccmnc') then status.value else NULL end) as mccmnc,
+                                                                max(case when(status.variable='sequencenumber') then status.value else NULL end) as sequencenumber,
+                                                                max(case when(status.variable='rebootcounter') then status.value else NULL end) as rebootcounter,
+                                                                max(case when(status.variable='rebootcounter') then status.dateupdated else NULL end) as reboot_at, 
+                                                                max(case when(status.variable='resetcode') then status.value else NULL end) as resetcode,
+                                                                max(case when(status.variable='mdmhwver') then status.value else NULL end) as mdmhwver,
+                                                                max(case when(status.variable='connectmode') then status.value else NULL end) as connectmode,
+                                                                max(case when(status.variable='axxe_fix') then status.value else NULL end) as axxe_fix,
+                                                                queue.statusid as fota_in_queue,
+                                                                queue.dateupdated as queue_updated_at
+                                                                FROM status
+                                                                LEFT JOIN queue ON (status.serialnumber = queue.serialnumber AND queue.typeid='2')
+                                                                WHERE status.serialnumber LIKE  '%$product%'
+                                                                GROUP BY status.serialnumber, queue.statusid, queue.dateupdated");
+                $data = json_encode($status);
+                return view('admin.apismartsensor.proxy', compact('data'));
             } else {
-                $row['fota_in_queue'] = null;
-                $row['queue_updated_at'] = null;
-                $row['fota_in_queue_count'] = null;
+                $status = array();
+                $data = json_encode($status);
+                return view('admin.apismartsensor.proxy', compact('data'))->with('errormessage', 'Product type should be set to 7 chars');
             }
+        } else {
+            $status = array();
+            $data = json_encode($status);
+            return view('admin.apismartsensor.proxy', compact('data'))->with('errormessage', 'No product type is selected for this view');
         }
-        $data = json_encode($result);
-        return view('admin.apismartsensor.proxy', compact('data'));
-        // return view('admin.apismartsensor.proxy_2', compact('data'));
 
     }
 
     public function fotaQueue(Request $req) {
-        if ($req->swversion == 'V1.3.8') {
-            return response()->json('V1.3.8');
-        }
+    //     if ($req->swversion == 'V1.3.8') {
+    //         return response()->json('V1.3.8');
+    //     }
 
-        // if ($req->swversion == 'V1.3.7') {
-        //     return response()->json('V1.3.7');
+    //     if ($req->swversion == 'V1.3.7') {
+    //          return response()->json('V1.3.7');
+    //     }
+
+        // if ($req->swversion == 'V1.3.9') {
+        //     return response()->json('V1.3.9');
         // }
 
-        $aa_cmd = "105,0,0,21-9030/app_update.bin";
-        $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v138.bin";
+        $aa_cmd = "105,0,0,21-9030/app_update_9030_AA_v148.bin";
+        $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v148.bin";
+        $farmfield = "105,0,0,21-1065-AC/farmfield-ac_1.0.6";
+        $irrigation = "105,http://firmware.smartsensor.no/21-1020-AC/irrigation-ac_1.2.3";
+
+        //$irrigation = "105,21-1020-AC/irrigation-ac_1.2.3";
         $productnumber = substr($req->serialnumber, 0,10);
         $comment = 'FOTA to V1.3.8';
 
@@ -175,6 +185,28 @@ class ApiSmartsensorController extends AdminController
             }
         }  
 
+        if($productnumber == '21-1065-AC') {
+            $response = DB::connection('sensordata')->select("INSERT INTO queue (serialnumber,statusid,typeid,data,dateadded,comment) VALUES ('$req->serialnumber','1','2','$farmfield',now(),'$comment')");
+            $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='fota_106' AND serialnumber='$req->serialnumber'");
+            if(isset($check[0]->value)) {
+                $timestamp = now();
+                $response_2 = DB::connection('sensordata')->update("UPDATE status set dateupdated='$timestamp' WHERE variable='fota_106' AND serialnumber='$req->serialnumber'");
+            } else {
+                $response_2 = DB::connection('sensordata')->select("INSERT INTO status (serialnumber,variable,value,dateupdated) VALUES ('$req->serialnumber','fota_106','IN QUEUE',now())");
+            }
+        }  
+
+        if($productnumber == '21-1020-AC') {
+            $response = DB::connection('sensordata')->select("INSERT INTO queue (serialnumber,statusid,typeid,data,dateadded,comment) VALUES ('$req->serialnumber','1','2','$irrigation',now(),'$comment')");
+            $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE variable='fota_123' AND serialnumber='$req->serialnumber'");
+            if(isset($check[0]->value)) {
+                $timestamp = now();
+                $response_2 = DB::connection('sensordata')->update("UPDATE status set dateupdated='$timestamp' WHERE variable='fota_123' AND serialnumber='$req->serialnumber'");
+            } else {
+                $response_2 = DB::connection('sensordata')->select("INSERT INTO status (serialnumber,variable,value,dateupdated) VALUES ('$req->serialnumber','fota_123','IN QUEUE',now())");
+            }
+        }  
+
         
         return response()->json('DONE');
     }
@@ -189,7 +221,18 @@ class ApiSmartsensorController extends AdminController
     }
 
     public function getProxyVariables(Request $req) {
-        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber='$req->serialnumber'");
+        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber='$req->serialnumber' ORDER BY variable ASC");
         return $check;
+    }
+
+    public function setProxyVariables(Request $req) {
+        $check = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber='$req->serialnumber' AND variable='$req->variable'");
+        if(isset($check) && count($check) > 0) {
+            $timestamp = now();
+            $response = DB::connection('sensordata')->update("UPDATE status SET dateupdated='$timestamp', value='$req->value'  WHERE variable='$req->variable' AND serialnumber='$req->serialnumber'");
+        } else {
+            $response = DB::connection('sensordata')->select("INSERT INTO status (serialnumber,variable,value,dateupdated) VALUES ('$req->serialnumber','$req->variable','$req->value',now())");
+        }
+        return $response;
     }
 }

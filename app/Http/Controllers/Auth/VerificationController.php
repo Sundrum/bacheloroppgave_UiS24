@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Emailverification;
+use App\Models\Smsverification;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -23,7 +24,8 @@ class VerificationController extends Controller
     */
     public function getValidation() {
         $validation['mail'] = Emailverification::where('verify_user_id', Auth::user()->user_id)->first();
-        $validation['sms'] = 0;
+        $validation['sms'] = Smsverification::where('verify_user_id', Auth::user()->user_id)->first();
+        $validation['user'] = User::where('user_id', Auth::user()->user_id)->first();
         return $validation;
     }
 
@@ -34,13 +36,13 @@ class VerificationController extends Controller
 
         if($validation) {
             $validation->verify_email = $user->user_email;
-            $validation->verify_token = Str::random(30);
+            $validation->verify_token = mt_rand(1000,9999);
             $validation->save();
             self::sendVerificationEmail($validation);
         } else {
             $verify = new Emailverification;
             $verify->verify_email = $user->user_email;
-            $verify->verify_token = Str::random(30);
+            $verify->verify_token = mt_rand(1000,9999);
             $verify->verify_user_id = $user->user_id;
             $verify->save();
 
@@ -51,23 +53,67 @@ class VerificationController extends Controller
 
     public function requestValidationSMS(Request $req) 
     {
-        $validation = Emailverification::where('verify_user_id', $req->user_id)->first();
+        $validation = Smsverification::where('verify_user_id', $req->user_id)->first();
         $user = User::find($req->user_id);
         if($validation) {
-            $validation->verify_email = $user->user_email;
-            $validation->verify_token = Str::random(30);
+            $validation->verify_phonenumber = trim($user->user_phone_work);
+            $validation->verify_token = mt_rand(1000,9999);
             $validation->save();
-            self::sendVerificationEmail($validation);
+            
+            $string = "Verification code: ". $validation->verify_token;
+            return self::sendSMS($user->user_phone_work, $string);
         } else {
-            $verify = new Emailverification;
-            $verify->verify_email = Auth::user()->user_email;
-            $verify->verify_token = Str::random(30);
-            $verify->verify_user_id = Auth::user()->user_id;
+            $verify = new Smsverification;
+            $verify->verify_phonenumber = trim($user->user_phone_work);
+            $verify->verify_token = mt_rand(1000,9999);
+            $verify->verify_user_id = $user->user_id;
             $verify->save();
-
-            self::sendVerificationEmail($verify);
+            
+            $string = "Verification code: ". $verify->verify_token;
+            return self::sendSMS($user->user_phone_work, $string);
         }
-        return 1;
+    }
+
+    public function verifySMS(Request $req) {
+        $validation = Smsverification::where('verify_user_id', $req->user_id)->first();
+        $user = User::where('user_id', Auth::user()->user_id)->first();
+        if($validation) {
+            if($req->code) {
+                if($req->code == $validation->verify_token) {
+                    $validation->phonenumber_verified = true;
+                    $user->phone_verified = true;
+                    $user()->save();
+                    return $validation->save();
+                } else {
+                    return '4';
+                }
+            } else {
+                return '3';
+            }
+        } else {
+            return '2';
+        }
+    }
+
+    public function verifyMail(Request $req) {
+        $validation = Emailverification::where('verify_user_id', $req->user_id)->first();
+        $user = User::where('user_id', Auth::user()->user_id)->first();
+        if($validation) {
+            if($req->code) {
+                if($req->code == $validation->verify_token) {
+                    $validation->email_verified = true;
+                    $user->email_verified = true;
+                    $user()->save();
+                    return $validation->save();
+                } else {
+                    return '4';
+                }
+            } else {
+                return '3';
+            }
+        } else {
+            return '2';
+        }
     }
 
     public static function sendVerificationEmail ($verify) 

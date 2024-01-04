@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Unit;
+use App\Models\Sensorunit;
+use App\Models\Sensoraccess;
+use App\Models\Messagereceiver;
+use App\Models\Irrigationrun;
 
 class SensorunitController extends Controller
 {
@@ -57,5 +61,22 @@ class SensorunitController extends Controller
             }
         }
         return $sorted;
+    }
+
+    public function deleteRun(Request $req) {
+        $run = Irrigationrun::find($req->id);
+        $response = $run->delete();
+        return $response;
+    }
+
+    public function getNotification($serialnumber) {
+        $response['unit'] = Sensorunit::where('serialnumber', $serialnumber)->first();
+        $response['notifications'] = Messagereceiver::where('sensorunits_id_ref', $response['unit']->sensorunit_id)->first();
+        $response['users'] = Sensoraccess::select('users.user_name as user_name', 'users.user_email as user_email', 'users.user_phone_work as user_phone_work', 'users.email_verified as email_verified', 'users.phone_verified as phone_verified')->where('serialnumber', $serialnumber)->join('users', 'sensoraccess.user_id', 'users.user_id')->get();
+        return $response;
+    }
+
+    public function setNotification(Request $req) {
+        return $req;
     }
 }

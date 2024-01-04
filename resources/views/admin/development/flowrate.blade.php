@@ -2,12 +2,11 @@
 
 @section('content')
 <section class="">
-    <h1 class="text-center"> Flowrate Calculator</h1>
     <div class="row">
-        <div class="col-md-12 mt-2 mb-2">
+        <div class="col-md-6 offset-md-3 my-2 card-rounded bg-white p-3">
             <div class="form-group row">
                 <label for="serialnumber" class="col-md-3 col-form-label text-left"><h5>Select sensorunit</h5></label>
-                <select class="col-md-4"name="serialnumber" id="serialnumber" style="border-radius: 25px">
+                <select class="col-md-6 " name="serialnumber" id="serialnumber">
                     @foreach ($sensorunit as $unit)
                         <option value="{{$unit->serialnumber ?? ''}}">{{$unit->serialnumber ?? ''}}</option>
                     @endforeach
@@ -15,10 +14,10 @@
             </div>
             <div class="form-group row">
                 <label for="run" class="col-md-3 col-form-label text-left"><h5>Run</h5></label>
-                <input class="col-md-4" type="number" value="10" name="run" id="run" style="border-radius: 25px"> 
+                <input class="col-md-2" type="number" value="10" name="run" id="run"> 
             </div>
             
-            <div class="btn btn-primary-filled" onclick="calculate()">Calculate</div>
+            <div class="btn-7s" onclick="calculate()">Calculate</div>
         </div>
 
             <div class="card-body mt-2">
@@ -28,6 +27,7 @@
 </section>
 
 <script>
+    setTitle("Flowrate Calculator");
     function calculate() {
         var serialnumber = document.getElementById("serialnumber").value;
         var run = document.getElementById("run").value;

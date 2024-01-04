@@ -80,7 +80,7 @@
                         <span class="text-center">Flow Velocity</span>
                     </div>
                     <div class="row">
-                        <span class="text-center">{{$variable['latest']['vibration'] ?? ''}}m/s</span>
+                        <span class="text-center">{{$variable['latest']['flow_velocity'] ?? ''}}m/s</span>
                     </div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
             <hr class="m-0">
             <div class="row">
                 <div class="col-6">
-                    Auto Start
+                    Autostart
                 </div>
                 <div class="col-6 float-end">
                     <label class="switch" for="auto_start">
@@ -401,6 +401,9 @@
 </section>
 <script>
 document.getElementById("top-title").innerHTML = document.getElementById("serialnumber").innerHTML;
+
+const unit = @json($variable);
+console.log(unit);
 
 $('#changeserial').click( function () {
         $('#changeSerialModal').modal('show');

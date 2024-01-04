@@ -1,12 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-{{-- Sortable CDN --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" SameSite="none Secure"></script> --}}
-{{-- CSS for irrigation slider --}}
-{{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/slider.css') }}"> --}}
-{{-- CSS for sensorunit live dot (circle) --}}
-{{-- <link rel="stylesheet" type="text/css" href="{{ url('/css/dot.css') }}"> --}}
+
 <script> 
     setTitle(@json( __('navbar.dashboard')));
 </script>

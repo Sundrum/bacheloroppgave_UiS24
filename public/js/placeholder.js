@@ -26,7 +26,7 @@ function setCustomer(text) {
 
 function errorMessage(text) {
     const infoMessage = document.createElement('div');
-    infoMessage.className = "message";
+    infoMessage.className = "message-r";
     infoMessage.appendChild(document.createTextNode(text));
     
     const contentMain = document.getElementById("content-main");
@@ -34,7 +34,7 @@ function errorMessage(text) {
         contentMain.appendChild(infoMessage);
         
         if ($) { // make sure jQuery is loaded
-            $(".message")
+            $(".message-r")
                 .fadeTo(4000, 0.8) // change to 0.8 -> 80%
                 .slideUp(500, function() {
                     $(this).remove(); // use $(this) instead of $(".message")

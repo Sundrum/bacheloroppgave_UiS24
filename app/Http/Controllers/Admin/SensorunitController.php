@@ -271,6 +271,7 @@ class SensorunitController extends Controller
             $customnum = $temp[1];
             $unit->dbname = 'sensordata_'.$customnum;
             $unit->customer_id_ref = $customer->customer_id;
+            $unit->block = $req->blocked;
             $unit->save();
 
             return Redirect::to('admin/sensorunit/'.$unit->sensorunit_id);

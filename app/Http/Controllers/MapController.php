@@ -8,7 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Models\Irrigationrun;
 use App\Models\Api;
 
-use DateTime, Log;
+use DateTime, Log, DB;
 
 class MapController extends Controller {
 
@@ -166,6 +166,7 @@ class MapController extends Controller {
 
     public function updatePoint(Request $request)
     {
+        self::setActivity("Irrigation point updated", "updatepoint");
         $lat = $request->lat;
         $lng = $request->lng;
         $distance = $request->distance;
@@ -178,6 +179,7 @@ class MapController extends Controller {
     }
 
     public function fleetmanagement() {
+        self::setActivity("Entered fleetmanagement", "fleetmanagement");
         $irrigationunits = Unit::getLatestIrrigation();
         foreach($irrigationunits as &$unit) {
             $unit['currentRun'] = Unit::getNewestIrrigationLog($unit['serialnumber']);
@@ -206,9 +208,68 @@ class MapController extends Controller {
                 $temp[$row['timestamp']][$row['probenumber']] = (float)$row['value'];
             }
         }
+
+        $config = DB::connection('sensordata')->select('SELECT * FROM config WHERE serialnumber = ? ORDER BY variable ASC', [$run->serialnumber]);
+        foreach ($config as $variable) {
+            $response['config'][trim($variable->variable)] = trim($variable->value);
+        }
+
+
         $response['run'] = $run;
         $response['log'] = array_values($temp);
         return json_encode($response);
+    }
+
+    public function irrigationFlow(Request $req) {
+        $run = Irrigationrun::where('log_id', $req->id)->first();
+        $start = new DateTime($run->irrigation_starttime);
+        $stop = new DateTime($run->irrigation_endtime);
+        $interval = $start->diff($stop);
+        $minutes = $interval->format('%i');
+        $hours = $interval->format('%h');
+
+        $A = 0.005410608;
+        $A = 0.0059032;
+        $readable =  $interval->format('%h hour(s) %i minutes(s)');
+
+        $data = Api::getApi('sensorunits/data?serialnumber='.$run->serialnumber.'&timestart='.substr($run->irrigation_starttime, 0, 19).'&timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp');
+        $total = 0;
+        $count = 0;
+        foreach ($data['result'] as $probe) {
+            if($probe['probenumber'] == 22) {
+                if($probe['value'] !== '0') {
+                    if($probe['value'] > '1.3') {
+                        $result[] = $probe['value'];
+                        $total += $probe['value'];
+                        $count++;
+                    }
+                }
+            }
+        }
+        $min = min($result);
+        $max = max($result);
+        $flow_v = $total / $count;
+        $flow = $A * ($flow_v*3600);
+        $timespent = ($hours*60) + $minutes;
+        $active = $timespent/60;
+        $total_flow = $flow * $active;
+        //dd($minutes, $readable, $total, $timespent, $flow_v, $flow, $active, $total_flow);
+
+        $response['min'] = round($min, 3); // m/s
+        $response['max'] = round($max, 3); // m/s
+        $response['avg'] = round($flow_v, 3); // m/s
+        $response['flowrate'] = round($flow,2); // m3/h*
+        $response['time'] = $readable;
+        $response['water_applied'] = round($total_flow,2); // m3*
+
+        return json_encode($response);
+    }
+
+    public function updateNotes(Request $req) {
+        $run = Irrigationrun::where('log_id', $req->id)->first();
+        $run->irrigation_note = $req->notes;
+        $response = $run->save();
+        return $response;
     }
 
 }

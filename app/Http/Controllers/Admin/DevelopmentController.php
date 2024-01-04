@@ -7,23 +7,61 @@ use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Sensorunit;
 use App\Models\Treespecies;
-use App\Http\Controllers\DashboardController;
-use Illuminate\Support\Facades\Auth;
-use DB, DateTime, DateTimeZone, Log;
 use App\Models\Api;
 use App\Models\Irrigationrun;
 use App\Models\Customer;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
+use DB, DateTime, DateTimeZone, Log, Session;
 use Illuminate\Support\Facades\Http;
-use Session;
+use Symfony\Component\Process\Process;
 
 class DevelopmentController extends Controller
 {
+
+    public function gateway() {
+        $serial = request()->gateway;
+        $date = date('M');
+        $day = date('j');
+        if ($day < 9) {
+            $today = $date."  ".$day;
+        } else {
+            $today = $date." ".$day;
+        }
+        $result = Process::fromShellCommandline("ls -la /home/sensorbackup/$serial.* | grep '$today'");
+        $result->run();
+        $response = $result->getOutput();
+        Log::info($response);
+        return $response;
+    }
+
+    public function logGateway(Request $req) {
+        if($req->path) {
+            $result = Process::fromShellCommandline("cat $req->path");
+            $result->run();
+            $response = $result->getOutput();
+            return $response;
+        } else {
+            return 1;
+        }
+    }
     
     public function compass() {
         return view('admin.development.compass');
     }
 
     public function graph() {
+        $serialnumber = '21-1020-AC-00301';
+        $variable = DB::connection('sensordata')->select("SELECT serialnumber, 
+                                                            max(case when(variable='sequencenumber') then value else NULL end) as sequencenumber, 
+                                                            max(case when(variable='resetcode') then value else NULL end) as resetcode,
+                                                            max(case when(variable='rebootcounter') then value else NULL end) as rebootcounter    
+                                                            FROM status 
+                                                            WHERE serialnumber LIKE  '%21-1020-AC-%' 
+                                                            GROUP BY  serialnumber LIMIT 10");
+        // dd($variable);
+        //$variable = DB::connection('sensordata')->select("SELECT * FROM status WHERE serialnumber = '$serialnumber' ORDER BY variable ASC");
         return view('admin.development.graph');
     }
 
@@ -35,43 +73,66 @@ class DevelopmentController extends Controller
     public function processLog(Request $req) {
 
         $prod = array();
-        $i = 0;
         $production_log = trim($req->production_log);
         $production_log_temp = explode("\n", $production_log);
         $production_log_temp = array_filter($production_log_temp, 'trim');
         
         foreach($production_log_temp as $line) {
-            if(strlen($line) > 50) {
+            if(strlen($line) > 60) {
                 $pieces = explode(";", $line);
                 $main_pieces = explode(",", $pieces[4]);
-                $prod[$i]['imei'] = trim($main_pieces[1]);
-                $prod[$i]['imsi'] = $main_pieces[0];
-                $prod[$i]['iccid'] = $main_pieces[4];
-                $prod[$i]['serial'] = $pieces[0];
-                $prod[$i]['checked'] = false;
-                $i++;
+                $prod[trim($main_pieces[1])]['imei'] = trim($main_pieces[1]);
+                $prod[trim($main_pieces[1])]['imsi'] = $main_pieces[0];
+                $prod[trim($main_pieces[1])]['iccid'] = $main_pieces[4];
+                $prod[trim($main_pieces[1])]['serial'] = $pieces[0];
+                $prod[trim($main_pieces[1])]['checked'] = 0;
             }
         }
+
+        $prod = array_values($prod);
+        usort($prod, function($a, $b) {
+            return $a['serial'] <=> $b['serial'];
+        });
+
 
         $serial_imei = trim($req->serial_imei);
         $serial_imei_temp = explode("\n", $serial_imei);
         $serial_imei_temp = array_filter($serial_imei_temp, 'trim');
+        $not_found = array();
+        $duplicates_imeilist = array();
 
         foreach($serial_imei_temp as $line) {
-            $main_pieces = explode(",", $line);
-            $imei = trim($main_pieces[1]);
-            foreach ($prod as &$unit) {
-                if($unit['imei'] == $imei) {
-                    $unit['serial'] = '21-1044-AA-0'.$main_pieces[0];
-                    $unit['checked'] = true;
+            $imei = trim($line);
+            $counter = 0;
+            foreach ($serial_imei_temp as $line_check) {
+                $imei_check = trim($line_check);
+                if($imei == $imei_check) {
+                    $counter++;
+                    if($counter > 1) {
+                        if(!in_array($imei, $duplicates_imeilist)) {
+                            $duplicates_imeilist[] = $imei;
+                        }
+                    }
                 }
             }
+            $found = false;
+            foreach ($prod as &$unit) {
+                if($unit['imei'] == $imei) {
+                    $unit['serial'] = $unit['serial'];
+                    $unit['checked'] += 1;
+                    $found = true;
+                }
+            }
+
+            if(!$found) {
+                $not_found[] = $imei;
+            }
         }
-        $feedback = "";
-        foreach ($prod as $unit) {
-            $feedback .= ''.$unit['imei'].','.(string)$unit['imsi'].','.(string)$unit['iccid'].','.(string)$unit['serial'].';;'.$unit['checked'].'<br>';
-        }
-        return $feedback;
+        
+        $response['duplicates_imeilist'] = $duplicates_imeilist;
+        $response['not_found'] = $not_found;
+        $response['result'] = $prod;
+        return $response;
     }
 
     public function farmfield($serial) {
@@ -122,16 +183,16 @@ class DevelopmentController extends Controller
         $hours = $interval->format('%h');
 
         $A = 0.005410608;
-
+        $A = 0.0059032;
         $readable =  $interval->format('%h hour(s) %i minutes(s)');
 
         $data = Api::getApi('sensorunits/data?serialnumber='.$serial.'&timestart='.substr($run->irrigation_starttime, 0, 19).'&timestop='.substr($run->irrigation_endtime, 0, 19).'&sortfield=timestamp');
         $total = 0;
         $count = 0;
         foreach ($data['result'] as $probe) {
-            if($probe['probenumber'] == 18) {
+            if($probe['probenumber'] == 22) {
                 if($probe['value'] !== '0') {
-                    if($probe['value'] > '1.7') {
+                    if($probe['value'] > '1.3') {
                         $result[] = $probe['value'];
                         $total += $probe['value'];
                         $count++;
@@ -148,7 +209,7 @@ class DevelopmentController extends Controller
         $total_flow = $flow * $active;
         //dd($minutes, $readable, $total, $timespent, $flow_v, $flow, $active, $total_flow);
 
-        $text = '<div class="rcorners3 bg-white"><div class="m-2"><b>Calculations of Flowrate m<sup>3</sup>/h - '.$serial.', Run: '.$run_input.' </b> <hr><div class="row"><div class="col-md-6">Min Flow Velocity ' .round($min, 3). ' m/s</div><div class="col-md-6">Max Flow Velocity: '.round($max, 3).' m/s </div></div><hr><div class="row"><div class="col-md-6">Flow Velocity ' .round($flow_v, 3). ' m/s</div><div class="col-md-6">Flowrate: '.round($flow, 2).' m<sup>3</sup>/h </div></div><hr><div class="row"><div class="col-md-6">Time ' .$readable. '</div></div><div class="row"><div class="col-md-6">Total amount of water from run ' .round($total_flow,2). ' m<sup>3</sup>/h*</div></div><hr><div class="row"><div class="col-md-12"><small>*The calculation removes any flow velocity measurement under 1.7m/s and the time used is raw.</small></div></div></div></div>';
+        $text = '<div class="rcorners3 bg-white"><div class="m-2"><b>Calculations of Flowrate m<sup>3</sup>/h - '.$serial.', Run: '.$run_input.' </b> <hr><div class="row"><div class="col-md-6">Min Flow Velocity ' .round($min, 3). ' m/s</div><div class="col-md-6">Max Flow Velocity: '.round($max, 3).' m/s </div></div><hr><div class="row"><div class="col-md-6">Flow Velocity ' .round($flow_v, 3). ' m/s</div><div class="col-md-6">Flowrate: '.round($flow, 2).' m<sup>3</sup>/h* </div></div><hr><div class="row"><div class="col-md-6">Time ' .$readable. '</div></div><div class="row"><div class="col-md-6">Total amount of water from run ' .round($total_flow,2). ' m<sup>3</sup>*</div></div><hr><div class="row"><div class="col-md-12"><small>*The calculation removes any flow velocity measurement under 1.3m/s and the time used is raw.</small></div></div></div></div>';
         return json_encode($text);
     }
 
@@ -171,7 +232,6 @@ class DevelopmentController extends Controller
         } else if ($woodmoisture < 6) {
             return '< 6';
         }
-        round($woodmoisture,2);
         Log::info('Woodmoisture content: ' .round($woodmoisture,2). ' By user: '.Auth::user()->user_name);
         return round($woodmoisture,2);
     }

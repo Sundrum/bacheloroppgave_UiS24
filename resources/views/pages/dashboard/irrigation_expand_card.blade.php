@@ -129,26 +129,24 @@
                 </div>
             @endif
         </div>
-        <div class="row mt-3">
-            <div class="col text-center">
-                <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'><button class="btn-7s float-right">@lang('dashboard.openmap')</button></a>
+        <div class="row mt-3 pb-3">
+            <div class="col-6 text-center">
+                <a href='/include/view_irrigation.php?unit={{$irrUnit['serialnumber']}}'><button class="btn-7s">@lang('dashboard.openmap')</button></a>
             </div>
             
             @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] == '4' || $irrUnit['latest']['state'] == '5' || $irrUnit['latest']['state'] == '6'))
-                <div class="col text-center">
-                    <label class="switch">
-                        <input type="checkbox" @if(isset($irrUnit['variable']['irrigation_portalstop']) && $irrUnit['variable']['irrigation_portalstop'] == '1') @else checked @endif onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                        <span class="slider round"></span>
-                    </label>
-                    <div class="row">
-                        <span>OFF/ON</span>
-                    </div>
+                <div class="col-6 text-center my-auto">
+                    @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1')
+                        <button  onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn-7r" value="stop" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">Stop</button>
+                    @else
+                        <button  onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn-7g" value="start" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">Start</button>
+                    @endif
                 </div>
             @endif
 
             @if (Auth::user()->roletype_id_ref > 80)
-            <div class="col">
-               <a href='/admin/irrigationstatus/{{$irrUnit['serialnumber']}}'><button class="btn-7r float-right">ADMIN</button></a>
+            <div class="col-6 text-center">
+               <a href='/admin/irrigationstatus/{{$irrUnit['serialnumber']}}'><button class="btn-7r my-auto p-auto">ADMIN</button></a>
             </div>
             @endif
             <div class="col text-center">

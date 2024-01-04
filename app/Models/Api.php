@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
-
+use Log;
 use Redirect;
 
 class Api extends Model {
@@ -278,5 +278,64 @@ class Api extends Model {
                 return 'error';
             }
         }
+    }
+
+    public static function SMS($content) {
+        $client = new Client();
+        
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => env('API_SMS_TOKEN'),
+            'charset' => 'utf-8',
+        ];
+
+        try {
+            $response = $client->post(env('API_SMS_URL'), [
+                'headers' => $headers,
+                'body' => $content,
+                'timeout' => 10,
+            ]);
+            $data = $response->getBody()->getContents();
+            $data = json_decode($data,true);
+            return $data;
+
+        } catch (RequestException $e) {
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            } 
+        }
+    }
+
+    public static function postOpenAi($dataset) {
+        $client = new Client();
+        
+        $headers = [
+            'Authorization' => env('API_OPENAI_TOKEN'),
+            'Content-Type' => "application/json"
+        ];
+
+        try {
+            $response = $client->post(env('API_OPENAI_URL'), [
+                'headers' => $headers,
+                'body' => json_encode($dataset,true),
+                'timeout' => 80,
+            ]);
+            $data = $response->getBody()->getContents();
+            return $data;
+        } catch (RequestException $e) {
+            Log::error($e);
+            if ($e->getResponse()->getStatusCode() == '400') {
+                return 'error';
+            } else if ($e->getResponse()->getStatusCode() == '500'){
+                return 'error';
+            } else {
+                return $e;
+            }
+        }
+
+        Log::error('Error from Open AI');
+        
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Redirect, Session;
+use Redirect, Session, Log;
  
 
 class LoginController extends Controller
@@ -67,6 +67,7 @@ class LoginController extends Controller
             Auth::login($user, $request->input('remember'));
             Session::put('user_id', Auth::user()->user_id);
             Session::put('customernumber', Auth::user()->customernumber);
+            Log::info('User ID - '.$user->user_id.' logged in with remember - '.$request->remember);
             return Redirect::to('dashboard');
         } else {
             $message = 'Username or password is incorrect';

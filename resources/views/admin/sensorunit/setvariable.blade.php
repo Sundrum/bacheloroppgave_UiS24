@@ -23,6 +23,15 @@
                         <button class="btn-7g" id="state_presettling"><strong>Set State Pre-Settling</strong></button>
                     </div>
                     <div class="col-2 text-center">
+                        <button class="btn-7g" id="idle_interval"><strong>Change idle interval</strong></button>
+                    </div>   
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="pressure_enabled"><strong>Enabled Pressure</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn-7g" id="flow_enabled"><strong>Enabled Flow</strong></button>
+                    </div>
+                    <div class="col-2 text-center">
                         <button class="btn-7g" id="send_packet"><strong>Send packet</strong></button>
                     </div>
                             {{-- <div class="col-4 text-center">
@@ -123,6 +132,33 @@ $('#send_packet').click( function () {
         $('#commandline').val(cmd + ';send_status');
     } else {
         $('#commandline').val('send_status');
+    }
+});
+
+$('#idle_interval').click( function () {
+    var cmd = $('#commandline').val()
+    if(cmd) {
+        $('#commandline').val(cmd + ';10,14,15');
+    } else {
+        $('#commandline').val('10,14,15');
+    }
+});
+
+$('#pressure_enabled').click( function () {
+    var cmd = $('#commandline').val()
+    if(cmd) {
+        $('#commandline').val(cmd + ';10,33,1');
+    } else {
+        $('#commandline').val('10,33,1');
+    }
+});
+
+$('#flow_enabled').click( function () {
+    var cmd = $('#commandline').val()
+    if(cmd) {
+        $('#commandline').val(cmd + ';10,36,1');
+    } else {
+        $('#commandline').val('10,36,1');
     }
 });
 

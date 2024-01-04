@@ -153,12 +153,11 @@
                             <input type="hidden" name="customer_id" id="customer_id" value="{{$customer->customer_id}}">
                         </div>
                         <hr class="mb-2">
-                        <div class="row mt-1">
-                            <div class="col-6">
-                                <button class="btn-7s col-12" data-toggle="collapse" aria-expanded="false" aria-controls="sendOrderConfirmation" data-target="#sendOrderConfirmation">Send Order Confirmation</button>
-                            </div>
-                            <div class="col-6">
-                                <a class="" href="/admin/customer/edit/{{$customer->customer_id ?? ''}}"><button class="btn-7g col-12">Edit</button></a>
+                        <div class="row mt-1 text-center">
+                            <div class="col-12">
+                                <button class="btn-7s" data-toggle="collapse" aria-expanded="false" aria-controls="sendOrderConfirmation" data-target="#sendOrderConfirmation">Send Order Confirmation</button>
+                                <a class="" href="/payment/generate?customerId={{$customer->customer_id ?? ''}}"><button class="btn-7r">Generate Payment</button></a>
+                                <a class="" href="/admin/customer/edit/{{$customer->customer_id ?? ''}}"><button class="btn-7g">Edit</button></a>
                             </div>
                         </div>
                     </div>

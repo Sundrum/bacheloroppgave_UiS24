@@ -29,6 +29,15 @@
             </div>
             <div class="row">
               <div class="col-6">
+                <span>ID #</span>
+              </div>
+              <div class="col-6">
+                <span id="runid"></span>
+              </div>
+            </div>
+            <hr class="my-1">
+            <div class="row">
+              <div class="col-6">
                 <span>@lang('general.totaldistance')</span>
               </div>
               <div class="col-6">
@@ -46,15 +55,24 @@
             </div>
             <hr class="my-1">
             <div class="row">
-              <div class="col-6">
-                <span>ID #</span>
+              <div class="col-12 col-md-6">
+                <span>Notes</span>
               </div>
-              <div class="col-6">
-                <span id="runid"></span>
+              <div class="col-12 col-md-6">
+                <textarea id="notes" rows="3" cols="25" oninput="updateNotes()"></textarea>
               </div>
             </div>
+            <div id="flow_info"></div>
+            <hr class="my-1">
+            <table id="log"></table>
           </div>
           <div class="card-rounded" id="map_1" style="height: 500px; position:relative; width:100%;"></div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-center">
+            <button class="btn-7g" onclick="showLog()">View log</button>
+            <button class="btn-7r" onclick="deleteRun()">Delete</button>
+          </div>
         </div>
       </div>
   </div>
@@ -64,6 +82,8 @@
 const user = @json(Auth::user());
 setTitle('Calendar');
 getIrrigationLog();
+let log;
+let table;
 function getIrrigationLog() {    
   $.ajax({
     url: "/irrigation/run",
@@ -134,15 +154,17 @@ function initCalendar(irrigationEvents) {
         url: '/irrigation/runlog/'+info.event.id,
         dataType: 'json',      
         success: function( data ) {
-          console.log(data)
           removeMarkers();
-          document.getElementById("runid").innerText = data.run.irrigation_run_id + " ("+ data.run.log_id+") ";
-
+          console.log($('#log'));
+          document.getElementById("runid").innerText = data.run.log_id;
+          document.getElementById("flow_info").innerText = "";
+          log = data.log;
+          if($.fn.DataTable.isDataTable( '#log' )) $('#log').DataTable().clear().destroy();
           startpoint = data.run.irrigation_startpoint.split(",");
           endpoint = data.run.irrigation_endpoint.split(",");
           var starttime = new Date(data.run.irrigation_starttime).getTime();
           var endtime = new Date(data.run.irrigation_endtime).getTime();
-
+          document.getElementById("notes").value = data.run.irrigation_note;
           let totaltime = toHoursAndMinutes((endtime-starttime)/1000);
           if(user.user_language == 1) {
             document.getElementById("totalTime").innerText = totaltime.h +" timer " + totaltime.m + " minutter";
@@ -150,6 +172,40 @@ function initCalendar(irrigationEvents) {
             document.getElementById("totalTime").innerText = totaltime.h +" hours " + totaltime.m + " minutes";
           }
           setPoints(startpoint, endpoint);
+          if(data.config?.us_enable) {
+            $.ajax({
+              url: '/irrigation/flow',
+              type: 'POST',
+              dataType: 'json',
+              data: { 
+                  "id": data.run.log_id,
+                  "_token": token,
+              },
+              success: function(flow) {
+                let flow_info = document.getElementById("flow_info");
+                let hr = `<hr class="my-1">`;
+                let text = `${hr} <div class="row"> 
+                                    <div="col-12"><strong>Flow Calculations</strong></div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="col-6 col-md-3">Min Flow Velocity</div>
+                                    <div class="col-6 col-md-3">${flow.min} m/s</div>
+                                    <div class="col-6 col-md-3">Max Flow Velocity</div>
+                                    <div class="col-6 col-md-3">${flow.max} m/s</div>
+                                    <div class="col-6 col-md-3">Average Flow Velocity</div>
+                                    <div class="col-6 col-md-3">${flow.avg} m/s</div>
+                                    <div class="col-6 col-md-3">Flowrate</div>
+                                    <div class="col-6 col-md-3">${flow.flowrate} m<sup>3</sup>/h*</div>
+                                    <div class="col-12">Total amount of water applied for this run ${flow.water_applied} m<sup>3</sup>*</div>
+                                    <div class="text-muted">*The calculation removes any flow velocity measurement under 1.3m/s.</div>
+                                  </div>`;
+                flow_info.innerHTML = text;
+              },   
+              error: function(data) {
+                  console.log(data);
+              }
+            });
+          }
         },
         error: function( data ) {
             errorMessage(@json(__('general.somethingwentwrong')));
@@ -163,6 +219,84 @@ function initCalendar(irrigationEvents) {
 
   });
   calendar.render();
+}
+
+function deleteRun() {
+    
+    var confirmed = confirm('Do you want to delete this run?' + document.getElementById('runid').innerText);
+    if(confirmed) {
+        $.ajax({
+            url: "/irrigation/deleterun",
+            type: 'POST',
+            dataType: 'json',
+            data: { 
+                "id": document.getElementById('runid').innerText,
+                "_token": token,
+            },
+            success: function(data) {
+                console.log(data);
+                successMessage('You successfully deleted this run');
+                
+            },   
+            error: function(data) {
+                console.log(data);
+                errorMessage('Something went wrong');
+            }
+        });
+    } else {
+        successMessage('Cancelled');
+    }
+
+}
+
+function showLog() {
+  table = $('#log').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+        'excelHtml5',
+        'csvHtml5',
+        'pdfHtml5'
+    ],
+    data: log,
+    pageLength: 25, // Number of entries
+    responsive: true, // For mobile devices
+    sorting: [ [0,'ASC'],[5,'ASC']],
+    columnDefs : [{ 
+      responsivePriority: 1, targets: 4,
+        'targets': 0,
+        'checboxes': {
+            'selectRow': true
+        },
+    }],
+    'select': {
+        style: 'multi'
+    },
+    columns: [
+      { 
+        title: "Timestamp",
+        data: "0",
+        defaultContent: "",
+        render: function(data) {
+          return moment(data).format('YYYY-MM-DD HH:mm:ss');
+        }
+      },
+      { title: "Vib", 
+      data: "1",
+      defaultContent: ""},
+      { title: "Lat",
+      data: "13",
+      defaultContent: "" },            
+      { title: "Lng",
+      data: "14",
+      defaultContent: "" },
+      { title: "Bar",
+      data: "21",
+      defaultContent: "" },
+      { title: "Velocity",
+      data: "22",
+      defaultContent: "" },
+    ],
+  });
 }
 
 function getColor(input) {
@@ -278,6 +412,31 @@ function toHoursAndMinutes(totalSeconds) {
   return { h: hours, m: minutes, s: seconds };
 }
 
+
+function updateNotes() {
+  console.log(document.getElementById("notes").value);
+  console.log(document.getElementById("runid").innerHTML);
+
+  $.ajax({
+    url: "/irrigationlog/update",
+    type: 'POST',
+    dataType: 'json',
+    data: { 
+        "id": document.getElementById('runid').innerText,
+        "notes": document.getElementById('notes').value,
+        "_token": token,
+    },
+    success: function(data) {
+        console.log(data);
+        successMessage('Note updated');
+        
+    },   
+    error: function(data) {
+        console.log(data);
+        errorMessage('Something went wrong');
+    }
+  });
+}
 
 </script>
 

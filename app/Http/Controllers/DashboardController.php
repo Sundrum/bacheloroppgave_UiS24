@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Unit;
 use App\Models\Sensorprobevariable;
 use App\Models\SensorunitVariable;
+use App\Models\Sensorlatestvalues;
+use App\Models\Sensorunit;
 use App\Models\Treespecies;
 use Lang;
-use Session, Redirect, DateTime, DateTimeZone;
+use Session, Redirect, DateTime, DateTimeZone, DB;
 
 
 class DashboardController extends Controller
@@ -91,12 +93,48 @@ class DashboardController extends Controller
         return $comment;
     }
 
-    public static function startIrrigation(Request $request) {
-        $serial = $request->serial;
-        $variable = $request->variable;
-        $data = Unit::startIrrigation($serial, $variable);
+    public static function startIrrigation(Request $req) {
+        $response['data'] = Unit::startIrrigation($req->serial, $req->variable);
+        $response['unit'] = self::irrigationInfoText($req->serial);
+        return $response;
+    }
 
-        return $data;
+    public static function irrigationInfoText($serial) {
+        $unit = Sensorunit::where('serialnumber',$serial)->first();
+        $unit['state'] = Sensorlatestvalues::select('value')->where('serialnumber', $serial)->where('probenumber', 0)->first();
+        $unit['variables'] = DB::connection('sensordata')->select("SELECT config.serialnumber, 
+                    max(case when(config.variable='idle_off_season_send_interval') then config.value else NULL end) as idle_off_season_send_interval,
+                    max(case when(config.variable='irrigation_send_interval') then config.value else NULL end) as irrigation_send_interval,
+                    max(case when(config.variable='idle_send_interval') then config.value else NULL end) as idle_send_interval
+                    FROM config
+                    WHERE config.serialnumber = '$serial'
+                    GROUP BY config.serialnumber");
+
+        if($unit['serialnumber'] == $serial) {
+            if ($unit['state']->value == 7) {
+                $interval = 1440*60;
+                if ($unit['variables'][0]->idle_off_season_send_interval) $interval = $unit['variables'][0]->idle_off_season_send_interval*60;
+                //if($unit['variables']->idle_off_season_send_interval)
+                $unit['current_status'] = 'Winter';
+            } else if ($unit['state']->value == 4 || $unit['state']->value == 5 || $unit['state']->value == 6) {
+                $unit['current_status'] = 'Irrigation';
+                $interval = 10*60;
+                if ($unit['variables'][0]->irrigation_send_interval) $interval = $unit['variables'][0]->irrigation_send_interval*60;
+
+            } else {
+                $unit['current_status'] = 'Not irrigation';
+                $interval = 60*60;
+                if ($unit['variables'][0]->idle_send_interval) $interval = $unit['variables'][0]->idle_send_interval*60;
+            }
+            $unit['interval'] = $interval;
+            $time = strtotime($unit['sensorunit_lastconnect']);
+            $unit['time'] = $time;
+            //$unit['next_update'] = date('H:i', $time);
+        } else {
+            $unit = null;
+        }
+
+        return $unit;
     }
 
     public static function getOrder () {

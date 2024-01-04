@@ -12,7 +12,6 @@
                     @foreach ($sensorunits['groups'] as $group)
                         @if($group['viewgroup_id'] !== '0')
                             <div class="card-header mb-2">
-                            {{-- {{ dd($group)}} --}}
                                 <input type="hidden" name="result[{{$group['viewgroup_id']}}][viewgroup_id]" value="{{$group['viewgroup_id']}}">
                                 <div class="form-group">
                                     <label for="groupName{{$group['viewgroup_id']}}">Group Name</label>

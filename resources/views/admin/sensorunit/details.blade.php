@@ -53,6 +53,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="customer_id_ref" class="col-md-4 col-form-label">Block sendings</label>
+                                <div class="input-group col-md-8"> 
+                                    <div class="input-group">
+                                        <input type="checkbox" name="blocked" id="blocked" @if($unit->block) checked @endif>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <input type="hidden" id="sensorunit_id" name="sensorunit_id" value="{{$unit->sensorunit_id ?? ''}}">
                             <div class="form-row justify-content-center">
                                 <div class="col-12 text-center">

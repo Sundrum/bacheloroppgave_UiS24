@@ -150,115 +150,36 @@ class IrrigationController extends Controller
 
 
     public static function updateStatusPage(){
-        $data = Sensorunit::select('sensorunits.*', 'customer.customer_name')->where('serialnumber', 'LIKE', '%21-1020-AC%' )->join('customer', 'customer.customer_id', 'sensorunits.customer_id_ref')->get();
-        $sorted = array();
-        $result = array();
-        foreach ($data as &$unit) {
-            if (isset($unit['serialnumber'])) {
-                $serial = trim($unit['serialnumber']);
-                // if( substr($unit['serialnumber'], 0,10) == "21-1020-AA" ||  substr($unit['serialnumber'], 0,10) == "21-1020-AB") {
-                //     $status = Status::where('serialnumber', $serial)->where('variable', 'swversion')->first();
-                //     $status = $status->value ?? '';
-                // } else {
-                
-                // $record = DB::connection('sensordata')->select('SELECT value FROM status WHERE serialnumber = ?  AND variable = ? LIMIT 1', [$serial,'swversion']);
-                $status = $record[0]->value ?? '';
+        $units = DB::select("SELECT sensorunits.*,
+                                customer.customer_name as customer_name,
+                                max(case when(sensorslatestvalues.probenumber='0') then sensorslatestvalues.value else NULL end) as state 
+                                FROM sensorunits
+                                LEFT JOIN customer ON (sensorunits.customer_id_ref = customer.customer_id)
+                                LEFT JOIN sensorslatestvalues ON (sensorunits.serialnumber = sensorslatestvalues.serialnumber AND sensorslatestvalues.probenumber='0')
+                                WHERE sensorunits.serialnumber LIKE '%21-1020-AC%'
+                                GROUP BY sensorunits.serialnumber, customer.customer_name");
+        $proxy_variables = DB::connection('sensordata')->select("SELECT status.serialnumber, 
+                                    max(case when(status.variable='swversion') then status.value else NULL end) as swversion,
+                                    max(case when(status.variable='lastconnect') then status.value else NULL end) as lastconnect,
+                                    max(case when(status.variable='sequencenumber') then status.value else NULL end) as sequencenumber,
+                                    max(case when(status.variable='rebootcounter') then status.value else NULL end) as rebootcounter,
+                                    max(case when(status.variable='rebootcounter') then status.dateupdated else NULL end) as reboot_at, 
+                                    max(case when(status.variable='resetcode') then status.value else NULL end) as resetcode
+                                    FROM status
+                                    WHERE status.serialnumber LIKE '%21-1020-AC%'
+                                    GROUP BY status.serialnumber");
+        AdminController::processIrrigationArray($units);
 
-                if (isset($unit['sensorunit_lastconnect'])) {
-                    if(!in_array(trim($unit['serialnumber']),$sorted)){
-                        $variables = Unit::getVariables($serial);
-                        if(is_array($variables['result'])) {
-                            foreach ($variables['result'] as $variable) {
-                                if (trim($variable['variable']) == 'irrigation_state') {
-                                    array_push($sorted, trim($unit['serialnumber']));
-                                    $unit['irrigation_state'] = trim($variable['value']);
-                                    $unit['swversion'] = $status ?? null;
-                                    $result[] = $unit;
-                                }
-                            }
-                            if(!isset($unit['irrigation_state'])) {
-                                array_push($sorted, trim($unit['serialnumber']));
-                                $unit['irrigation_state'] = -1;
-                                $unit['swversion'] = $status  ?? null;
-                                $result[] = $unit;
-                            }
-                        } else {
-                            array_push($sorted, trim($unit['serialnumber']));
-                            $unit['irrigation_state'] = -1;
-                            $unit['swversion'] = $status ?? null;
-                            $result[] = $unit;
-                        }
-                    }
+        foreach($units as &$unit) {
+            foreach($proxy_variables as $key => $variable) {
+                if($variable->serialnumber == $unit->serialnumber) {
+                    $unit->variable = $variable;
+                    unset($proxy_variables[$key]);
                 }
             }
+
         }
-        
-        $allirrigation = AdminController::processIrrigationArray($result);
-
-        $dataset = array();
-        $variable = array();
-        $variable['notused'] = 0;
-        $variable['idle'] = 0;
-        $variable['idle_green'] = 0;
-        $variable['settling'] = 0;
-        $variable['irrigation'] = 0;
-        $variable['idle_clock_wait'] = 0;
-        $variable['idle_activity'] = 0;
-        $variable['post_settling'] = 0;
-        $variable['off_season'] = 0;
-
-        $i = 0;
-        foreach ($result as $row) {
-            $dataset[$i][0] = '<a href="/unit/'.$row['serialnumber'].'"><img width="50" height="50" src="'.$row['img'].'"><span style="font-size:0px;">'.$row['sortstate'].'</span></a>';
-            if ($row['sortstate'] == 'state-1') {
-                $variable['notused'] += 1;
-            } else if ($row['sortstate'] == 'state0') {
-                $variable['idle'] += 1;
-            } else if ($row['sortstate'] == 'state1') {
-                $variable['idle_green'] += 1;
-            } else if ($row['sortstate'] == 'state2') {
-                $variable['idle_clock_wait'] += 1;
-            } else if ($row['sortstate'] == 'state3') {
-                $variable['idle_activity'] += 1;
-            } else if ($row['sortstate'] == 'state4') {
-                $variable['settling'] += 1;
-            } else if ($row['sortstate'] == 'state5') {
-                $variable['irrigation'] += 1;
-            } else if ($row['sortstate'] == 'state6') {
-                $variable['post_settling'] += 1;
-            } else if ($row['sortstate'] == 'state7') {
-                $variable['off_season'] += 1;
-            }
-            if ($row['sortstate'] !== 'state-1') {
-                $variable['seq'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'sequencenumber']);
-                if(isset($variable['seq']) && count($variable['seq']) > 0) {
-                    $row['seq'] = $variable['seq'][0]->value;
-                }
-                $variable['resetcode'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'resetcode']);
-                if(isset($variable['resetcode']) && count($variable['resetcode']) > 0) {
-                    $row['resetcode'] = $variable['resetcode'][0]->value;
-                }
-                $variable['rebootcounter'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'rebootcounter']);
-                if(isset($variable['rebootcounter']) && count($variable['rebootcounter']) > 0) {
-                    $row['rebootcounter'] = $variable['rebootcounter'][0]->value;
-                }
-            }
-            if($row['serialnumber']) { $dataset[$i][1]=$row['serialnumber']; } else { $dataset[$i][1] = null; }
-            if($row['sensorunit_location']) { $dataset[$i][2]=$row['sensorunit_location']; } else { $dataset[$i][2] = null; }
-
-            $dataset[$i][3]=$row->customer_name; 
-            if(isset($row['seq'])) { $dataset[$i][4]=trim($row['seq']) ?? null; } else { $dataset[$i][4] = null; }
-            if(isset($row['resetcode'])) { $dataset[$i][5]=trim($row['resetcode']) ?? null; } else { $dataset[$i][5] = null; }
-            if(isset($row['rebootcounter'])) { $dataset[$i][6]=trim($row['rebootcounter']) ?? null; } else { $dataset[$i][6] = null; }
-
-            if($row['sensorunit_lastconnect']) { $dataset[$i][7]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][7] = null; }
-            $dataset[$i][8] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
-
-            $i++;
-        }
-        $feedback['variable'] = $variable;
-        $feedback['data'] = $dataset;
-        $response = json_encode($feedback);
+        $response = json_encode($units);
         return $response;
     }
 
@@ -365,6 +286,18 @@ class IrrigationController extends Controller
         self::changeDBConnection($unit->dbname);
         $check = DB::connection('7sensor')->select("UPDATE sensordata SET value='NaN' WHERE timestamp='$timestamp' AND value='$lat' AND serialnumber='$req->serialnumber'");
         $check = DB::connection('7sensor')->select("UPDATE sensordata SET value='NaN' WHERE timestamp='$timestamp' AND value='$lng' AND serialnumber='$req->serialnumber'");
+        return $check;
+    }
+
+    public function cleanData(Request $req) {
+        $unit = Sensorunit::where('serialnumber', $req->serialnumber)->first();
+        self::changeDBConnection($unit->dbname);
+
+        $starttime = substr($req->starttime,0,16);
+        $endtime = substr($req->endtime,0,16);
+
+
+        $check = DB::connection('7sensor')->select("DELETE FROM sensordata WHERE timestamp BETWEEN '$starttime' AND '$endtime' AND probenumber=22 AND value<'0.05' AND serialnumber='$req->serialnumber'");
         return $check;
     }
 

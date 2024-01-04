@@ -12,10 +12,11 @@ use App\Models\Unit;
 use App\Models\Sensorunit;
 use App\Models\Irrigationrun;
 use App\Models\Api;
+use App\Models\Activity;
 use Lang;
 use App\Models\Customer;
 use App\Models\Treespecies;
-use Auth, Session, Redirect, DateTime, DateTimeZone, DB;
+use Auth, Session, Redirect, DateTime, DateTimeZone, DB, Log;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\MessagesController;
@@ -37,7 +38,8 @@ class Controller extends BaseController
     {
         if(self::checkSubscription() == 0) return view('pages.subscriptionfailed');
         if(self::checkCustomer() == 287) return view('test_folder.demo_uk');
-
+        Log::info('User ID: '. Auth::user()->user_id.' entered dashboard');
+        self::setActivity("Entered Dashboard");
         $irrigationunits = Unit::getLatestIrrigation();
 
         $sensorunits = DashboardController::getOrder();
@@ -58,6 +60,7 @@ class Controller extends BaseController
 
     public function support() 
     {
+        //self::setActivity("Entered support", "support");
         $data = Unit::getUnitsList();
         $units = $data['result'];
         usort($units, function($a, $b) {
@@ -69,16 +72,16 @@ class Controller extends BaseController
                 $timediff= self::getTimestampDifference($unit['sensorunit_lastconnect']);
                 $unit['date_time'] = self::convertToDate($unit['sensorunit_lastconnect']);
                 if ($timediff < 3600) {
-                    $unit['color'] = '#159864';
+                    $unit['status'] = 1;
                 } else {
                     if ($timediff < 9200) {
-                        $unit['color'] = '#DFC04F';
+                        $unit['status'] = 0;
                     } else {
-                        $unit['color'] = '#D10D0D';
+                        $unit['status'] = 0;
                     }
                 }
             } else {
-                $unit['color'] = '#D10D0D';
+                $unit['status'] = 0;
             }
         }
         
@@ -87,6 +90,7 @@ class Controller extends BaseController
 
     public function graph()
     {
+        self::setActivity("Entered graph", "graph");
         if(self::checkSubscription() == 0) return view('pages.subscriptionfailed');
 
         $probes = Unit::getUnitsProbe();
@@ -98,14 +102,26 @@ class Controller extends BaseController
     }
 
     public function myaccount() {
+        self::setActivity("Entered myaccount", "myaccount");
         return view('pages.myaccount');
     }
 
     public function settings() {
+        self::setActivity("Entered settings", "settings");
+
         $sensorunits = Unit::getProbeSettings();
         $irrigationunits = Unit::getIrrigationSettings();
         $customersettings = Customer::getCustomerVariable();
         $users = Customer::getUsers(Session::get('customernumber'));
+        foreach ($users as &$user) {
+            $words = explode(" ", $user->user_name);
+            $acronym = "";
+
+            foreach ($words as $w) {
+                $acronym .= mb_substr($w, 0, 1);
+            }
+            $user->userNameShort = $acronym;
+        }
         $treespecies = Treespecies::all();
 
         return view('pages.settings', compact('sensorunits', 'customersettings', 'users'), compact('treespecies'))->with('irrigationunits', $irrigationunits);
@@ -116,6 +132,15 @@ class Controller extends BaseController
         $irrigationunits = Unit::getIrrigationSettings();
         $customersettings = Customer::getCustomerVariable();
         $users = Customer::getUsers(Session::get('customernumber'));
+        foreach ($users as &$user) {
+            $words = explode(" ", $user->user_name);
+            $acronym = "";
+
+            foreach ($words as $w) {
+                $acronym .= mb_substr($w, 0, 1);
+            }
+            $user->userNameShort = $acronym;
+        }
         $treespecies = Treespecies::all();
         // dd($sensorunits);
         return view('pages.settings', compact('sensorunits', 'customersettings', 'users'), compact('treespecies'))->with('irrigationunits', $irrigationunits)->with('page',$id);
@@ -123,6 +148,7 @@ class Controller extends BaseController
 
     public function messages() 
     {
+        self::setActivity("Entered messages", "messages");
         if(self::checkSubscription() == 0) return view('pages.subscriptionfailed');
         $messages = MessagesController::getMessages();
         MessagesController::checkedUser();
@@ -135,6 +161,7 @@ class Controller extends BaseController
     }
 
     public function sensorunit ($serial) {
+        self::setActivity("Entered sensorunit $serial", "sensorunit");
         $unittype = substr($serial,0,7);
         if (strcmp($unittype,'21-1020') === 0 || strcmp($unittype,'21-1019') === 0 || strcmp($unittype,'21-1021') === 0 || strcmp($unittype,'21-9020') === 0 || strcmp($unittype,'21-1076') === 0 ) {
             $data = MapController::irrigationunit($serial);
@@ -183,6 +210,8 @@ class Controller extends BaseController
     }
 
     public function phoneEndpoint () {
+        self::setActivity("Entered Phone Endpoint", "phoneendpoint");
+
         $serial = request()->unit;
         $lat = request()->lat;
         $lng = request()->lng;
@@ -249,6 +278,7 @@ class Controller extends BaseController
     }
 
     public function irrigationRuns() {
+        self::setActivity("Entered irrigationlog", "irrigationlog");
         return view('pages.irrigationlog');
     }
 
@@ -390,4 +420,30 @@ class Controller extends BaseController
         return $user->customer_id_ref;
     }
 
+    public function sendSMS($phonenumber, $smsbody) {
+        $sender = env('API_SMS_SENDER');
+        Log::info('SMS to '.$phonenumber.', content: '.$smsbody);
+        $content = '{"source": "'.$sender.'","destination": "'.$phonenumber.'","userData": "'.$smsbody.'","platformId": "COMMON_API","platformPartnerId": "12979","deliveryReportGates":["uWkvChSX"],"useDeliveryReport": true,"refId":"'.$phonenumber.'"}';
+        $data = Api::SMS($content);
+        $messageId = $data['messageId'] ?? 'error';
+        $resultcode = $data['resultCode'] ?? 'error';
+        $description = $data['description'] ?? 'error';
+
+        Log::info('SMS reply for user '.Auth::user()->user_id.': messageId: '.$messageId. ', resultCode: '. $resultcode .', description: '. $description);
+        return $data;
+    }
+
+    public function setActivity($description, $page="dashboard") {
+        $url = parse_url($_SERVER['REQUEST_URI']);
+        $activity = new Activity;
+        $activity->userId = Auth::user()->user_id;
+        $activity->customerId = self::checkCustomer();
+        $activity->urlPath = $url['path'];
+        $activity->page = $page;
+        $activity->description = $description;
+        $activity->method = $_SERVER['REQUEST_METHOD'];
+        $activity->hidden = false;
+        if($activity->method == 'GET') $activity->hidden = true;
+        $activity->save();
+    }
 }

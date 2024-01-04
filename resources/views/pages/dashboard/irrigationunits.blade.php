@@ -3,7 +3,7 @@
     @foreach ($irrigationunits as $irrUnit)
         <div class="col-md-6">
             <div class="col-12 bg-white card-rounded mb-2">
-                <div class="p-3">
+                <div class="p-3" id="irrigationSensor_{{$irrUnit['serialnumber']}}">
                     <a  class="collapse-toggle" data-toggle="collapse" data-target="#collapse{{trim($irrUnit['serialnumber'])}}" href="#collapse{{trim($irrUnit['serialnumber'])}}" aria-hidden="true"></a>
                     {{-- Checks if sensorname exists --}}
                     <div class="row">
@@ -54,11 +54,12 @@
                             </div>
                         @endif
                         @if(isset($irrUnit['latest']['state']) &&  $irrUnit['timestampDifference'] < 5400 && ($irrUnit['latest']['state'] < '4' || $irrUnit['latest']['state'] == '7'))
-                            <div class="col text-center">
-                                <label class="switch">
-                                    <input type="checkbox" onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1') checked @endif class="btn btn-primary" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">
-                                    <span class="slider round"></span>
-                                </label>
+                            <div class="col text-center my-auto">
+                                @if(isset($irrUnit['variable']['irrigation_portalstart']) && $irrUnit['variable']['irrigation_portalstart'] == '1')
+                                    <button  onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn-7r" value="stop" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">Stop</button>
+                                @else
+                                    <button  onclick="startIrrigation('{{trim($irrUnit['serialnumber'])}}')" class="btn-7g" value="start" id="startIrrigationButton{{trim($irrUnit['serialnumber'])}}">Start</button>
+                                @endif
                             </div>
                         @endif
                         <div class="col">
@@ -109,9 +110,9 @@
 
 <script>
     function startIrrigation(serial) {
-        var checkBox = document.getElementById("startIrrigationButton" + serial);
+        let button = document.getElementById("startIrrigationButton" + serial);
         // If slider is 'checked'
-        if (checkBox.checked) {
+        if (button.value == "start") {
             var confirmed = confirm('Do you want to start the unit?');
             if(confirmed) {
                 console.log('Button checked');
@@ -124,14 +125,31 @@
                         "_token": token,
                     },
                     success: function(msg) {
+                        console.log(msg);
                         successMessage('Remote start of Irrigation sensor');
+                        button.value = "stop";
+                        button.className= '';
+                        button.className = 'btn-7r';
+                        button.innerHTML = 'Stop';
+                        button.focus();
+                        button.blur();
+                        if(document.getElementById("irrigationInfoText_"+serial)) {
+                            let irrigationText = document.getElementById("irrigationInfoText_"+serial);
+                            irrigationText.innerHTML = `<div class="col-12 text-center"> <span class="text-muted"> Starts at  </span> </div>`;
+                        } else {
+                            let irrigationText = document.createElement("row");
+                            irrigationText.id = "irrigationInfoText_" + serial;
+                            irrigationText.className = "pt-2";
+                            irrigationText.innerHTML = `<div class="col-12 text-center "> <span class="text-muted"> Starts at <undefined> </span> </div>`;
+                            document.getElementById('irrigationSensor_'+serial).appendChild(irrigationText);
+                        }
                     },   
                     error:function(msg) {
                         errorMessage('Something went wrong - please try again.');
                     }
                 });
             } else {
-                checkBox.checked = false;
+                button.value = "stop";
             }
         } else {
             var confirmed = confirm('Do you want to stop the unit?');
@@ -145,14 +163,31 @@
                         "_token": token,
                     },
                     success: function(msg) {
+                        console.log(msg);
+                        button.value = "start";
+                        button.className= '';
+                        button.className = 'btn-7g';
+                        button.innerHTML = 'Start';
+                        button.focus();
+                        button.blur();
                         successMessage('Success: Remote stop of Irrigation sensor');
+                        if(document.getElementById("irrigationInfoText_"+serial)) {
+                            let irrigationText = document.getElementById("irrigationInfoText_"+serial);
+                            irrigationText.innerHTML = `<div class="col-12 text-center"> <span class="text-muted"> Stoppes at </span> </div>`;
+                        } else {
+                            let irrigationText = document.createElement("row");
+                            irrigationText.id = "irrigationInfoText_" + serial;
+                            irrigationText.className = "pt-2";
+                            irrigationText.innerHTML = `<div class="col-12 text-center "> <span class="text-muted"> Stoppes at  </span> </div>`;
+                            document.getElementById('irrigationSensor_'+serial).appendChild(irrigationText);
+                        }
                     },   
                     error:function(msg) {
                         errorMessage('Something went wrong - please try again.');
                     }
                 });
             } else {
-                checkBox.checked = true;
+                button.value = "start";
             }
         }
     }

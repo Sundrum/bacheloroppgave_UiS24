@@ -180,51 +180,97 @@
 <script type="module">
     setTitle('Irrigation Overview');
     var table; 
+    let dataSet = @php echo $data; @endphp;
+
     $(document).ready(function () {
-        let dataSet = @php echo $data; @endphp;
-        table = $('#irrtable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'excelHtml5',
-                'csvHtml5',
-                'pdfHtml5'
-            ],
-            data: dataSet,
-            pageLength: 25, // Number of entries
-            responsive: true, // For mobile devices
-            sorting: [ [0,'ASC'],[5,'ASC']],
-            columnDefs : [{ 
-                responsivePriority: 1, targets: 5,
-                'targets': 0,
-                'checboxes': {
-                    'selectRow': true
-                },
-            }],
-            'select': {
-                style: 'multi'
-            },
-            columns: [
-                { 
-                    title: "Status",
-                    width: "5%"
-                },
-                { title: "Serienummer" },
-                { title: "Navn" },
-                { title: "Kunde" },
-                { title: "Seq" },
-                { title: "Resetcode" },
-                { title: "Reset count" },
-                { title: "Siste levert" },
-                { title: "", orderable: false, searchable: false },
-            ],
-        });
-        $('#irrtable tbody').on( 'click', 'tr', function () {
-            var datarow = table.row(this).data();
-            var id = datarow[1];
-            console.log(id);
-            window.location='/admin/irrigationstatus/'+id;
-        });
+      initTable(dataSet);
+      $('#irrtable tbody').on( 'click', 'tr', function () {
+          var datarow = table.row(this).data();
+          var id = datarow['serialnumber'];
+          console.log(id);
+          window.location='/admin/irrigationstatus/'+id;
+      });
+
     });
+
+    function initTable(dataSet) {
+      table = $('#irrtable').DataTable({
+          dom: 'Bfrtip',
+          buttons: [
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+          ],
+          stateSave: true,
+          data: dataSet,
+          pageLength: 25, // Number of entries
+          responsive: true, // For mobile devices
+          sorting: [ [0,'ASC'],[7,'ASC']],
+          columnDefs : [{ 
+              responsivePriority: 1, targets: 5,
+              'targets': 0,
+              'checboxes': {
+                  'selectRow': true
+              },
+          }],
+          'select': {
+              style: 'multi'
+          },
+          columns: [
+            { 
+              title: "Status",
+              width: "5%",
+              data: "state",
+              defaultContent: "",
+              render: function(data, type, row) {
+                  return `<a href="/unit/${row.serialnumber}"><img width="50" height="50" src="${row.img}"><span style="font-size:0px;">${row.sortstate}</span></a>`;
+              }
+            },
+            { 
+              title: "Serienummer",
+              data:"serialnumber",
+              defaultContent: ""
+            },
+            { 
+              title: "Navn",
+              data: "sensorunit_location",
+              defaultContent: ""
+                
+            },
+            { 
+              title: "Kunde",
+              data: "customer_name",
+              defaultContent: ""
+            },
+            { 
+              title: "Seq",
+              data: "variable.sequencenumber",
+              defaultContent: ""
+            },
+            { 
+              title: "Resetcode",
+              data: "variable.resetcode",
+              defaultContent: ""
+            },
+            { 
+              title: "Reset count",
+              data: "variable.rebootcounter",
+              defaultContent: ""
+            },
+            { 
+              title: "Siste levert",
+              data: "sensorunit_lastconnect",
+              defaultContent: "",
+              render: function(data) {
+                return moment(data).format('YYYY-MM-DD HH:mm');
+              }
+            }
+          ],
+      });
+
+      processState(dataSet);
+        
+    }
 
     function setSearch(text){
         $('html, body').animate({
@@ -237,66 +283,24 @@
     setTimeout(function(){updateStatus();}, 180000);
 
     function updateStatus() {
-        $.ajax({
-            url: '/admin/irrigationstatusupdate',
-            dataType: 'json',      
-            data: {
-                "_token": token,
-            }, 
-            success: function( data ) {
-                $('#notused').html(data.variable.notused);
-                $('#idle').html(data.variable.idle);
-                $('#idle_green').html(data.variable.idle_green);
-                $('#settling').html(data.variable.settling);
-                $('#irrigation').html(data.variable.irrigation);
-                $('#post_settling').html(data.variable.post_settling);
-                $('#off_season').html(data.variable.off_season);
-                console.log(data);
-                $('#irrtable').DataTable().clear().destroy();
-                table = $('#irrtable').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'excelHtml5',
-                        'csvHtml5',
-                        'pdfHtml5'
-                    ],
-                    data: data.data,
-                    pageLength: 25, // Number of entries
-                    responsive: true, // For mobile devices
-                    sorting: [ [0,'ASC'],[5,'ASC']],
-                    columnDefs : [{ 
-                        responsivePriority: 1, targets: 5,
-                        'targets': 0,
-                        'checboxes': {
-                            'selectRow': true
-                        },
-                    }],
-                    'select': {
-                        style: 'multi'
-                    },
-                    columns: [
-                        { 
-                            title: "Status",
-                            width: "5%"
-                        },
-                        { title: "Serienummer" },
-                        { title: "Navn" },
-                        { title: "Kunde" },
-                        { title: "Seq" },
-                        { title: "Resetcode" },
-                        { title: "Reset count" },
-                        { title: "Siste levert" },
-                        { title: "", orderable: false, searchable: false },
-                    ],
-                });
-                getActive();
-                setTimeout(function(){updateStatus();}, 180000);
-            },
-            error: function( data ) {
-                errorMessage('Auto-refresh error');
-                setTimeout(function(){updateStatus();}, 120000);
-            }
-        });
+      $.ajax({
+        url: '/admin/irrigationstatusupdate',
+        dataType: 'json',      
+        data: {
+          "_token": token,
+        }, 
+        success: function( data ) {
+          $('#irrtable').DataTable().clear().destroy();
+          initTable(data);
+          console.log("Updated")
+          getActive();
+          setTimeout(function(){updateStatus();}, 180000);
+        },
+        error: function( data ) {
+          errorMessage('Auto-refresh error');
+          setTimeout(function(){updateStatus();}, 120000);
+        }
+      });
     }
 
     import { MarkerClusterer } from "https://cdn.skypack.dev/@googlemaps/markerclusterer@2.0.3";
@@ -372,6 +376,43 @@
 
       cluster = new MarkerClusterer({ map, markers });
     
+    }
+
+    function processState(units) {
+      let notused = 0; 
+      let idle = 0;
+      let idle_green = 0;
+      let settling = 0;
+      let irrigation = 0;
+      let idle_clock_wait = 0;
+      let idle_activity = 0;
+      let post_settling = 0;
+      let off_season = 0;
+
+      units.forEach((el) => {
+        if(el.sortstate) {
+          if(el.sortstate == 'state-1') notused++;
+          else if(el.sortstate == 'state0') idle++;
+          else if(el.sortstate == 'state1') idle_green++;
+          else if(el.sortstate == 'state2') idle_clock_wait++;
+          else if(el.sortstate == 'state3') idle_activity++;
+          else if(el.sortstate == 'state4') settling++;
+          else if(el.sortstate == 'state5') irrigation++;
+          else if(el.sortstate == 'state6') post_settling++;
+          else if(el.sortstate == 'state7') off_season++;
+          else notused++;
+        } else {
+          console.log("not sortstate ");
+        }
+      });
+    
+      $('#notused').html(notused);
+      $('#idle').html(idle);
+      $('#idle_green').html(idle_green);
+      $('#settling').html(settling);
+      $('#irrigation').html(irrigation);
+      $('#post_settling').html(post_settling);
+      $('#off_season').html(off_season);
     }
     
     let styleArray = [
@@ -592,6 +633,130 @@
         ]
       }
     ];
+
+    // function updateStatus() {
+    //     $.ajax({
+    //         url: '/admin/irrigationstatusupdate',
+    //         dataType: 'json',      
+    //         data: {
+    //             "_token": token,
+    //         }, 
+    //         success: function( data ) {
+    //             // $('#notused').html(data.variable.notused);
+    //             // $('#idle').html(data.variable.idle);
+    //             // $('#idle_green').html(data.variable.idle_green);
+    //             // $('#settling').html(data.variable.settling);
+    //             // $('#irrigation').html(data.variable.irrigation);
+    //             // $('#post_settling').html(data.variable.post_settling);
+    //             // $('#off_season').html(data.variable.off_season);
+    //             console.log(data);
+    //             $('#irrtable').DataTable().clear().destroy();
+    //             table = $('#irrtable').DataTable({
+    //                 dom: 'Bfrtip',
+    //                 buttons: [
+    //                     'excelHtml5',
+    //                     'csvHtml5',
+    //                     'pdfHtml5'
+    //                 ],
+    //                 data: data.data,
+    //                 pageLength: 25, // Number of entries
+    //                 responsive: true, // For mobile devices
+    //                 sorting: [ [0,'ASC'],[5,'ASC']],
+    //                 columnDefs : [{ 
+    //                     responsivePriority: 1, targets: 5,
+    //                     'targets': 0,
+    //                     'checboxes': {
+    //                         'selectRow': true
+    //                     },
+    //                 }],
+    //                 'select': {
+    //                     style: 'multi'
+    //                 },
+    //                 columns: [
+    //                     { 
+    //                       title: "Status",
+    //                       data: "state",
+    //                       width: "5%",
+    //                       render: function(data, display, row) {
+    //                         if(data) {
+    //                           return `<a href="/unit/${row.serialnumber}"><img width="50" height="50" src="../img/irrigation/state_${data}.png"><span style="font-size:0px;">${data}</span></a>`;
+    //                         } else {
+    //                           return `<a href="/unit/${row.serialnumber}"><img width="50" height="50" src="../img/irrigation/state.png"><span style="font-size:0px;">-1</span></a>`;
+    //                         }
+    //                       }
+    //                     },
+    //                     { 
+    //                       title: "Serienummer",
+    //                       data: "serialnumber"
+    //                     },
+    //                     { 
+    //                       title: "Navn",
+    //                       data: "sensorunit_location",
+    //                       defaultContent: ""
+    //                     },
+    //                     { 
+    //                       title: "Kunde",
+    //                       data: "customer_name",
+    //                       defaultContent: ""
+    //                     },
+    //                     { 
+    //                       title: "Seq",
+    //                       data: "sequencenumber",
+    //                       defaultContent: ""
+    //                     },
+    //                     //   data: "4",
+    //                     //   render: function(data) {
+    //                     //     let color = 'green';
+    //                     //     if (data > 200) {
+    //                     //         color = 'red';
+    //                     //     }
+    //                     //     else if (data < 500) {
+    //                     //         color = 'orange';
+    //                     //     }
+        
+    //                     //     return `<span style="color:${color}">${data}</span>`; 
+    //                     // } },
+    //                     { 
+    //                       title: "Resetcode",
+    //                       data: "resetcode",
+    //                       defaultContent: ""
+    //                     },
+    //                     { 
+    //                       title: "Reset count",
+    //                       data: "resetcount",
+    //                       defaultContent: ""
+    //                     },
+    //                     { 
+    //                       title: "Siste levert",
+    //                       data: "sensorunit_lastconnect",
+    //                       render: function(data) {
+    //                         if(data.getTime() > moment().subtract(2, 'hours').getTime()) {
+    //                           return `<span style="color: #d43hf5;">${moment(data).format('YYYY-MM-DD HH:mm')}</span>`;
+    //                         } else {
+    //                           return `<span style="color: #efa6a5;">${moment(timestamp).format('YYYY-MM-DD HH:mm')}</span>`;
+    //                         }
+
+    //                       }
+    //                     },
+    //                     { 
+    //                       title: "", 
+    //                       orderable: false, 
+    //                       searchable: false,
+    //                       render: function(data, display, row) {
+    //                         return `<button class="btn-7g">Open</button>`;
+    //                       }
+    //                     },
+    //                 ],
+    //             });
+    //             getActive();
+    //             setTimeout(function(){updateStatus();}, 18000);
+    //         },
+    //         error: function( data ) {
+    //             errorMessage('Auto-refresh error');
+    //             setTimeout(function(){updateStatus();}, 120000);
+    //         }
+    //     });
+    // }
     </script>
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5ES3cEEeVcDzibri1eYEUHIOIrOewcCs&language=en&libraries=geometry&callback=initMap" defer></script>

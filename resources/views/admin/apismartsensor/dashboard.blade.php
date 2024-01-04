@@ -25,9 +25,9 @@
             <div class="form-group row">
                 <label for="quarter" class="col-md-3 col-form-label text-left"><h5>Select Quarter</h5></label>
                 <select class="col-md-4 form-control"name="quarter" id="quarter">
-                    <option value="1" selected>Q1</option>
+                    <option value="1">Q1</option>
                     <option value="2">Q2</option>
-                    <option value="3">Q3</option>
+                    <option value="3" selected>Q3</option>
                     <option value="4">Q4</option>
                 </select>    
             </div>
@@ -44,7 +44,7 @@
     </div>
 </section>
 
-<script src="https://code.jquery.com/jquery-3.5.1.js" defer></script>
+{{-- <script src="https://code.jquery.com/jquery-3.5.1.js" defer></script>
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js" defer></script>
 <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" defer></script>
@@ -54,7 +54,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 
 <link  href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
-<link  href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+<link  href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" /> --}}
 
 <script>
     document.getElementById("top-title").innerHTML = 'API Proxy Billing Service';

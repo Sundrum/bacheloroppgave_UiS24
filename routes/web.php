@@ -18,6 +18,7 @@
 ***/
 
 Route::get('/admin', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin');
+Route::get('/admin/language', [App\Http\Controllers\AdminController::class, 'getLanguage']);
 
 // Admin Proxy API
 Route::get('/admin/apibilling', [App\Http\Controllers\AdminController::class, 'apismartsensor'])->name('billing');
@@ -26,6 +27,7 @@ Route::get('/admin/billing/summary/{customer}/{quarter}/{detailed}', [App\Http\C
 Route::get('/admin/proxy', [App\Http\Controllers\ApiSmartsensorController::class, 'proxyApi'])->name('proxy');
 Route::get('/admin/proxy/variables', [App\Http\Controllers\ApiSmartsensorController::class, 'getProxyViewVariables'])->name('proxyvariables');
 Route::post('/admin/proxy/getvariables', [App\Http\Controllers\ApiSmartsensorController::class, 'getProxyVariables']);
+Route::post('/admin/proxy/setvariables', [App\Http\Controllers\ApiSmartsensorController::class, 'setProxyVariables']);
 Route::post('/admin/proxy/fota', [App\Http\Controllers\ApiSmartsensorController::class, 'fotaQueue'])->name('fotaproxy');
 Route::post('/admin/proxy/queue/delete',  [App\Http\Controllers\ApiSmartsensorController::class, 'deleteQueue'])->name('deletequeue');
 
@@ -36,7 +38,7 @@ Route::get('/admin/account', [App\Http\Controllers\Admin\UserController::class, 
 Route::post('/admin/user/update', [App\Http\Controllers\Admin\UserController::class, 'user'])->name('updateUser');
 // Route::post('/admin/user/delete', 'Admin\UserController@delete');
 
-
+Route::get('/admin/activity/daily', [App\Http\Controllers\ActivityController::class, 'daily']);
 
 // Admin cases
 Route::get('/admin/sensorunit/cases', [App\Http\Controllers\Admin\SensorunitController::class, 'casesIndex'])->name('cases');
@@ -90,8 +92,11 @@ Route::get('/admin/xyz', [App\Http\Controllers\Admin\SensorunitController::class
 Route::get('/admin/testxyz', [App\Http\Controllers\Admin\SensorunitController::class, 'testxyz'])->name('testxyz');
 
 Route::get('/dev/compass', [App\Http\Controllers\Admin\DevelopmentController::class, 'compass'])->name('compass');
+Route::get('/dev/payment', [App\Http\Controllers\Admin\DevelopmentController::class, 'payment']);
 Route::get('/dev/woodmoisture', [App\Http\Controllers\Admin\DevelopmentController::class, 'woodMoisture']);
 Route::get('/dev/graph', [App\Http\Controllers\Admin\DevelopmentController::class, 'graph'])->name('devgraph');
+Route::get('/dev/productionlog', [App\Http\Controllers\Admin\DevelopmentController::class, 'productionLog'])->name('devproductionLog');
+Route::post('/dev/process/productionlog', [App\Http\Controllers\Admin\DevelopmentController::class, 'processLog']);
 Route::get('/dev/calculate/woodmoisture/{id}/{temperature}/{ohm}', [App\Http\Controllers\Admin\DevelopmentController::class, 'developmentWoodMoisture']);
 Route::get('/dev/flowrate', [App\Http\Controllers\Admin\DevelopmentController::class, 'flowrate']);
 Route::get('/dev/calculaterun/{serial}/{run}', [App\Http\Controllers\Admin\DevelopmentController::class, 'devIrrigationRun']);
@@ -107,13 +112,18 @@ Route::get('/admin/map/irrigationstatus', [App\Http\Controllers\Admin\Irrigation
 Route::get('/admin/irrigationstatus/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'get']);
 Route::get('/admin/irrigationstatus/irrigationrun/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getRun']);
 Route::get('/admin/irrigationstatus/irrigation/run/{id}', [App\Http\Controllers\Admin\IrrigationController::class, 'getIrrigationRun']);
+Route::post('/admin/irrigationstatus/irrigationrun/cleandata', [App\Http\Controllers\Admin\IrrigationController::class, 'cleanData'])->name('cleandata');
 Route::post('/admin/irrigationstatus/irrigationrun/update', [App\Http\Controllers\Admin\IrrigationController::class, 'updateRun'])->name('runupdate');
+
 Route::post('/admin/irrigationstatus/autostart', [App\Http\Controllers\Admin\IrrigationController::class, 'autoStart']);
 
-
+Route::get('/admin/irrigationrun', [App\Http\Controllers\Admin\IrrigationrunController::class, 'index']);
+Route::get('/admin/irrigationrun/get/{id}', [App\Http\Controllers\Admin\IrrigationrunController::class, 'getRun']);
+Route::post('/admin/irrigationrun/edit', [App\Http\Controllers\Admin\IrrigationrunController::class, 'editRun']);
 
 Route::get('/admin/irrigationstatusupdate', [App\Http\Controllers\Admin\IrrigationController::class, 'updateStatusPage']);
 Route::post('/admin/irrigation/removepoistion', [App\Http\Controllers\Admin\IrrigationController::class, 'removePosition']);
+Route::post('/irrigation/deleterun', [App\Http\Controllers\SensorunitController::class, 'deleteRun']);
 Route::get('/admin/irrigationdebug/{serial}', [App\Http\Controllers\Admin\IrrigationController::class, 'debug']);
 Route::get('/admin/irrigationstatus', [App\Http\Controllers\AdminController::class, 'irrigationStatus'])->name('irrigationstatus');
 Route::post('/admin/irrigation/fota', [App\Http\Controllers\Admin\CommandController::class, 'irrigationFota']);
@@ -165,20 +175,24 @@ Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminC
 /***
  * Support routes 
 ***/
-Route::get('/support', [App\Http\Controllers\Controller::class, 'support']);
+Route::get('/support', [App\Http\Controllers\Controller::class, 'support'])->name('support');
 
 /***
  * Detail view sensor pages 
 ***/
 Route::get('/unit/{serial}', [App\Http\Controllers\Controller::class, 'sensorunit']);
+Route::get('/unit/notifications/{serial}', [App\Http\Controllers\SensorunitController::class, 'getNotification']);
+Route::post('/unit/notification', [App\Http\Controllers\SensorunitController::class, 'setNotification']);
 Route::get('include/view_irrigation.php', [App\Http\Controllers\Controller::class, 'phoneEndpoint']);
 Route::get('/irrigationrun/{serial}', [App\Http\Controllers\MapController::class, 'irrigationrun']);
+Route::post('/irrigationlog/update', [App\Http\Controllers\MapController::class, 'updateNotes']);
 Route::post('/updatePoint', [App\Http\Controllers\MapController::class, 'updatePoint']);
 Route::get('/oldruns/{serial}/{days}', [App\Http\Controllers\MapController::class, 'oldIrrigaitonRun']);
 Route::get('/run/{serial}', [App\Http\Controllers\MapController::class, 'oldRunMap']);
 Route::get('/map', [App\Http\Controllers\Controller::class, 'testmap']);
 Route::get('/irrigation/log',  [App\Http\Controllers\Controller::class, 'irrigationRuns'])->name('irrigationLog');
 Route::get('/irrigation/run',  [App\Http\Controllers\Controller::class, 'getIrrigationEvents']);
+Route::post('/irrigation/flow',  [App\Http\Controllers\MapController::class, 'irrigationFlow']);
 Route::get('/irrigation/runlog/{id}', [App\Http\Controllers\MapController::class, 'getRun']);
 Route::get('/fleetmanagement', [App\Http\Controllers\MapController::class, 'fleetmanagement'])->name('fleetmanagment');
 
@@ -211,8 +225,29 @@ Auth::routes();
 Route::get('/myaccount/validation', [App\Http\Controllers\Auth\VerificationController::class, 'getValidation']);
 Route::post('/verify/email', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidationMail']);
 Route::post('/verify/phone', [App\Http\Controllers\Auth\VerificationController::class, 'requestValidationSMS']);
+Route::post('/validate/phone', [App\Http\Controllers\Auth\VerificationController::class, 'verifySMS']);
+Route::post('/validate/email', [App\Http\Controllers\Auth\VerificationController::class, 'verifyMail']);
 Route::get('/verify/testmail', [App\Http\Controllers\Auth\VerificationController::class, 'testMail']);
 
+Route::get('/payment/generate', [App\Http\Controllers\NetsController::class, 'createSubscription']);
+Route::post('/payment/capture', [App\Http\Controllers\NetsController::class, 'capturePaymentInformaiton'])->name('payment.activate')->middleware('auth');
+Route::get('/payment/callback', [App\Http\Controllers\NetsController::class, 'callback']);
+
+Route::prefix('admin/payment')->group(function () {
+    Route::get('/all', [App\Http\Controllers\NetsController::class, 'index'])->name('payment.index')->middleware('auth', 'checkadmin');
+    Route::post('/update', [App\Http\Controllers\NetsController::class, 'update'])->name('payment.update')->middleware('auth', 'checkadmin');
+    Route::get('/transaction', [App\Http\Controllers\NetsController::class, 'transaction'])->name('payment.transaction')->middleware('auth', 'checkadmin');
+
+});
+
+Route::get('/admin/gateway', [App\Http\Controllers\Admin\DevelopmentController::class, 'gateway']);
+Route::post('/admin/loggateway', [App\Http\Controllers\Admin\DevelopmentController::class, 'logGateway']);
+
+Route::post('/openai/group', [App\Http\Controllers\OpenaiController::class, 'groupAnalyze']);
+
+Route::fallback(function () {
+    return view('fallback');
+});
 /*** 
  * E-mail 
 ***/

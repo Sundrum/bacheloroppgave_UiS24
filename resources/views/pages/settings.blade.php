@@ -122,9 +122,13 @@
 
      // initialize
      customer_sms.intlTelInput({
-      initialCountry: 'no',
-      preferredCountries: ['no','us','gb','se','dk','fi','fr','it'],
-      autoPlaceholder: 'aggressive',
+        separateDialCode: true,
+        initialCountry: 'no',
+        preferredCountries: ['no','us','fr','gb','dk','se'],
+        autoPlaceholder: 'off',
+        formatOnDisplay: false,
+        autoHideDialCode: true,
+        nationalMode: true,
       utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js",
       geoIpLookup: function(callback) {
           fetch('https://ipinfo.io/json', {
@@ -145,9 +149,13 @@
 
     // initialize
     customer_sms_1.intlTelInput({
+        separateDialCode: true,
         initialCountry: 'no',
-        preferredCountries: ['no','us','gb','se','dk','fi','fr','it'],
-        autoPlaceholder: 'aggressive',
+        preferredCountries: ['no','us','fr','gb','dk','se'],
+        autoPlaceholder: 'off',
+        formatOnDisplay: false,
+        autoHideDialCode: true,
+        nationalMode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js",
         geoIpLookup: function(callback) {
             fetch('https://ipinfo.io/json', {
@@ -169,9 +177,13 @@
 
     // initialize
     customer_sms_irr.intlTelInput({
-      initialCountry: 'no',
-      preferredCountries: ['no','us','gb','se','dk','fi','fr','it'],
-      autoPlaceholder: 'aggressive',
+        separateDialCode: true,
+        initialCountry: 'no',
+        preferredCountries: ['no','us','fr','gb','dk','se'],
+        autoPlaceholder: 'off',
+        formatOnDisplay: false,
+        autoHideDialCode: true,
+        nationalMode: true,
       utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js",
       geoIpLookup: function(callback) {
           fetch('https://ipinfo.io/json', {
@@ -192,9 +204,13 @@
 
     // initialize
     customer_sms_irr_1.intlTelInput({
+        separateDialCode: true,
         initialCountry: 'no',
-        preferredCountries: ['no','us','gb','se','dk','fi','fr','it'],
-        autoPlaceholder: 'aggressive',
+        preferredCountries: ['no','us','fr','gb','dk','se'],
+        autoPlaceholder: 'off',
+        formatOnDisplay: false,
+        autoHideDialCode: true,
+        nationalMode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.6/js/utils.js",
         geoIpLookup: function(callback) {
             fetch('https://ipinfo.io/json', {

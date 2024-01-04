@@ -6,7 +6,7 @@
                     <div class="col-9 col-md-10 col-lg-8">
                         <h3 class="pt-3 px-3"><i class="fas fa-layer-group"></i> {{ $group['viewgroup_name'] }}</h3>
                     </div>
-                    <div class="col-3 col-md-2 col-lg-4 text-end pt-2 pt-xl-3">
+                    <div class="col-3 col-md-2 col-lg-4 text-end my-auto">
                         <img class="px-3" id="caret{{$group['viewgroup_id']}}" data-toggle="collapse" onclick="rotateImg('caret{{$group['viewgroup_id']}}')" data-target="#collapse{{$group['viewgroup_id']}}" aria-hidden="true" src="{{ asset('img/expand.svg') }}" style="transform: rotate(-90deg);">
                     </div>
                     
@@ -15,6 +15,30 @@
                     $groups[] = $group['viewgroup_id'];
                 @endphp
 
+                <script>
+                    function aiInformation(dataset) {
+                        console.log(dataset);
+                        $.ajax({
+                            url: "/openai/group",
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { 
+                                "id": dataset,
+                                "_token": token,
+                            },
+                            success: function(data) {
+                                console.log(data);
+                                successMessage('Analyzing data');
+                                
+                            },   
+                            error: function(data) {
+                                console.log(data);
+                                errorMessage('Something went wrong');
+                            }
+                        });
+                    }
+                </script>
+
                 @if($group['viewgroup_description'])
                     <div class="px-3">
                         <h5>{{ $group['viewgroup_description'] }}</h5>
@@ -22,6 +46,9 @@
                 @endif
                 @if(!$group['viewgroup_id'] == 0)
                     <div class="px-3">
+                        @if(Auth::user()->user_id == 153)
+                            <button class="btn-7g" onclick="aiInformation('{{$group['viewgroup_id']}}')">Generer tiltak</button>
+                        @endif
                         <button class=" btn-outline-7r deleteGroup" style="display: none;" onclick="deleteGroup('{{$group['viewgroup_id']}}')">@lang('dashboard.deletegroup')</button>
                     </div>
                 @endif

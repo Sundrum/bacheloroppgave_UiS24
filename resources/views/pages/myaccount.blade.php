@@ -4,6 +4,10 @@
 
 <style>
 
+    .intl-tel-input {
+        padding: 6px 12px !important;
+    }
+
     .iti-flag {
         background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.15/img/flags.png");
     }
@@ -50,6 +54,9 @@
                                     </span>
                                 </div>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="@lang('myaccount.username')" value="{{trim(Auth::user()->user_email)}}" required>
+                                <div class="input-group-append" id="append-email">
+                                    <div class="btn-7r m-0 p-2" style="border-radius: 0 15px 15px 0;"><i class="fa fa-x"></i></div>
+                                </div>
                             </div>
                             <div id="email_append"></div>
                         </div>
@@ -67,8 +74,7 @@
                         </div>
     
                         <div class="form-group ">
-                            <span id="phone_helptext" class="mx-5">@lang('myaccount.phonenumber')
-                            </span>
+                            <span id="phone_helptext" class="mx-5">@lang('myaccount.phonenumber')</span>
                             <div class="input-group pb-2">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text bg-7s h-100">
@@ -76,6 +82,9 @@
                                     </span>
                                 </div>
                                 <input type="tel" placeholder="@lang('myaccount.phonenumber')" value="{{trim(Auth::user()->user_phone_work)}}" id="phone_work" class="form-control" required>
+                                <div class="input-group-append" id="tel-append">
+                                    <div class="btn-7r m-0 p-2" style="border-radius: 0 15px 15px 0;"><i class="fa fa-x"></i></div>
+                                </div>
                             </div>
                             <div id="sms_append"></div>
                         </div>
@@ -90,7 +99,6 @@
                                     </span>
                                 </div>
                                 <select class="custom-select form-control" id="language" name="language">
-                                    
                                     <option value="2" @if(Auth::user()->user_language == 2) selected="selected" @endif> English </option>
                                     <option value="1" @if(Auth::user()->user_language == 1) selected="selected" @endif> Norwegian </option>
                                     <option value="3" @if(Auth::user()->user_language == 3) selected="selected" @endif> French </option>
@@ -128,25 +136,84 @@
 
 
 <script>
-    // $(document).ready(function () {
-    //     //checkVerifyStatus();
-    // });
+    $(document).ready(function () {
+        checkVerifyStatus();
+    });
 
     function checkVerifyStatus() {
         $.ajax({
             url: "/myaccount/validation",
             type: 'GET',
             success: function (data) {
-                console.log(data.mail.email_verified)
-                if(!data.mail.email_verifyed) {
-                    const notverifiedmail = '<div class="card-rounded bg-7r mx-0 mt-0 mb-2 px-3 py-2"><a style="text-decoration: underline;" onclick="sendVerificationMail()">Click here to verify your email</a> </div>';
-                    document.getElementById('email_append').innerHTML = notverifiedmail;
+                console.log(data)
+                if(typeof data.mail != 'undefined' && data.mail && data.mail.email_verified) {
+                    if(data.mail.verify_email == @json(Auth::user()->user_email)) {
+                        const verifiedmail = `<div class="btn-7g m-0 p-2" style="border-radius: 0 15px 15px 0;"><i class="fa fa-check"></i></div>`;
+                        document.getElementById('append-email').innerHTML = verifiedmail;
+                    } else {
+                        const notverifiedmail = `<div class="card-rounded bg-7r mx-5 mt-0 mb-2 px-3 py-2">
+                                                    <i class="fa fa-info-circle fa-lg"></i><a style="text-decoration: underline;" onclick="sendVerificationMail()"> Click here to verify your email</a> 
+                                                </div>`;
+                        document.getElementById('email_append').innerHTML = notverifiedmail;
+                    }
+                } else {
+                    if(typeof data.mail !='undefined' && data.mail && data.mail.id) {
+                        document.getElementById('email_append').innerHTML = `<div class="mx-md-5">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-8 col-md-7 col-lg-6">
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" placeholder="Verification Code E.g 1234" name="verification_code_email" id="verification_code_email" maxlength="4">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6">
+                                                                        <button type="button" class="btn-7r" onclick="sendVerificationMail()">Resend</button>
+                                                                        <button type="button" class="btn-7g" onclick="verifyMail()"><i class="fa fa-arrow-right"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`;
+                    } else {
+                        const notverifiedmail = `<div class="card-rounded bg-7r mx-5 mt-0 mb-2 px-3 py-2">
+                                                    <i class="fa fa-info-circle fa-lg"></i><a style="text-decoration: underline;" onclick="sendVerificationMail()"> Click here to verify your email</a> 
+                                                </div>`;
+                        document.getElementById('email_append').innerHTML = notverifiedmail;
+                    }
                 }
-                if(!data.sms.sms_verified) {
-                    const notverifiedsms = '<div class="card-rounded bg-7r mx-0 mt-0 mb-2 px-3 py-2"><a style="text-decoration: underline;" onclick="sendVerificationSMS()">Click here to verify your phonenumber</a> </div>';
-                    document.getElementById('sms_append').innerHTML = notverifiedsms;
+                if(typeof data.sms != 'undefined' && data.sms && data.sms.phonenumber_verified) {
+                    if(data.sms.verify_phonenumber == @json(Auth::user()->user_phone_work)) {
+                        const verifiedsms = `<div class="btn-7g m-0 p-2" style="border-radius: 0 15px 15px 0;"><i class="fa fa-check"></i></div>`;
+                        document.getElementById('tel-append').innerHTML = verifiedsms;
+                    } else {
+                        const notverifiedsms = `<div class="card-rounded bg-7r mx-5 mt-0 mb-2 px-3 py-2">
+                                                    <i class="fa fa-info-circle fa-lg"></i><a style="text-decoration: underline;" onclick="sendVerificationSMS()"> Click here to verify your phonenumber</a>
+                                                </div>`;
+                        document.getElementById('sms_append').innerHTML = notverifiedsms;
+                    }
+                } else {
+                    if(typeof data.sms !='undefined' && data.sms && data.sms.id) {
+                        document.getElementById('sms_append').innerHTML = `<div class="mx-md-5">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-8 col-md-7 col-lg-6">
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" placeholder="Verification Code E.g 1234" name="verification_code" id="verification_code" maxlength="4">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6">
+                                                                        <button type="button" class="btn-7r" onclick="sendVerificationSMS()">Resend</button>
+                                                                        <button type="button" class="btn-7g" onclick="verifyPhone()"><i class="fa fa-arrow-right"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`;
+                    } else {
+                        const notverifiedsms = `<div class="card-rounded bg-7r mx-5 mt-0 mb-2 px-3 py-2">
+                                                    <i class="fa fa-info-circle fa-lg"></i><a style="text-decoration: underline;" onclick="sendVerificationSMS()"> Click here to verify your phonenumber</a>
+                                                </div>`;
+                        document.getElementById('sms_append').innerHTML = notverifiedsms;
+                    }
                 }
-                console.log(data);  
             },
         })
     }
@@ -160,10 +227,8 @@
         separateDialCode: true,
         initialCountry: 'no',
         preferredCountries: ['no','us','fr','gb','dk','se'],
-        autoPlaceholder: 'aggressive',
+        autoPlaceholder: 'off',
         formatOnDisplay: false,
-        autoHideDialCode: true,
-        nationalMode: true,
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.15/js/utils.min.js",
         geoIpLookup: function(callback) {
             fetch('https://ipinfo.io/json', {
@@ -193,7 +258,22 @@
             },
             success: function (data) {
                 console.log(data) 
-                successMessage("An mail has been sent to your email.");                      
+                successMessage("An mail has been sent to your email.");
+                document.getElementById('email_append').innerHTML = `<div class="mx-md-5">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-8 col-md-7 col-lg-6">
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" placeholder="Verification Code E.g 1234" name="verification_code_email" id="verification_code_email" maxlength="4">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6">
+                                                                        <button type="button" class="btn-7r" onclick="sendVerificationMail()">Resend</button>
+                                                                        <button type="button" class="btn-7g" onclick="verifyMail()"><i class="fa fa-arrow-right"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`;                    
             },
             error: function (data) {
                 errorMessage('Something went wrong. Please try again later');
@@ -204,17 +284,110 @@
 
     function sendVerificationSMS() {
         $.ajax({
-            url: "/verify/sms",
-            type: 'GET',
+            url: "/verify/phone",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                'user_id': @json(Auth::user()->user_id),
+                '_token': token
+            },
             success: function (data) {
-                console.log(data) 
-                successMessage("A text has been sent to your phonenumber.");                      
+                console.log(data)
+                successMessage("A text has been sent to your phonenumber.");
+                document.getElementById('sms_append').innerHTML = `<div class="mx-md-5">
+                                                                <div class="row">
+                                                                    <div class="col-12 col-sm-8 col-md-7 col-lg-6">
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control" placeholder="Verification Code E.g 1234" name="verification_code" id="verification_code" maxlength="4">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-12 col-md-6">
+                                                                        <button type="button" class="btn-7r" onclick="sendVerificationSMS()">Resend</button>
+                                                                        <button type="button" class="btn-7g" onclick="verifyPhone()"><i class="fa fa-arrow-right"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>`;
             },
             error: function (data) {
                 errorMessage('Something went wrong. Please try again later');
             }
         })
+    }
 
+    function verifyPhone() {
+        let code = document.getElementById('verification_code').value;
+        if(code.length < 4) {
+            return errorMessage("Verification Code needs to be 4 digits");
+        }
+        $.ajax({
+            url: "/validate/phone",
+            type: 'POST',
+            dataType: 'json',
+            data: { 
+                "code": document.getElementById('verification_code').value,
+                'user_id': @json(Auth::user()->user_id),
+                "_token": token,
+            },
+            success: function(data) {
+                console.log(data);
+                if(data == 2) {
+                    errorMessage('Please click resend to get a new verification code.')
+                } else if (data == 3) {
+                    errorMessage('Your input is not defined. Please type in the code once more.')
+                } else if (data == 4) {
+                    errorMessage('Your input does not match our verification code.')
+                } else if (data == 1) {
+                    successMessage('Your phonenumber has been successfully verified.')
+                    checkVerifyStatus();
+                    document.getElementById('sms_append').innerHTML = " ";
+                } else {
+                    errorMessage('Something went wrong. Please try again later.')
+                }
+                
+            },   
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function verifyMail() {
+        let code = document.getElementById('verification_code_email').value;
+        if(code.length < 4) {
+            return errorMessage("Verification Code needs to be 4 digits");
+        }
+        $.ajax({
+            url: "/validate/email",
+            type: 'POST',
+            dataType: 'json',
+            data: { 
+                "code": document.getElementById('verification_code_email').value,
+                'user_id': @json(Auth::user()->user_id),
+                "_token": token,
+            },
+            success: function(data) {
+                console.log(data);
+                if(data == 2) {
+                    errorMessage('Please click resend to get a new verification code.')
+                } else if (data == 3) {
+                    errorMessage('Your input is not defined. Please type in the code once more.')
+                } else if (data == 4) {
+                    errorMessage('Your input does not match our verification code.')
+                } else if (data == 1) {
+                    successMessage('Your email has been successfully verified.')
+                    checkVerifyStatus();
+                    document.getElementById('email_append').innerHTML = " ";
+                } else {
+                    errorMessage('Something went wrong. Please try again later.')
+                }
+                
+            },   
+            error: function(data) {
+                console.log(data);
+            }
+        });
     }
 
     function updatephoneprefix() {

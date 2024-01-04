@@ -55,6 +55,7 @@ $(document).ready(function () {
     var table = $('#producttable').DataTable({
         pageLength: 25, // Number of entries
         responsive: true, // For mobile devices
+        stateSave: true,
         columnDefs : [{ 
             responsivePriority: 1, targets: 3,
             'targets': 0,

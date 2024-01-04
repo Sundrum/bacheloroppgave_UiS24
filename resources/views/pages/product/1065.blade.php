@@ -59,6 +59,28 @@
   </div>
 </div>
 
+@if(Auth::user()->user_id == 153)
+<div class="row justify-content-center mt-3">
+  <div class="col-md-12 card card-rounded bg-white p-3">
+    <div class="row">
+      <div class="col-12">
+        <h4>Notification</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6" id="notifications_email">
+
+      </div>
+      <div class="col-6" id="notifications_sms">
+
+      </div>
+    </div>
+
+    
+  </div>
+</div>
+@endif
+
 <input type="hidden" name="lat" id="lat" value="{{$unit['lat'] ?? ''}}">
 <input type="hidden" name="lng" id="lng" value="{{$unit['lng'] ?? ''}}">
 <div class="row justify-content-center mt-3">
@@ -160,6 +182,7 @@ var name_unit = $('#name_unit').text();
 $(document).ready(function () {
   console.log(name_unit);
   getProbes('{{$serial}}');
+  getNotifications('{{$serial}}');
 });
 
 
@@ -278,7 +301,6 @@ function refreshgraph() {
 }
 
 function getProbes(serialnumber) {
-  var token = $("meta[name='csrf-token']").attr("content");
   $.ajax({
     url: "/graph/getprobeinfo/" + serialnumber,
     type: 'GET',
@@ -299,7 +321,6 @@ function getProbes(serialnumber) {
 }
 
 function getData(serialnumber,probenr, name, unittype_id){
-  var token = $("meta[name='csrf-token']").attr("content");
   console.log(serialnumber + '   ' + valgtnumbdays + '    '+ probenr);
   $.ajax({
     url: '/graph/getsensordata/' + serialnumber +'/' + valgtnumbdays + '/' + probenr + '/' + unittype_id + '/1',
@@ -343,6 +364,19 @@ function getData(serialnumber,probenr, name, unittype_id){
       nodata_count++;
     }
   });
+}
+
+function getNotifications(serialnumber) {
+  $.ajax({
+    url: "/unit/notifications/" + serialnumber,
+    type: 'GET',
+    data: {
+      "_token": token,
+    },
+    success: function (data) {
+      console.log(data);
+    },
+  })
 }
 </script>
 

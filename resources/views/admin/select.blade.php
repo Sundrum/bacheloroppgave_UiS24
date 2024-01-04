@@ -28,6 +28,7 @@ $(document).ready(function () {
     var dataSet = @php echo $data; @endphp;
     $('#selectusertable').DataTable({
         data: dataSet,
+        stateSave: true,
         pageLength: 25, // Number of entries
         responsive: true, // For mobile devices
         columnDefs : [{ 

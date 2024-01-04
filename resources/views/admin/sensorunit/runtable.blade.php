@@ -5,7 +5,12 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 <div class="row">
-    <a class="mb-2" href="/admin/irrigationstatus/{{$run->serialnumber ?? ''}}" style="color: black; text-decoration: none;"><button class="btn-outline-7r"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til {{$run->serialnumber ?? ''}}</strong></button></a>
+    <div class="col-6">
+        <a class="mb-2" href="/admin/irrigationstatus/{{$run->serialnumber ?? ''}}" style="color: black; text-decoration: none;"><button class="btn-outline-7r"><img class="" src="{{ asset('/img/back.svg') }}"> <strong>Tilbake til {{$run->serialnumber ?? ''}}</strong></button></a>
+    </div>
+    <div class="col-6">
+        <button class="float-end btn-7r" onclick="deleteRun({{$run->log_id}})">Delete run</button>
+    </div>
 </div>
 <div class="mt-3 mb-3">
     <div class="row justify-content-center">
@@ -19,7 +24,15 @@
             </div>
         </div>
         <div class="col-md-10 bg-white card-rounded mt-3 px-3">
-            <h5 class="py-2">Log</h5>
+            <div class="row">
+                <div class="col-6">
+                    <h5 class="mt-2">Log</h5>
+                </div>
+                <div class="col-6">
+                    <button class="btn-7g mt-2 float-end" onclick="cleanUp();"> Clean Up Velocity</button>
+                </div>
+            </div>
+
             <hr>
             <table id="logtable" class="display" width="100%"></table>
         </div>
@@ -35,12 +48,39 @@ var startMarker;
 var startpoint;
 var endpoint;
 var log_id;
+let starttime;
+let endttime;
 let serialnumber;
 var startIcon = new google.maps.MarkerImage("/img/irrigation/start.png", null, null, null, new google.maps.Size(54,85.5));
 var endIcon = new google.maps.MarkerImage("/img/irrigation/finish.png", null, null, null, new google.maps.Size(54,85.5));
 var poiIcon = new google.maps.MarkerImage("/img/irrigation/sms.png", null, null, null, new google.maps.Size(54,85.5));
 var activeIcon = new google.maps.MarkerImage("/img/irrigation/current.svg", null, null, new google.maps.Point(25, 25), new google.maps.Size(50,50));
 var runIcon = { path: google.maps.SymbolPath.CIRCLE, scale: 3, strokeColor:'#880808' };// strokeColor: '#FF0000', fillColor: '#FF0000' };
+
+function cleanUp() {
+    $.ajax({
+        url: "/admin/irrigationstatus/irrigationrun/cleandata",
+        type: 'POST',
+        dataType: 'json',
+        data: { 
+            "serialnumber": serialnumber,
+            "starttime": starttime,
+            "endtime": endtime,
+            "_token": token,
+        },
+        success: function(data) {
+            console.log(data);
+            successMessage('Success');
+            
+        },   
+        error: function(data) {
+            console.log(data);
+            errorMessage('Something went wrong');
+
+        }
+    });
+
+}
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map_1'), {
@@ -67,6 +107,8 @@ function getLatestRun(id) {
             console.log('irrigation_run_id: ' + data.irrigation_run_id);
             console.log('serialnumber: ' + data.serialnumber);
             serialnumber = data.serialnumber;
+            starttime = data.irrigation_starttime;
+            endtime = data.irrigation_endtime;
             console.log('irrigation_starttime: ' + data.irrigation_starttime);
             console.log('irrigation_endtime: ' + data.irrigation_endtime);
             console.log('irrigation_startpoint: ' + data.irrigation_startpoint);
@@ -96,6 +138,34 @@ function getLatestRun(id) {
             console.log('ERROR '+data);
         },
     })
+}
+
+function deleteRun(id) {
+    
+    var confirmed = confirm('Do you want to delete this run?');
+    if(confirmed) {
+        $.ajax({
+            url: "/irrigation/deleterun",
+            type: 'POST',
+            dataType: 'json',
+            data: { 
+                "id": id,
+                "_token": token,
+            },
+            success: function(data) {
+                console.log(data);
+                successMessage('You successfully deleted this run');
+                
+            },   
+            error: function(data) {
+                console.log(data);
+                errorMessage('Something went wrong');
+            }
+        });
+    } else {
+        successMessage('Cancelled');
+    }
+
 }
 
 function generateMarkers(item) {
@@ -337,8 +407,14 @@ function generateTable(data) {
     const dataSet = data;
     console.log(data);
     var table = $('#logtable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
         data: dataSet,
-        pageLength: 25, // Number of entries
+        pageLength: 100, // Number of entries
         responsive: true, // For mobile devices
         columnDefs : [{ 
             responsivePriority: 1, targets: 4,
@@ -392,6 +468,9 @@ function generateTable(data) {
             defaultContent: "<i>Not set</i>" },
             { title: "Bar",
             data: "21",
+            defaultContent: "<i>Not set</i>" },
+            { title: "Velocity",
+            data: "22",
             defaultContent: "<i>Not set</i>" },
             { title: "RSSI",
             data: "16",

@@ -97,7 +97,7 @@ class SettingsController extends Controller
         } else {
             $phone_work = null;
         }
-        $user->user_phone_work = $work;
+        $user->user_phone_work = trim($work);
         $user->save();
         return redirect('/myaccount')->with('message', 'Your settings have been updated');
     }

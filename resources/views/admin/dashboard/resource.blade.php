@@ -16,6 +16,11 @@
                     Variables
                 </button>
             </div>
+            <div class="row m-1 justify-content-center">
+                <button class="btn-7s" onclick="window.location='/admin/proxy?product=21-9030'">
+                    Tek-Zence
+                </button>
+            </div>
             
         </div>
     </div>

@@ -68,7 +68,6 @@ class User extends Authenticatable {
     
     public static function getUsers() {
         $data = Api::getApi('user/list');
-
         return $data['result'];
     }
 

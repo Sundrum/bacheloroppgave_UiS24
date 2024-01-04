@@ -23,6 +23,7 @@ $(document).ready(function () {
     var dataSet = @php echo $data; @endphp;
     var table = $('#table').DataTable({
         data: dataSet,
+        stateSave: true,
         pageLength: 100, // Number of entries
         responsive: true, // For mobile devices
         columnDefs : [{ 

@@ -45,11 +45,6 @@ return [
     | Add Group Modal Language Lines
     |--------------------------------------------------------------------------
     */
-    'addnewgroup' => 'Add new group',
-    'groupname' => 'Group Name',
-    'addgroupinfo'  => 'Please name the new group',
-
-    
 
 
 ];

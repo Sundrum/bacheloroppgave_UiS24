@@ -19,7 +19,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\UnittypeController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\DB;
-use Auth, Redirect, Session, Log;
+use Auth, Redirect, Session, Log, Lang, App;
 
 class AdminController extends Controller {
     public function __construct() {
@@ -41,7 +41,7 @@ class AdminController extends Controller {
         $count['customers'] = $customers->count();
         $count['users'] = $users->count();
 
-        return view('admin.dashboard', compact('count', 'variable'));
+        return view('admin.dashboard', compact('count', 'variable', 'customers'));
     }
 
     public function setUser($userid, $customernumber) {
@@ -86,113 +86,41 @@ class AdminController extends Controller {
     }
 
     public function irrigationStatus() {
-        $data = Sensorunit::select('sensorunits.*', 'customer.customer_name')->where('serialnumber', 'LIKE', '%21-1020-AC%' )->join('customer', 'customer.customer_id', 'sensorunits.customer_id_ref')->get();
-        $sorted = array();
-        $result = array();
-        $timing = now();
-        foreach ($data as &$unit) {
-            if (isset($unit['serialnumber'])) {
-                $serial = trim($unit['serialnumber']);
-                $status = $record[0]->value ?? '';
+        $timing = time();
 
-                if (isset($unit['sensorunit_lastconnect'])) {
-                    if(!in_array(trim($unit['serialnumber']),$sorted)){
-                        $variables = Unit::getVariables($serial);
-                        if(is_array($variables['result'])) {
-                            foreach ($variables['result'] as $variable) {
-                                if (trim($variable['variable']) == 'irrigation_state') {
-                                    array_push($sorted, trim($unit['serialnumber']));
-                                    $unit['irrigation_state'] = trim($variable['value']);
-                                    $unit['swversion'] = $status ?? null;
-                                    $result[] = $unit;
-                                }
-                            }
-                            if(!isset($unit['irrigation_state'])) {
-                                array_push($sorted, trim($unit['serialnumber']));
-                                $unit['irrigation_state'] = -1;
-                                $unit['swversion'] = $status  ?? null;
-                                $result[] = $unit;
-                            }
-                        } else {
-                            array_push($sorted, trim($unit['serialnumber']));
-                            $unit['irrigation_state'] = -1;
-                            $unit['swversion'] = $status ?? null;
-                            $result[] = $unit;
-                        }
-                    }
+        $units = DB::select("SELECT sensorunits.*,
+                                customer.customer_name as customer_name,
+                                max(case when(sensorslatestvalues.probenumber='0') then sensorslatestvalues.value else NULL end) as state 
+                                FROM sensorunits
+                                LEFT JOIN customer ON (sensorunits.customer_id_ref = customer.customer_id)
+                                LEFT JOIN sensorslatestvalues ON (sensorunits.serialnumber = sensorslatestvalues.serialnumber AND sensorslatestvalues.probenumber='0')
+                                WHERE sensorunits.serialnumber LIKE '%21-1020-AC%'
+                                GROUP BY sensorunits.serialnumber, customer.customer_name");
+        $proxy_variables = DB::connection('sensordata')->select("SELECT status.serialnumber, 
+                                    max(case when(status.variable='swversion') then status.value else NULL end) as swversion,
+                                    max(case when(status.variable='lastconnect') then status.value else NULL end) as lastconnect,
+                                    max(case when(status.variable='sequencenumber') then status.value else NULL end) as sequencenumber,
+                                    max(case when(status.variable='rebootcounter') then status.value else NULL end) as rebootcounter,
+                                    max(case when(status.variable='rebootcounter') then status.dateupdated else NULL end) as reboot_at, 
+                                    max(case when(status.variable='resetcode') then status.value else NULL end) as resetcode
+                                    FROM status
+                                    WHERE status.serialnumber LIKE '%21-1020-AC%'
+                                    GROUP BY status.serialnumber");
+        AdminController::processIrrigationArray($units);
+
+        foreach($units as &$unit) {
+            foreach($proxy_variables as $key => $variable) {
+                if($variable->serialnumber == $unit->serialnumber) {
+                    $unit->variable = $variable;
+                    unset($proxy_variables[$key]);
                 }
             }
+
         }
-        
-        $allirrigation = AdminController::processIrrigationArray($result);
-
-        $dataset = array();
-        $variable = array();
-        $variable['notused'] = 0;
-        $variable['idle'] = 0;
-        $variable['idle_green'] = 0;
-        $variable['settling'] = 0;
-        $variable['irrigation'] = 0;
-        $variable['idle_clock_wait'] = 0;
-        $variable['idle_activity'] = 0;
-        $variable['post_settling'] = 0;
-        $variable['off_season'] = 0;
-
-        $i = 0;
-        foreach ($result as $row) {
-            $dataset[$i][0] = '<a href="/unit/'.$row['serialnumber'].'"><img width="50" height="50" src="'.$row['img'].'"><span style="font-size:0px;">'.$row['sortstate'].'</span></a>';
-            if ($row['sortstate'] == 'state-1') {
-                $variable['notused'] += 1;
-            } else if ($row['sortstate'] == 'state0') {
-                $variable['idle'] += 1;
-            } else if ($row['sortstate'] == 'state1') {
-                $variable['idle_green'] += 1;
-            } else if ($row['sortstate'] == 'state2') {
-                $variable['idle_clock_wait'] += 1;
-            } else if ($row['sortstate'] == 'state3') {
-                $variable['idle_activity'] += 1;
-            } else if ($row['sortstate'] == 'state4') {
-                $variable['settling'] += 1;
-            } else if ($row['sortstate'] == 'state5') {
-                $variable['irrigation'] += 1;
-            } else if ($row['sortstate'] == 'state6') {
-                $variable['post_settling'] += 1;
-            } else if ($row['sortstate'] == 'state7') {
-                $variable['off_season'] += 1;
-            }
-            if ($row['sortstate'] !== 'state-1') {
-                $variable['seq'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'sequencenumber']);
-                if(isset($variable['seq']) && count($variable['seq']) > 0) {
-                    $row['seq'] = $variable['seq'][0]->value;
-                }
-                $variable['resetcode'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'resetcode']);
-                if(isset($variable['resetcode']) && count($variable['resetcode']) > 0) {
-                    $row['resetcode'] = $variable['resetcode'][0]->value;
-                }
-                // DB::connection('sensordata')->select('UPDATE status SET value = ? WHERE serialnumber = ? AND variable = ? ', [0,$row['serialnumber'], 'rebootcounter']);
-
-                $variable['rebootcounter'] = DB::connection('sensordata')->select('SELECT * FROM status WHERE serialnumber = ? AND variable = ? ORDER BY variable ASC', [$row['serialnumber'], 'rebootcounter']);
-                if(isset($variable['rebootcounter']) && count($variable['rebootcounter']) > 0) {
-                    $row['rebootcounter'] = $variable['rebootcounter'][0]->value;
-                }
-            }
-            if($row['serialnumber']) { $dataset[$i][1]=$row['serialnumber']; } else { $dataset[$i][1] = null; }
-            if($row['sensorunit_location']) { $dataset[$i][2]=$row['sensorunit_location']; } else { $dataset[$i][2] = null; }
-
-            $dataset[$i][3]=$row->customer_name; 
-            if(isset($row['seq'])) { $dataset[$i][4]=trim($row['seq']) ?? null; } else { $dataset[$i][4] = null; }
-            if(isset($row['resetcode'])) { $dataset[$i][5]=trim($row['resetcode']) ?? null; } else { $dataset[$i][5] = null; }
-            if(isset($row['rebootcounter'])) { $dataset[$i][6]=trim($row['rebootcounter']) ?? null; } else { $dataset[$i][6] = null; }
-
-            if($row['sensorunit_lastconnect']) { $dataset[$i][7]=self::convertToSortableDate($row['sensorunit_lastconnect']); } else { $dataset[$i][7] = null; }
-            $dataset[$i][8] = '<a href="/admin/irrigationstatus/'.$row['serialnumber'].'"><button class="btn-7g">Open</button></a>';
-
-            $i++;
-        }
-        $timing_2 = now();
-        Log::info($timing." and ". $timing_2);
-        $data = json_encode($dataset);
-        return view('admin.irrigationstatus',  compact('data', 'variable'));
+        $timing_2 = time();
+        Log::info($timing_2 - $timing. "s loading Irrigation status" );
+        $data = json_encode($units);
+        return view('admin.irrigationstatus',  compact('data'));
     }
 
     public function select() {
@@ -204,6 +132,60 @@ class AdminController extends Controller {
     public function connectUser() {
         $data = self::getUsers(2);
         return view('admin.connect.select')->with('data', $data);
+    }
+
+    public function getLanguage() {
+        $response = array();
+        App::setLocale('no');
+        self::processLanguage($response, Lang::get('admin'));
+        self::processLanguage($response, Lang::get('general'));
+        self::processLanguage($response, Lang::get('dashboard'));
+        self::processLanguage($response, Lang::get('map'));
+        self::processLanguage($response, Lang::get('myaccount'));
+        self::processLanguage($response, Lang::get('navbar'));
+        self::processLanguage($response, Lang::get('settings'));
+        self::processLanguage($response, Lang::get('support'));
+
+        App::setLocale('fr');
+        self::processLanguage($response, Lang::get('admin'));
+        //self::processLanguage($response, Lang::get('general'));
+        self::processLanguage($response, Lang::get('dashboard'));
+        self::processLanguage($response, Lang::get('map'));
+        self::processLanguage($response, Lang::get('myaccount'));
+        self::processLanguage($response, Lang::get('navbar'));
+        self::processLanguage($response, Lang::get('settings'));
+        self::processLanguage($response, Lang::get('support'));
+
+        App::setLocale('en');
+        self::processLanguage($response, Lang::get('admin'));
+        self::processLanguage($response, Lang::get('general'));
+        self::processLanguage($response, Lang::get('dashboard'));
+        self::processLanguage($response, Lang::get('map'));
+        self::processLanguage($response, Lang::get('myaccount'));
+        self::processLanguage($response, Lang::get('navbar'));
+        self::processLanguage($response, Lang::get('settings'));
+        self::processLanguage($response, Lang::get('support'));
+
+        $response = array_values($response);
+        $response = json_encode($response);
+        return view('admin.language', compact('response'));
+    }
+
+    public function processLanguage(&$response, $array) {
+        $language = App::getLocale();
+        foreach ($array as $key => $value) {
+            if(isset($response[$key][$language])) {
+                if($language == 'en') {
+                    $response[$key]['count_en'] = 1; 
+                } else if($language == 'fr') {
+                    $response[$key]['count_fr'] = 1; 
+                } else if($language == 'no'){
+                    $response[$key]['count_no'] = 1; 
+                }
+            }
+            $response[$key]['index'] = $key;
+            $response[$key][$language] = $value;
+        }
     }
 
     public function userAccess($userid) {
@@ -276,83 +258,81 @@ class AdminController extends Controller {
         return $data;
     }
 
-    public static function processIrrigationArray($irrigationunits) {
+    public static function processIrrigationArray(&$irrigationunits) {
         foreach ($irrigationunits as &$irrUnit) {
-            if (isset($irrUnit['sensorunit_lastconnect'])) {
-                $irrUnit['manipulatedTimestamp'] = DashboardController::convertTimestampToUserTimezone($irrUnit['sensorunit_lastconnect']);
-                $irrUnit['timestampDifference'] = DashboardController::getTimestampDifference($irrUnit['sensorunit_lastconnect']);
-                $irrUnit['timestampComment'] = DashboardController::getTimestampComment($irrUnit['timestampDifference'], $irrUnit['manipulatedTimestamp']);
+            if (isset($irrUnit->sensorunit_lastconnect)) {
+                $irrUnit->manipulatedTimestamp = DashboardController::convertTimestampToUserTimezone($irrUnit->sensorunit_lastconnect);
+                $irrUnit->timestampDifference = DashboardController::getTimestampDifference($irrUnit->sensorunit_lastconnect);
+                $irrUnit->timestampComment = DashboardController::getTimestampComment($irrUnit->timestampDifference, $irrUnit->manipulatedTimestamp);
 
-                if ($irrUnit['timestampDifference'] < 5400) {
-                    if ($irrUnit['irrigation_state'] === '-1') {
-                        $irrUnit['img'] = '../img/irrigation/state.png';
-                        $irrUnit['sortstate'] = 'state-1';
-                        $irrUnit['display'] = 'none';
-                        $irrUnit['class'] = 'all_units';
-                    } else if ($irrUnit['irrigation_state'] === '0') {
-                        $irrUnit['img'] = '../img/irrigation/state_0.png';
-                        $irrUnit['display'] = 'none';
-                        $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state0';
-                    } else if ($irrUnit['irrigation_state'] === '1') {
-                        $irrUnit['img'] = '../img/irrigation/state_1.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state1';
-                    } else if ($irrUnit['irrigation_state'] === '2') {
-                        $irrUnit['img'] = '../img/irrigation/state_2.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state2';
-                    } else if ($irrUnit['irrigation_state'] === '3') {
-                        $irrUnit['img'] = '../img/irrigation/state_3.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state3';
-                    } else if ($irrUnit['irrigation_state'] === '4') {
-                        $irrUnit['img'] = '../img/irrigation/state_4.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state4';
-                    } else if ($irrUnit['irrigation_state'] === '5') {
-                        $irrUnit['img'] = '../img/irrigation/state_5.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state5';
-                    } else if ($irrUnit['irrigation_state'] === '6') {
-                        $irrUnit['img'] = '../img/irrigation/state_6.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state6';
-                    } else if ($irrUnit['irrigation_state'] === '7') {
-                        $irrUnit['img'] = '../img/irrigation/state_7.png';
-                        $irrUnit['display'] = '';
-                        $irrUnit['class'] = 'irrigation_units';
-                        $irrUnit['sortstate'] = 'state7';
+                if ($irrUnit->timestampDifference < 5400) {
+                    if ($irrUnit->state === '-1') {
+                        $irrUnit->img = '../img/irrigation/state.png';
+                        $irrUnit->sortstate = 'state-1';
+                        $irrUnit->display = 'none';
+                        $irrUnit->class = 'all_units';
+                    } else if ($irrUnit->state === '0') {
+                        $irrUnit->img = '../img/irrigation/state_0.png';
+                        $irrUnit->display = 'none';
+                        $irrUnit->class = 'all_units';
+                        $irrUnit->sortstate = 'state0';
+                    } else if ($irrUnit->state === '1') {
+                        $irrUnit->img = '../img/irrigation/state_1.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state1';
+                    } else if ($irrUnit->state === '2') {
+                        $irrUnit->img = '../img/irrigation/state_2.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state2';
+                    } else if ($irrUnit->state === '3') {
+                        $irrUnit->img = '../img/irrigation/state_3.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state3';
+                    } else if ($irrUnit->state === '4') {
+                        $irrUnit->img = '../img/irrigation/state_4.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state4';
+                    } else if ($irrUnit->state === '5') {
+                        $irrUnit->img = '../img/irrigation/state_5.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state5';
+                    } else if ($irrUnit->state === '6') {
+                        $irrUnit->img = '../img/irrigation/state_6.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state6';
+                    } else if ($irrUnit->state === '7') {
+                        $irrUnit->img = '../img/irrigation/state_7.png';
+                        $irrUnit->display = '';
+                        $irrUnit->class = 'irrigation_units';
+                        $irrUnit->sortstate = 'state7';
                     }
                 } else {
-                    if ($irrUnit['sensorunit_lastconnect'] > '2023-05-07 11:10:09.60511+00') {
-                        $irrUnit['img'] = '../img/irrigation/state_0.png';
-                        $irrUnit['display'] = 'none';
-                        $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state0';
+                    if ($irrUnit->sensorunit_lastconnect > '2023-05-07 11:10:09.60511+00') {
+                        $irrUnit->img = '../img/irrigation/state_0.png';
+                        $irrUnit->display = 'none';
+                        $irrUnit->class = 'all_units';
+                        $irrUnit->sortstate = 'state0';
                         
-                        if ($irrUnit['irrigation_state'] === '7') {
-                            $irrUnit['img'] = '../img/irrigation/state_7.png';
-                            $irrUnit['display'] = '';
-                            $irrUnit['class'] = 'irrigation_units';
-                            $irrUnit['sortstate'] = 'state7';
+                        if ($irrUnit->state === '7') {
+                            $irrUnit->img = '../img/irrigation/state_7.png';
+                            $irrUnit->display = '';
+                            $irrUnit->class = 'irrigation_units';
+                            $irrUnit->sortstate = 'state7';
                         }
                     } else {
-                        $irrUnit['img'] = '../img/irrigation/state.png';
-                        $irrUnit['display'] = 'none';
-                        $irrUnit['class'] = 'all_units';
-                        $irrUnit['sortstate'] = 'state-1';
+                        $irrUnit->img = '../img/irrigation/state.png';
+                        $irrUnit->display = 'none';
+                        $irrUnit->class = 'all_units';
+                        $irrUnit->sortstate = 'state-1';
                     }
                 }
             }
         }
-        
-        return $irrigationunits;
     }
 }
