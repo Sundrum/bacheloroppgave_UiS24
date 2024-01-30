@@ -1,3 +1,18 @@
+# Kristian og Sigurd bacheloroppgave Sale and Subscription service
+
+## How to pull latest changes
+- `git checkout master`
+- `git pull origin master`
+
+## How to branch
+- Make sure your local repository is up to date with the remote repository: `git fetch origin`
+- List all branches: `git branch`
+- Create a new branch: `git checkout -b name-of-branch`
+- Do changes
+    - `git add .`
+    - `git commit -m "Detailed commit message"`
+- `git push origin name-of-branch`
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
