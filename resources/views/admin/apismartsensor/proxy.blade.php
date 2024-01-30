@@ -174,6 +174,35 @@ $(document).ready(function () {
                 }
             },
             { 
+                title: "RESETCODE",
+                data: "resetcode",
+                defaultContent: "",
+                render: function(data) {
+                    if(data) {
+                        if (data == "0x50001") return "CTRL-AP & AIRCR.SYSRESETREQ & PIN RESET";
+                        if (data == "0x50000") return "CTRL-AP & AIRCR.SYSRESETREQ";
+                        if (data == "0x30003") return "WATCHDOG - CPU LOCK-UP & AIRCR.SYSRESETREQ";
+                        if (data == "0x30001") return "PIN RESET - CPU LOCK-UP & AIRCR.SYSRESETREQ";
+                        if (data == "0x3") return "WATCHDOG & PIN RESET";
+                        if (data == "0x2") return "WATCHDOG";
+                        if (data == "0x10003") return "WATCHDOG - AIRCR.SYSRESETREQ";
+                        if (data == "0x10002") return "WATCHDOG - AIRCR.SYSRESETREQ";
+                        if (data == "0x10001") return "PIN RESET - AIRCR.SYSRESETREQ";
+                        if (data == "0x10000") return "AIRCR.SYSRESETREQ";
+                        if (data == "0x0") return "POWER RESET";
+                        //if (reset_reason &     0x1) return "Reset from pin reset detected";
+                        //if (reset_reason &     0x2) return "Global watchdog detected";
+                        //if (reset_reason &     0x4) return "Signal from GPIO";
+                        //if (reset_reason &    0x10) return "Debug interface mode";
+                        //if (reset_reason & 0x10000) return "Reset from AIRCR.SYSRESETREQ detected";
+                        //if (reset_reason & 0x20000) return "Reset from CPU lock-up detected";
+                        //if (reset_reason & 0x40000) return "Reset triggered through CTRL-AP";
+                        
+                    }
+                }
+
+            },
+            { 
                 title: "SEQ",
                 data: "sequencenumber",
                 defaultContent: "" 
@@ -193,11 +222,7 @@ $(document).ready(function () {
                     }
                 }
             },
-            { 
-                title: "RESETCODE",
-                data: "resetcode",
-                defaultContent: ""
-            },
+
         ],
     });
 

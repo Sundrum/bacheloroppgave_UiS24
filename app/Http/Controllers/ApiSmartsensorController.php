@@ -150,7 +150,7 @@ class ApiSmartsensorController extends AdminController
         //     return response()->json('V1.3.9');
         // }
 
-        $aa_cmd = "105,0,0,21-9030/app_update_9030_AA_v148.bin";
+        $aa_cmd = "105,0,0,21-9030/app_update.bin";
         $ab_cmd = "105,0,0,21-9030/app_update_9030_AB_v148.bin";
         $farmfield = "105,0,0,21-1065-AC/farmfield-ac_1.0.6";
         $irrigation = "105,http://firmware.smartsensor.no/21-1020-AC/irrigation-ac_1.2.3";

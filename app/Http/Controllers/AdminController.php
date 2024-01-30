@@ -22,19 +22,26 @@ use Illuminate\Support\Facades\DB;
 use Auth, Redirect, Session, Log, Lang, App;
 
 class AdminController extends Controller {
+    /*
+        Middleware which are executed before any function can run
+    */
     public function __construct() {
-        $this->middleware('auth');
-        $this->middleware('checkadmin');
-        $this->middleware('language');
+        $this->middleware('auth'); // Verify that the user is authenticated
+        $this->middleware('checkadmin'); // Verify that the user is admin
+        $this->middleware('language'); // Set the language based on user settings
     }
 
-    public function dashboard() {
 
-        $units = Sensorunit::all();
-        $variable['products'] = Product::all();
-        $products = Product::all();
-        $customers = Customer::all();
-        $users = User::all();
+    /*
+        Used in admin dashboard
+        Called from route: /admin
+    */
+    public function dashboard() {
+        $units = Sensorunit::all(); // Retrieve all sensorunits
+        $variable['products'] = Product::all(); // Retrieve all products
+        $products = Product::all(); // Retrieve all products
+        $customers = Customer::all(); // Retrieve all customers
+        $users = User::all(); // Retrieve all users
 
         $count['units'] = $units->count();
         $count['products'] = $products->count();
@@ -44,21 +51,22 @@ class AdminController extends Controller {
         return view('admin.dashboard', compact('count', 'variable', 'customers'));
     }
 
+
+    /*
+        Used for logging in as a user
+        Called from route: /select/{userid}/{customernumber}
+    */
     public function setUser($userid, $customernumber) {
         Session::put('user_id',$userid);
         Session::put('customernumber', $customernumber);
         return Redirect::to('dashboard');
     }
 
-    public function getSensorunits() {
-        $sensorunits = json_encode(SensorunitController::getSensorunits(1));
-        return view('admin.sensorunit')->with('data', $sensorunits);
-    }
-
     public function user(){
         return view('admin.user.view');
     }
 
+    
     public function getProbes() {
         $products = json_encode(ProductController::getProducts(1));
         return view('admin.probe')->with('data', $products);
@@ -66,7 +74,6 @@ class AdminController extends Controller {
 
     public function getProducts() {
         $products = json_encode(ProductController::getProducts(1));
-        //$products = Product::orderBy('product_id','ASC')->get();
         return view('admin.products', compact('products'));
     }
 

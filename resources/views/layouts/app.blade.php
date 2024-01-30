@@ -44,7 +44,7 @@
 
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/popper.js') }}"></script>
-
+<link rel="stylesheet" href="{{ asset('css/desktop_style.css') }}">
 <title>{{ config('APP_NAME', '7Sense Portal') }}</title>
 </head>
 <body>

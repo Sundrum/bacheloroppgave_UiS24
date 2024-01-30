@@ -36,7 +36,7 @@
       <a onclick="loadContent('{{route('support')}}')" href="{{route('support')}}"  class="dropdown-item">
         <i class="fas fa-info-circle"></i> @lang('navbar.support')
       </a>
-      <a onclick="loadContent('https://portal.7sense.no/demo_uk')" href="https://portal.7sense.no/demo_uk"  class="dropdown-item">
+      <a onclick="loadContent('https://student.portal.7sense.no/demo_uk')" href="https://student.portal.7sense.no/demo_uk"  class="dropdown-item">
         <i class="fas fa-list"></i> @lang('Demo')
       </a>
       <hr class="my-0 mx-3">

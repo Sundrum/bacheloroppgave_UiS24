@@ -7,6 +7,11 @@ use App\Models\Activity;
 
 class ActivityController extends Controller
 {
+
+    /*
+        Used in admin dashboard for graph and chat view of activity feed
+        Called from route: /admin/activity/daily
+    */
     public function daily() {
         $response['dashboard'] = Activity::select('users.roletype_id_ref', 'activities.*')
                                 ->where('page', 'dashboard')

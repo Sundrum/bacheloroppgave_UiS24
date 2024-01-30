@@ -14,7 +14,6 @@
                     <h1>Login</h1>
                 </div>
                 <p class="text-center px-md-3 px-2">When you login you will get access to your units.</p>
-
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf

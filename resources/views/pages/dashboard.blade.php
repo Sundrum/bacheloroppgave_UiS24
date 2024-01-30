@@ -5,6 +5,7 @@
 <script> 
     setTitle(@json( __('navbar.dashboard')));
 </script>
+   
     @if (Session::has('settingserror') && Session::get('settingserror') == 1)
         <div class="alert alert-danger">
             Your account has no alarms defined <a href="/settings/1"> Click here to update</a>

@@ -45,16 +45,6 @@ class Controller extends BaseController
         $sensorunits = DashboardController::getOrder();
         $sensorunits = DashboardController::processSensorArray($sensorunits);
 
-        // Unit::getProbeSettings();
-        // $settingscounter = Session::get('settingscounter');
-        // if ($settingscounter == 0) {
-        //     $settings = 1;
-        //     Session::put('settingserror', $settings);
-        // } else {
-        //     $settings = 0;
-        //     Session::put('settingserror', $settings);
-        // }
-
         return view('pages.dashboard', compact('irrigationunits'), compact('sensorunits'));
     }
 
@@ -171,6 +161,7 @@ class Controller extends BaseController
         } else if (strcmp($unittype,'21-1018') === 0 ) {
             echo "Gateway with no probe";
         } else if (strcmp($unittype,'21-1065') === 0 ) {
+            
             $unit = Sensorunit::where('serialnumber', $serial)->first();
             $result = Unit::latestArrayData($serial);
             DashboardController::probeProcess($result);
@@ -197,6 +188,7 @@ class Controller extends BaseController
                     }
                 }
             }
+            
             return view('pages.product.1065', compact('serial', 'unit'));
         } else {
             $data = Api::getApi('sensorunits/list?serialnumber='.$serial);

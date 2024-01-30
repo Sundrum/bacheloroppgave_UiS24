@@ -43,7 +43,7 @@
                         <input type="number" class="form-control" id="document_id_ref" name="document_id_ref" placeholder="Documentation" value="{{$product->document_id_ref ?? '1'}}" required>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn-7g">Lagre</button>
+                        <button type="submit" class="btn-7g">Save</button>
                     </div>
                 </form>
             </div>

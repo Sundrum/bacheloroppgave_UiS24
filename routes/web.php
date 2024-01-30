@@ -255,3 +255,13 @@ Route::fallback(function () {
 //Route::post('/specific', 'MailController@specific');
 
 // Route::get('/dbsensorunit', 'TestController@dbtest');
+
+
+/*** 
+ * Mandeep Test_Demo route
+****/
+Route::get('/profilemandeep',function(){
+    return view('pages.profilemandeep');
+});
+Route::get('/profilemandeep/{serial_no}',[App\Http\Controllers\FetchSensorDat_Mandeep::class,'sensorData_daily']);
+Route::get('/probenomandeep/{serial_no}',[App\Http\Controllers\FetchSensorDat_Mandeep::class,'probeNo_daily']);
