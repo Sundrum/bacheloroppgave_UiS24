@@ -30,7 +30,6 @@
             <a class="nav-link @if(Request::is('messages')) active @endif" href="/messages"> <i class="fas fa-lg fa-envelope"></i>  @lang('navbar.messages')</a>
           </li>
           <li><a class="nav-link @if(Request::is('settings')) active @endif" href="/settings"><i class="fas fa-lg fa-cogs"></i>  @lang('navbar.settings')</a></li>
-
         </ul>
         @endauth
         <!-- Right Side Of Navbar -->

@@ -30,6 +30,13 @@
         </a>
         <span class="tooltip-right">@lang('navbar.settings')</span>
     </li>
+    <li class="sidebar-item">
+        <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
+            <i class="fa fa-2x fa-file-invoice"></i>
+            <span class="links_name">@lang('navbar.subscriptions')</span>
+        </a>
+        <span class="tooltip-right">@lang('navbar.subscriptions')</span>
+    </li>
     @auth
         @if (Auth::user()->roletype_id_ref > 80)
             <hr class="divider-2">

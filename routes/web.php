@@ -171,6 +171,10 @@ Route::post('/customeradmin/user/delete', [App\Http\Controllers\CustomerAdminCon
 Route::post('/customeradmin/user/update', [App\Http\Controllers\CustomerAdminController::class, 'updateUser']);
 Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
 
+/***
+ * Payments routes 
+***/
+Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
 
 /***
  * Support routes 

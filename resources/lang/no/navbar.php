@@ -18,5 +18,6 @@ return [
     'selectuser' => 'Velg bruker',
     'admin' => 'Admin',
     'demo' => 'Demo',
+    'subscriptions' => 'Abonnementer',
 
 ];

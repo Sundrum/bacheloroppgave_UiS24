@@ -1,5 +1,4 @@
 # Kristian og Sigurd bacheloroppgave Sale and Subscription service
-# Høst 2024
 
 ## How to pull latest changes
 - `git checkout master`
