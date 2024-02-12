@@ -22,6 +22,7 @@ return [
     'description' => 'Description: ',
     'detailedgraph' => 'See detailes',
     'close' => 'Close',
+    'paymentcompleted' => 'Payment completed!',
 
     /*
     |--------------------------------------------------------------------------

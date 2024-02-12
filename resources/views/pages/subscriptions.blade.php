@@ -46,28 +46,11 @@
                 <h4>Payment</h4>
                 <button id="checkout-button" class="btn btn-primary">Proceed to Checkout</button>
 
-                <script type="text/javascript">
-                    var button = document.getElementById('checkout-button');
-                    button.addEventListener('click', function () {
-                    var request = new XMLHttpRequest();
-
-                    // create-payment.php is implemented in Step 2
-                    request.open('GET', '/api/create-payment', true); 
-                    request.onload = function () {
-                        const data = JSON.parse(this.response);        // If parse error, check output 
-                        if (!data.paymentId) {                         // from create-payment.php
-                        console.error('Error: Check output from create-payment.php');
-                        console.log(this.response)
-                        return;
-                        }
-                        console.log(this.response);
-
-                        window.location = "{{ route('checkout')}}?paymentId="+ data.paymentId;
-                    }
-                    request.onerror = function () { console.error('connection error'); }
-                    request.send();
-                    });
-                </script>
+                {{-- Blade Routes --}}
+                <script>
+                    var checkoutRoute = "{{ route('checkout') }}";
+                </script>                
+                <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
 
                 </div>
             </div>

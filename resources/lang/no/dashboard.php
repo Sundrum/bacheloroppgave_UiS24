@@ -23,6 +23,7 @@ return [
     'description' => 'Beskrivelse: ',
     'detailedgraph' => 'Se detaljer',
     'close' => 'Lukk',
+    'paymentcompleted' => 'Betaling vellykket!',
 
     /*
     |--------------------------------------------------------------------------

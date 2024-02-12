@@ -6,9 +6,15 @@
     </div>
     <div class="row text-center mt-5">
     </div>
-    <h4>Payment completed!</h4>
+    <div class="col-12">
+        <h4> @lang('dashboard.paymentcompleted') </h4>
+    </div>
     <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}" class="btn btn-primary">
-    Back to cart
+    Back to subscriptions page
     </a>
 </section>
+<script>
+    let text = @json(__('dashboard.paymentcompleted'));
+    console.log(text)
+</script>
 @endsection
