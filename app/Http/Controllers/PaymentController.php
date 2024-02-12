@@ -12,8 +12,8 @@ class PaymentController extends Controller
         // Your backend logic here
         // $data = ['paymentId' => '123456789']; // Example data
         // return response()->json($data);
-        $payload = file_get_contents('/payload.json');
-        Log::info("Payload:", $payload);
+        $payload = file_get_contents(storage_path('app/testing/payload.json'));
+        Log::info("Payload gotten");
         assert(json_decode($payload) && json_last_error() == JSON_ERROR_NONE);
 
         $ch = curl_init('https://test.api.dibspayment.eu/v1/payments');
@@ -25,6 +25,7 @@ class PaymentController extends Controller
                 'Accept: application/json',
                 'Authorization: test-secret-key-95aff51c8b1d4af6a34907c5d139ddb8'));                                                
         $result = curl_exec($ch);
-        return response()->json($result);
+        echo $result;
+        // return response()->json($result);
     }
 }

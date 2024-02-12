@@ -57,6 +57,7 @@
                         const data = JSON.parse(this.response);        // If parse error, check output 
                         if (!data.paymentId) {                         // from create-payment.php
                         console.error('Error: Check output from create-payment.php');
+                        console.log(this.response)
                         return;
                         }
                         console.log(this.response);
