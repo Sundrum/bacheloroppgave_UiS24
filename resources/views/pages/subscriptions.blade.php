@@ -62,8 +62,7 @@
                         }
                         console.log(this.response);
 
-                        // checkout.html is implemented in Step 3
-                        window.location = 'checkout.html?paymentId=' + data.paymentId;
+                        window.location = "{{ route('checkout')}}?paymentId="+ data.paymentId;
                     }
                     request.onerror = function () { console.error('connection error'); }
                     request.send();

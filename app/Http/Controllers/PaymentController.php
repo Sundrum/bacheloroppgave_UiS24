@@ -26,6 +26,5 @@ class PaymentController extends Controller
                 'Authorization: test-secret-key-95aff51c8b1d4af6a34907c5d139ddb8'));                                                
         $result = curl_exec($ch);
         echo $result;
-        // return response()->json($result);
     }
 }
