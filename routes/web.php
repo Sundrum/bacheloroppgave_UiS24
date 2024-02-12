@@ -11,6 +11,10 @@
 |
 */
 
+// Sigurd og Kristian
+
+Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']); // API
+Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
 
 
 /***
@@ -170,11 +174,6 @@ Route::post('/sensorsettings', [App\Http\Controllers\SettingsController::class, 
 Route::post('/customeradmin/user/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteUser']);
 Route::post('/customeradmin/user/update', [App\Http\Controllers\CustomerAdminController::class, 'updateUser']);
 Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
-
-/***
- * Payments routes 
-***/
-Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
 
 /***
  * Support routes 

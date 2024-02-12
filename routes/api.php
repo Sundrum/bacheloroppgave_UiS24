@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// routes/api.php
+use App\Http\Controllers\PaymentController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/messages/customer', [App\Http\Controllers\MessagesController::class, 'get']);
+
