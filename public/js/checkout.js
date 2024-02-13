@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         checkoutKey: 'test-checkout-key-6ead172d804948e5af1e46507d13d3b5',
         paymentId: paymentId,
         containerId: "checkout-container-div",
-        language: GetLang()
+        language: GetLang(),
       };
       const checkout = new Dibs.Checkout(checkoutOptions);
       checkout.on('payment-completed', function (response) {
