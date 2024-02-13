@@ -25,7 +25,7 @@
                         <input class="form-control" type="text" name="description" maxlength="1500" placeholder="Information about the payment" required>
                     </div>
                     <div class="col-5 offset-1">
-                        <label class="text-left" for="description">Amout</label>
+                        <label class="text-left" for="description">Amount</label>
                         <input class="form-control col-6" type="number" name="amount" placeholder="E.g: 1000" required>
                     </div>
                     <div class="col-5">

@@ -7,7 +7,7 @@ return [
     | Dashboard Language Lines
     |--------------------------------------------------------------------------
     */
-    'subscription_failed' => 'Your subscription has failed, please contact 7Sense at support@7sense.no or call +47 33 08 44 00',
+    'subscription_failed' => 'Your subscription has failed, click here to renew',
     'todayat' => 'Aujourd’hui à ',
     'yesterdayat' => 'Hier à ',
     'openmap' => 'Ouvrir la carte',
@@ -22,6 +22,7 @@ return [
     'description' => 'La description: ',
     'detailedgraph' => 'Graphe détaillé',
     'close' => 'Fermer',
+    'paymentcompleted' => 'Paiement effectué!',
 
 
     /*

@@ -7,7 +7,7 @@ return [
     | Dashboard Language Lines
     |--------------------------------------------------------------------------
     */
-    'subscription_failed' => 'Ditt abonnement er ikke betalt eller er utløpt. Vennligst kontakt vår support-avdeling på support@7sense.no eller ring oss på +47 33 08 44 00',
+    'subscription_failed' => 'Ditt abonnement er ikke betalt eller er utløpt. Klikk her for å fornye abonnementet.',
 
     'todayat' => 'I dag ',
     'yesterdayat' => 'I går ',
@@ -23,6 +23,7 @@ return [
     'description' => 'Beskrivelse: ',
     'detailedgraph' => 'Se detaljer',
     'close' => 'Lukk',
+    'paymentcompleted' => 'Betaling vellykket!',
 
     /*
     |--------------------------------------------------------------------------

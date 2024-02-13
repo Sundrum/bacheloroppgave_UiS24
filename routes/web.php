@@ -11,6 +11,13 @@
 |
 */
 
+// Sigurd og Kristian
+
+Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']); // API
+Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
+Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
+Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
+//Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 
 
 /***
@@ -170,7 +177,6 @@ Route::post('/sensorsettings', [App\Http\Controllers\SettingsController::class, 
 Route::post('/customeradmin/user/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteUser']);
 Route::post('/customeradmin/user/update', [App\Http\Controllers\CustomerAdminController::class, 'updateUser']);
 Route::post('/customeradmin/access/delete', [App\Http\Controllers\CustomerAdminController::class, 'deleteAccess']);
-
 
 /***
  * Support routes 

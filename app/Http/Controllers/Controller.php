@@ -113,7 +113,6 @@ class Controller extends BaseController
             $user->userNameShort = $acronym;
         }
         $treespecies = Treespecies::all();
-
         return view('pages.settings', compact('sensorunits', 'customersettings', 'users'), compact('treespecies'))->with('irrigationunits', $irrigationunits);
     }
 
