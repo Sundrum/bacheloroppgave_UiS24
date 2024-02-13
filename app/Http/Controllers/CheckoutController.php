@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Log;
+use Auth;
 
 class CheckoutController extends Controller
 {
@@ -11,12 +12,13 @@ class CheckoutController extends Controller
         self::setActivity("Entered checkout", "checkout");
         Log::info("checkout method");
         $paymentId = request()->paymentId;
-        return view('pages/checkout', ['paymentId' => $paymentId]);
+        $language = Auth::user()->user_language;
+        return view('pages/checkout', ['paymentId' => $paymentId, 'language' => $language]);
     }
     public function success()
     {
-        self::setActivity("Order success", "success");
+        self::setActivity("Checkout success", "success");
         Log::info("success method");
-        return view('pages/ordersuccess');
+        return view('pages/checkoutsuccess');
     }
 }
