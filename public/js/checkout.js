@@ -1,5 +1,3 @@
-
-
 function GetLang(){
   if(language == 1)
   {
@@ -14,6 +12,14 @@ function GetLang(){
   return lang
 };
 
+function setTheme(bgColor, panelColor){
+  var theme = {
+    "backgroundColor": bgColor,
+    "panelcolor": panelColor,
+  }
+  return theme;
+}
+
 //On Load
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
@@ -26,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
         language: GetLang(),
       };
       const checkout = new Dibs.Checkout(checkoutOptions);
+      checkout.setTheme(setTheme("#ffffff", "#ffffff"));
       checkout.on('payment-completed', function (response) {
         window.location = checkoutSuccessRoute;
       });

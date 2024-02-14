@@ -6,7 +6,7 @@
     </div>
     <div class="row text-center mt-5">
         <div class="col-12">
-            <h4>Manage your subscriptions</h4>
+            <h4>Subscriptions for {{ $user->user_name }}</h4>
         </div>
     </div>
     <div class="row mt-5">
@@ -22,24 +22,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($sensorUnits as $sensorUnit)
                             <tr>
-                                <td>Irrigation Sensor</td>
-                                <td>Paid/Active</td>
+                                <td>{{ $sensorUnit->product_name }}</td>
+                                @if ($sensorUnit->paid_subscription)
+                                <td>Paid</td>
+                                @else
+                                <td>Not Paid</td>
+                                @endif
                                 <td>
-                                    <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
-                                        <i class="fa fa-2x fa-bars"></i>
-                                    </a>
+                                    {{-- <form action="{{ route('subscriptiondetails') }}" method="POST">
+                                        @csrf --}}
+                                        {{-- <input type="hidden" name="id" value="{{$sensorUnit->sensorunit_id}}" /> --}}
+                                        <a onclick="loadContent('{{ route('subscriptiondetails', ['sensorunit_id' => $sensorUnit->sensorunit_id]) }}')" 
+                                            href="{{ route('subscriptiondetails', ['sensorunit_id' => $sensorUnit->sensorunit_id]) }}">
+                                        {{-- <button type="submit"> --}}
+                                            <i class="fa fa-2x fa-bars"></i>
+                                        {{-- </button> --}}
+                                        </a>
+                                    {{-- </form> --}}
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Portal Access Subscription</td>
-                                <td>Not Paid/Inactive</td>
-                                <td>
-                                    <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
-                                        <i class="fa fa-2x fa-bars"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     
@@ -49,6 +53,7 @@
                 {{-- Blade Routes --}}
                 <script>
                     var checkoutRoute = "{{ route('checkout') }}";
+                    var updateUserDataRoute = "{{ route('updateUserData') }}";
                 </script>                
                 <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
 
