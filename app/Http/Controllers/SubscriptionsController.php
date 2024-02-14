@@ -28,8 +28,9 @@ class SubscriptionsController extends Controller
         return view('pages/subscriptions', compact('sensorUnits', 'user'));
     }
 
-    public function subscriptionDetails(Request $request, $sensorunit_id)
+    public function subscriptionDetails(Request $request)
     {
+        $sensorunit_id = $request->input('id');
         $sensorUnit = Sensorunit::getUnit($sensorunit_id);
 
         $user_id = Session::get('user_id');

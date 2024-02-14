@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Subscription;
 use Log;
 use Auth;
 
@@ -16,10 +17,11 @@ class PaymentController extends Controller
         $userData=$this->getUser();
         Log::info("User Data", $userData);
         //Handles insufficient user data
-        if ($this->IsEmpty($userData)){
-            Log::info("User Data IsEmpty!");
-            return response()->json($userData);
-        }
+            // if ($this->IsEmpty($userData)){
+            //     Log::info("User Data IsEmpty!");
+            //     return response()->json($userData);
+            // }
+        $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         //Generates Payload
         $payload = $this->createPayload($userData);
         Log::info("Payload gotten");
@@ -32,8 +34,13 @@ class PaymentController extends Controller
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                         
                 'Content-Type: application/json',
                 'Accept: application/json',
-                'Authorization: test-secret-key-95aff51c8b1d4af6a34907c5d139ddb8'));                                                
+                'Authorization:' . $secretAPIKey));                                                
         $result = curl_exec($ch);
+        // Create a new subscription record in db
+        //$sub = new Subscription();
+        //$sub->paymentId = $result['paymentId'];
+        // $response = json_encode($result);
+        // Log::info($response['paymentId']);
         echo $result;
     }
 
@@ -53,7 +60,7 @@ class PaymentController extends Controller
                     "showOrderSummary" => true
                 ]
             ],
-            "merchantHandlesConsumerData" => true,
+            "merchantHandlesConsumerData" => false,
             "company" => [
                 "name" => "string",
                 "contact" => [
@@ -69,43 +76,49 @@ class PaymentController extends Controller
                 "reference" => "portal-access-subscription",
                 "name" => "Portal Access Subscription",
                 "quantity" => 1,
-                "unit" => "pcs",
+                "unit" => "day",
                 "unitPrice" => 89000,
                 "grossTotalAmount" => 89000,
                 "netTotalAmount" => 80100
-            ],
-            [
-                "reference" => "irrigation-sensor",
-                "name" => "Irrigation Sensor",
-                "quantity" => 1,
-                "unit" => "pcs",
-                "unitPrice" => 1500000,
-                "grossTotalAmount" => 1500000,
-                "netTotalAmount" => 1350000
-            ],
-            [
-                "reference" => "irrigation-subscription",
-                "name" => "Irrigation Sensor Subscription",
-                "quantity" => 1,
-                "unit" => "pcs",
-                "unitPrice" => 150000,
-                "grossTotalAmount" => 150000,
-                "netTotalAmount" => 135000
             ]
+            // [
+            //     "reference" => "irrigation-sensor",
+            //     "name" => "Irrigation Sensor",
+            //     "quantity" => 1,
+            //     "unit" => "pcs",
+            //     "unitPrice" => 1500000,
+            //     "grossTotalAmount" => 1500000,
+            //     "netTotalAmount" => 1350000
+            // ],
+            // [
+            //     "reference" => "irrigation-subscription",
+            //     "name" => "Irrigation Sensor Subscription",
+            //     "quantity" => 1,
+            //     "unit" => "pcs",
+            //     "unitPrice" => 150000,
+            //     "grossTotalAmount" => 150000,
+            //     "netTotalAmount" => 135000
+            // ]
         ];
     
         // Define the order data
         $orderData = [
             "items" => $orderItems,
-            "amount" => 1739000,
+            "amount" => 89000,
             "currency" => "NOK",
-            "reference" => "Demo Order"
+            "reference" => "Subscription Test Order"
+        ];
+
+        $subscription = [
+            "interval" => 1,
+            "endDate" => "2024-02-18T00:00:00+00:00",
         ];
     
         // Combine checkout and order data into the final payload
         $payload = [
             "checkout" => $checkoutData,
-            "order" => $orderData
+            "order" => $orderData,
+            "subscription" => $subscription
         ];
     
         // Convert the payload array to JSON and return it
@@ -152,7 +165,7 @@ class PaymentController extends Controller
         return false;
     }
     public function updateUserData(){
-
-        return view('pages/updateUserData',['paymentId' => 'test', 'language' => 'test']);
+        $userData=$this->getUser();
+        return view('pages/updateUserData',compact('userData'));
     }
 }

@@ -18,8 +18,9 @@ Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::clas
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
 //Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
-Route::get('/subscriptiondetails/{sensorunit_id}', [App\Http\Controllers\SubscriptionsController::class, 'subscriptionDetails'])->name('subscriptiondetails');
+Route::post('/subscriptiondetails', [App\Http\Controllers\SubscriptionsController::class, 'subscriptionDetails'])->name('subscriptiondetails');
 Route::get('/updateUserData', [App\Http\Controllers\PaymentController::class, 'updateUserData'])->name('updateUserData');
+Route::get('/retrievePayment', [App\Http\Controllers\retrievePaymentController::class, 'retrievePayment'])->name('retrievePayment');
 
 
 

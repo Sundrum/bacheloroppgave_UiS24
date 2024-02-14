@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const paymentId = urlParams.get('paymentId');
     if (paymentId) {
       const checkoutOptions = {
-        checkoutKey: 'test-checkout-key-6ead172d804948e5af1e46507d13d3b5',
+        checkoutKey: checkoutKey,
         paymentId: paymentId,
         containerId: "checkout-container-div",
         language: GetLang(),

@@ -31,16 +31,13 @@
                                 <td>Not Paid</td>
                                 @endif
                                 <td>
-                                    {{-- <form action="{{ route('subscriptiondetails') }}" method="POST">
-                                        @csrf --}}
-                                        {{-- <input type="hidden" name="id" value="{{$sensorUnit->sensorunit_id}}" /> --}}
-                                        <a onclick="loadContent('{{ route('subscriptiondetails', ['sensorunit_id' => $sensorUnit->sensorunit_id]) }}')" 
-                                            href="{{ route('subscriptiondetails', ['sensorunit_id' => $sensorUnit->sensorunit_id]) }}">
-                                        {{-- <button type="submit"> --}}
+                                    <form action="{{ route('subscriptiondetails') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$sensorUnit->sensorunit_id}}" />
+                                        <button type="submit" style="border: none; background-color: transparent;">
                                             <i class="fa fa-2x fa-bars"></i>
-                                        {{-- </button> --}}
-                                        </a>
-                                    {{-- </form> --}}
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach
@@ -49,11 +46,13 @@
                     
                 <h4>Payment</h4>
                 <button id="checkout-button" class="btn btn-primary">Proceed to Checkout</button>
+                <button id="retrievePayment" class="btn btn-primary">retrievePayment</button>
 
                 {{-- Blade Routes --}}
                 <script>
                     var checkoutRoute = "{{ route('checkout') }}";
                     var updateUserDataRoute = "{{ route('updateUserData') }}";
+                    var retrievePaymentRoute = "{{ route('retrievePayment') }}";
                 </script>                
                 <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
 
