@@ -31,11 +31,11 @@
         <span class="tooltip-right">@lang('navbar.settings')</span>
     </li>
     <li class="sidebar-item">
-        <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
+        <a onclick="loadContent('{{route('subscriptionbilling')}}')" href="{{route('subscriptionbilling')}}">
             <i class="fa fa-2x fa-file-invoice"></i>
-            <span class="links_name">@lang('navbar.subscriptions')</span>
+            <span class="links_name">@lang('navbar.subscriptionbilling')</span>
         </a>
-        <span class="tooltip-right">@lang('navbar.subscriptions')</span>
+        <span class="tooltip-right">@lang('navbar.subscriptionbilling')</span>
     </li>
     @auth
         @if (Auth::user()->roletype_id_ref > 80)

@@ -36,11 +36,15 @@ class PaymentController extends Controller
                 'Accept: application/json',
                 'Authorization:' . $secretAPIKey));                                                
         $result = curl_exec($ch);
+        $data = json_decode($result);
+        $paymentId = $data->paymentId;
+
         // Create a new subscription record in db
-        //$sub = new Subscription();
-        //$sub->paymentId = $result['paymentId'];
-        // $response = json_encode($result);
-        // Log::info($response['paymentId']);
+        $sub = new Subscription();
+        $sub->paymentId = $paymentId;
+
+        // Access the paymentId value
+        Log::info($sub);
         echo $result;
     }
 
@@ -51,6 +55,10 @@ class PaymentController extends Controller
             "integrationType" => "EmbeddedCheckout",
             "url" => "https://student.portal.7sense.no/checkout",
             "termsUrl" => "https://student.portal.7sense.no/terms",
+            "consumerType"=> [
+                "supportedTypes"=> ["B2B"], //"B2B","B2C" 
+                "default"=> "B2B"
+            ],
             "appearance" => [
                 "textOptions" => [
                     "completePaymentButtonText" => "Yabba Dabba Doo"

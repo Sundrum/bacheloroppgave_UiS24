@@ -20,5 +20,6 @@ return [
     'admin' => 'Admin',
     'demo' => 'Demo',
     'subscriptions' => 'Subscriptions',
+    'subscriptionbilling' => 'Subscriptions and Billing',
 
 ];

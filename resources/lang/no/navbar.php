@@ -19,5 +19,6 @@ return [
     'admin' => 'Admin',
     'demo' => 'Demo',
     'subscriptions' => 'Abonnementer',
+    'subscriptionbilling' => 'Abonnement og Faktura',
 
 ];

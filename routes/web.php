@@ -15,6 +15,7 @@
 
 Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']); // API
 Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
+Route::get('/subscriptionbilling', [App\Http\Controllers\SubscriptionBillingController::class, 'subscriptionbilling'])->name('subscriptionbilling');
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
 //Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
