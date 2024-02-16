@@ -24,7 +24,7 @@
                         <tbody>
                             @foreach ($sensorUnits as $sensorUnit)
                             <tr>
-                                <td>{{ $sensorUnit->product_name }}</td>
+                                <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
                                 @if ($sensorUnit->paid_subscription)
                                 <td>Paid</td>
                                 @else

@@ -10,7 +10,30 @@ class Subscription extends Model
     use HasFactory;
 
     protected $table = 'subscriptions';
-    protected $primaryKey = 'id';
-    public $timestamps = false;
+    protected $primaryKey = 'subscription_id';
+    public $timestamps = true;
+
+    protected $fillable = [
+        'interval',
+        'serialnumber',
+        'subscription_status',
+        'customer_id_ref',
+    ];
+    public function getStatus()
+    {
+        switch ($this->subscription_status) {
+            case 0:
+                return 'Inactive';
+            case 1:
+                return 'Not Paid';
+            case 2:
+                return 'Active';
+            default:
+                return 'Unknown';
+        }
+    }
 
 }
+
+
+

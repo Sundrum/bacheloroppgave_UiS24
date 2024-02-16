@@ -15,13 +15,13 @@ class CheckoutController extends Controller
         $paymentId = request()->paymentId;
         $language = Auth::user()->user_language;
         $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
-        return view('pages/checkout', ['paymentId' => $paymentId, 'language' => $language, 'checkoutKey' => $checkoutKey]);
+        return view('pages/payment/checkout', ['paymentId' => $paymentId, 'language' => $language, 'checkoutKey' => $checkoutKey]);
     }
     //Handles checkout success
     public function success()
     {
         self::setActivity("Checkout success", "success");
         Log::info("success method");
-        return view('pages/checkoutsuccess');
+        return view('pages/payment/checkoutsuccess');
     }
 }

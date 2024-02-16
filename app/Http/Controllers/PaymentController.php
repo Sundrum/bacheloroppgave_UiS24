@@ -144,7 +144,8 @@ class PaymentController extends Controller
                      'customer.customer_visitaddr1',
                      'customer.customer_name',
                      'customer.customer_visitcountry',
-                     'customer.customer_visitcity')
+                     'customer.customer_visitcity',
+                     'customer.customer_id')
             ->where('users.user_id', Auth::user()->user_id)
             ->join('customer', 'customer.customer_id', 'users.customer_id_ref')
             ->first();
@@ -174,6 +175,10 @@ class PaymentController extends Controller
     }
     public function updateUserData(){
         $userData=$this->getUser();
-        return view('pages/updateUserData',compact('userData'));
+        return view('pages/payment/updateUserData',compact('userData'));
+    }
+    public function paymentHistory(){
+        $userData=$this->getUser();
+        return view('pages/payment/paymenthistory', compact('userData'));
     }
 }

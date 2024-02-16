@@ -35,7 +35,7 @@ class retrievePaymentController extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            return view('pages.retrievePayment', compact('response'));
+            return view('pages.payment.retrievePayment', compact('response'));
         }
     }
 };

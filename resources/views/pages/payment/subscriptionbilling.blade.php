@@ -11,7 +11,7 @@
                             <td onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
                                 @lang('navbar.subscriptions')
                             </td>
-                            <td>
+                            <td onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
                                 Payment History
                             </td>
                             <td>
@@ -30,6 +30,7 @@
     <section class="bg-white card-rounded">
         <div class="row mt-3 text-center" id="title">
             <h4>Next Payment</h4>
+            <p>{{$Sub}}</p>
         </div>
     </section>
 </div>

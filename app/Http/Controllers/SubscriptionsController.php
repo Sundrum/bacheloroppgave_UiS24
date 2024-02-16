@@ -25,7 +25,7 @@ class SubscriptionsController extends Controller
         $sensorUnits = Sensorunit::getSensorunitsForCustomer($user->customer_id_ref);
         //dd($sensorUnits);
         self::setActivity("Entered subscriptions", "subscriptions");
-        return view('pages/subscriptions', compact('sensorUnits', 'user'));
+        return view('pages/payment/subscriptions', compact('sensorUnits', 'user'));
     }
 
     public function subscriptionDetails(Request $request)
@@ -47,6 +47,6 @@ class SubscriptionsController extends Controller
             return view('fallback');
         }
         //dd($sensorUnit);
-        return view('pages/subscriptiondetails', compact('sensorUnit'));
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit'));
     }
 }
