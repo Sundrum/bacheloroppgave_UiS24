@@ -16,22 +16,32 @@
                 <th>Created At</th>
                 <th>Payment Status</th>
                 <th>Customer ID</th>
-                <th>Remove Entry</th>
                 <th>Save</th>
+                <th>Remove</th>
             </tr>
             @foreach($payments as $payment)
-            <form action="POST">
+            <form method="POST" action="{{ route('dboperationsupdated') }}">
+                @csrf
                 <tr>
-                    <td><input type="text" value="{{$payment->payment_id}}" size="40"></td>
-                    <td><input type="text" value="{{$payment->created_at}}"></td>
-                    <td><input type="text" value="{{$payment->payment_status}}"></td>
-                    <td><input type="text" value="{{$payment->customer_id_ref}}"></td>
                     <td>
-                        <a class="fas fa-2x fa-trash" onclick="loadContent('{{route('dboperationsdeleted')}}')" href="{{route('dboperationsdeleted')}}""></a>
+                        {{$payment->payment_id}}
+                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
                     </td>
-                    <td><button class="btn btn-primary" type="submit">Save</button></td>
+                    <td>{{$payment->created_at}}</td>
+                    <td><input type="text" name="payment_status" value="{{$payment->payment_status}}"></td>
+                    <td><input type="text" name="customer_id_ref" value="{{$payment->customer_id_ref}}"></td>
+                    <td><button class="btn-7g" type="submit"><i class="fa fa-lg fa-check"></i></button></td>
+                </form>
+                <td>
+                    <form action="{{ route('dboperationsdeleted') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
+                        <button type="submit" class="btn-7r">
+                            <i class="fa fa-lg fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
                 </tr>
-            </form>
             @endforeach
         </thead>
     </table>

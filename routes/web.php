@@ -24,7 +24,8 @@ Route::get('/updateUserData', [App\Http\Controllers\PaymentController::class, 'u
 Route::get('/retrievePayment', [App\Http\Controllers\retrievePaymentController::class, 'retrievePayment'])->name('retrievePayment');
 Route::get('/paymenthistory', [App\Http\Controllers\PaymentHistoryController::class, 'paymentHistory'])->name('paymenthistory');
 Route::get('/dboperations', [App\Http\Controllers\DbOperationsController::class, 'DbOperations'])->name('dboperations');
-Route::get('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'Delete'])->name('dboperationsdeleted');
+Route::post('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'delete'])->name('dboperationsdeleted');
+Route::post('/dboperationsupdated', [App\Http\Controllers\DbOperationsController::class, 'update'])->name('dboperationsupdated');
 
 
 /***

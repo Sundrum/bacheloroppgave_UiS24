@@ -30,8 +30,8 @@ function checkoutButtonClickHandler() {
     
     var items = [
         {   
-            reference : "portal-access-subscription",
-            name : "Portal Access Subscription",
+            reference : "irrigation-sensor",
+            name : "Irrigation Sensor",
             quantity : 1,
             unit : "day",
             unitPrice : 1500000,
@@ -39,8 +39,8 @@ function checkoutButtonClickHandler() {
             netTotalAmount : 1500000 
         },
         {   
-            reference : "portal-access-subscription",
-            name : "Portal Access Subscription",
+            reference : "irrigation-sensor",
+            name : "Irrigation Sensor",
             quantity : 1,
             unit : "day",
             unitPrice : 1500000,

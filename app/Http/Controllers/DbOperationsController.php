@@ -24,4 +24,13 @@ class DbOperationsController extends Controller
         $payment->delete();
         return redirect()->back()->with('success', 'Payment deleted successfully');
     }
+    public function update(Request $request){
+        $id = $request->payment_id;
+        $payment = Payment::find($id);
+        $payment->payment_id = $id;
+        $payment->payment_status = $request->payment_status;
+        $payment->customer_id_ref = $request->customer_id_ref;
+        $payment->save();
+        return redirect()->back()->with('success', 'Payment updated successfully');
+    }
 }
