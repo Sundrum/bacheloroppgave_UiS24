@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Subscription extends Model
 {
@@ -31,6 +32,14 @@ class Subscription extends Model
             default:
                 return 'Unknown';
         }
+    }
+    public static function getPaymentDate($lastPaymentDate, $interval)
+    {
+        $lastPaymentDate = Carbon::parse($lastPaymentDate);
+        list($hours, $minutes, $seconds) = explode(':', $interval);
+        $nextPaymentDate = $lastPaymentDate->addHours($hours)->addMinutes($minutes)->addSeconds($seconds);
+        $formatted = $nextPaymentDate->format('F j, Y');
+        return $formatted;
     }
 
 }

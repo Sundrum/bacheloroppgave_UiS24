@@ -22,6 +22,7 @@ function setTheme(bgColor, panelColor){
 
 //On Load
 document.addEventListener('DOMContentLoaded', function () {
+  {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentId = urlParams.get('paymentId');
     if (paymentId) {
@@ -34,10 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const checkout = new Dibs.Checkout(checkoutOptions);
       checkout.setTheme(setTheme("#ffffff", "#ffffff"));
       checkout.on('payment-completed', function (response) {
-        window.location = checkoutSuccessRoute;
+        window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
       });
     } else {
       console.log("Expected a paymentId");   // No paymentId provided, 
       window.location = 'cart.html';         // go back to cart.html
     }
+  }
 });

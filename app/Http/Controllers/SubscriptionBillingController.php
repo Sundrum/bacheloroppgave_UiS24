@@ -26,24 +26,10 @@ class SubscriptionBillingController extends Controller
         }
         $customer_id = $user->customer_id_ref;
 
-
-        // $pay = new Payment();
         $payment_id = '0044000065ca120c5d4f663879361566';
 
-        // $pay->payment_id = $paymentId;
-        // $pay->payment_status = 0;
-        // $pay->customer_id_ref = 239;
-        // $pay->save();
+        $Sub = SubscriptionPayment::Join($customer_id);
 
-        // Access the paymentId value
-        // Log::info($pay);
-
-        $Sub = Subscription::select('*')
-            ->where('subscriptions.customer_id_ref', $customer_id)
-            ->join('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
-            ->join('payments', 'subscriptions_payments.payment_id', '=', 'payments.payment_id')
-            ->distinct()
-            ->get();
         if ($Sub) {
             // Access the payment attributes
             Log::info($Sub);
@@ -53,7 +39,12 @@ class SubscriptionBillingController extends Controller
             Log::info("Payment not found for ID: $Sub");
         }
 
-        return view('pages/payment/subscriptionbilling',compact('Sub'));
-    }
+        $lastPaymentDate = $Sub[0]->updated_at;
+        $interval = $Sub[0]->interval;
 
+        $nextPaymentDate = Subscription::getPaymentDate($lastPaymentDate, $interval);
+        $lastPaymentId='01b3000065ccbb89c07bfb936313aa83';
+        $lastPaymentObject = Payment::getNetsResponse($lastPaymentId);
+        return view('pages/payment/subscriptionbilling',compact('Sub', 'nextPaymentDate', 'lastPaymentObject'));
+    }
 }

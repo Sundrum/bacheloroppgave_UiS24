@@ -13,7 +13,6 @@
    
    {{-- Blade Routes --}}
    <script>
-    var checkoutSuccessRoute = "{{ route('checkoutSuccess') }}";
     var language = {{$language}};
     var checkoutKey = "{{ $checkoutKey }}";
     console.log("card number: 4268270087374847")

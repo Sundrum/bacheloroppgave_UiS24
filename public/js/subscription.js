@@ -27,9 +27,33 @@
 
 function checkoutButtonClickHandler() {
     var request = new XMLHttpRequest();
-
-    // create-payment.php is implemented in Step 2
-    request.open('GET', '/api/create-payment', true); 
+    
+    var items = [
+        {   
+            reference : "portal-access-subscription",
+            name : "Portal Access Subscription",
+            quantity : 1,
+            unit : "day",
+            unitPrice : 1500000,
+            grossTotalAmount : 1500000,
+            netTotalAmount : 1500000 
+        },
+        {   
+            reference : "portal-access-subscription",
+            name : "Portal Access Subscription",
+            quantity : 1,
+            unit : "day",
+            unitPrice : 1500000,
+            grossTotalAmount : 1500000,
+            netTotalAmount : 1500000 
+        }
+        //{ product_price: 1500000, subscription_price: 150000 }
+    ]; // Create the array of items
+    
+    var itemsString = encodeURIComponent(JSON.stringify(items)); // Serialize the array into a JSON string
+    var url = '/api/create-payment?items=' + itemsString;  // Construct the URL with the items as query parameters   
+    
+    request.open('GET', url , true);
     request.onload = function () {
         const data = JSON.parse(this.response);        // If parse error, check output 
         if (!data.paymentId) {                         // from create-payment.php, Handles insufficient user data
@@ -59,7 +83,6 @@ if (button){
         checkoutButtonClickHandler
     });
 } else {
-    console.log('No element found with id "checkout-button"');
 }
 
 var button = document.getElementById('retrievePayment');
@@ -68,5 +91,4 @@ if (button){
         window.location = retrievePaymentRoute
     });
 } else {
-    console.log('No element found with id "checkout-button"');
 }

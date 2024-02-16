@@ -22,8 +22,9 @@ Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 
 Route::post('/subscriptiondetails', [App\Http\Controllers\SubscriptionsController::class, 'subscriptionDetails'])->name('subscriptiondetails');
 Route::get('/updateUserData', [App\Http\Controllers\PaymentController::class, 'updateUserData'])->name('updateUserData');
 Route::get('/retrievePayment', [App\Http\Controllers\retrievePaymentController::class, 'retrievePayment'])->name('retrievePayment');
-Route::get('/paymenthistory', [App\Http\Controllers\PaymentController::class, 'paymentHistory'])->name('paymenthistory');
-
+Route::get('/paymenthistory', [App\Http\Controllers\PaymentHistoryController::class, 'paymentHistory'])->name('paymenthistory');
+Route::get('/dboperations', [App\Http\Controllers\DbOperationsController::class, 'DbOperations'])->name('dboperations');
+Route::get('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'Delete'])->name('dboperationsdeleted');
 
 
 /***

@@ -30,9 +30,17 @@
     <section class="bg-white card-rounded">
         <div class="row mt-3 text-center" id="title">
             <h4>Next Payment</h4>
-            <p>{{$Sub}}</p>
+            <p>{{$nextPaymentDate}}</p>
+            <p>{{$lastPaymentObject->payment->paymentDetails->cardDetails->maskedPan}}</p>
+            <p>{{$lastPaymentObject->payment->orderDetails->amount}} {{ $lastPaymentObject->payment->orderDetails->currency }}</p>
         </div>
     </section>
+
+    <h6 style="color: gray;">Payment History<h6>
+        <section class="bg-white card-rounded">
+            <div class="row mt-3 text-center" id="title">
+            </div>
+        </section>
 </div>
 @endsection
 <style>

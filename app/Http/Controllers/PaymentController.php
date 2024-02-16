@@ -4,15 +4,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Subscription;
+use App\Models\Payment;
+use App\Models\SubscriptionPayment;
+use App\Models\Product;
 use Log;
 use Auth;
 
 class PaymentController extends Controller
 {
+    
     //Genreates (user sepcific) payment object
-    public function createPayment()
+    //public function createPayment($items)
+    //public function createPayment()
+    public function createPayment(Request $request)
     {
         Log::info("createPayment function");
+        //Log::info($items);
+
+        // Retrieve the 'items' query parameter from the request
+        $itemsString = $request->query('items');
+
+        // Parse the items string into an array
+        $items = json_decode(urldecode($itemsString), true);
+
+
 
         $userData=$this->getUser();
         Log::info("User Data", $userData);
@@ -23,9 +38,10 @@ class PaymentController extends Controller
             // }
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         //Generates Payload
-        $payload = $this->createPayload($userData);
+        $payload = $this->createPayload($userData,$items);
         Log::info("Payload gotten");
         assert(json_decode($payload) && json_last_error() == JSON_ERROR_NONE);
+        Log::info($payload);
         //Generates payment object
         $ch = curl_init('https://test.api.dibspayment.eu/v1/payments');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -38,17 +54,13 @@ class PaymentController extends Controller
         $result = curl_exec($ch);
         $data = json_decode($result);
         $paymentId = $data->paymentId;
-
-        // Create a new subscription record in db
-        $sub = new Subscription();
-        $sub->paymentId = $paymentId;
-
+        
+        
         // Access the paymentId value
-        Log::info($sub);
         echo $result;
     }
 
-    public function createPayload($userData)
+    public function createPayload($userData, $items)
     {   
         // Define the checkout data
         $checkoutData = [
@@ -79,16 +91,34 @@ class PaymentController extends Controller
         ];
     
         // Define the order items
-        $orderItems = [
+
+        // $orderItems = [
+        //     [
+        //         "reference" => "portal-access-subscription",
+        //         "name" => "Portal Access Subscription",
+        //         "quantity" => 1,
+        //         "unit" => "day",
+        //         "unitPrice" => '15000',
+        //         "grossTotalAmount" => 89000,
+        //         "netTotalAmount" => 80100
+        //     ]
+        // ];
+        $sumGrossTotalAmount=0;
+        $orderItems = [];
+        foreach ($items as $item) {
+            $orderItems[]=   
             [
-                "reference" => "portal-access-subscription",
-                "name" => "Portal Access Subscription",
-                "quantity" => 1,
-                "unit" => "day",
-                "unitPrice" => 89000,
-                "grossTotalAmount" => 89000,
-                "netTotalAmount" => 80100
-            ]
+                "reference" => $item['reference'],
+                "name" => $item['name'],
+                "quantity" => $item['quantity'],
+                "unit" => $item['unit'],
+                "unitPrice" => $item['unitPrice'], // Fill in the unit price with the product price
+                "grossTotalAmount" => $item['grossTotalAmount'],
+                "netTotalAmount" => $item['netTotalAmount']
+            ];
+            $sumGrossTotalAmount += $item['grossTotalAmount'];
+        }
+
             // [
             //     "reference" => "irrigation-sensor",
             //     "name" => "Irrigation Sensor",
@@ -107,12 +137,11 @@ class PaymentController extends Controller
             //     "grossTotalAmount" => 150000,
             //     "netTotalAmount" => 135000
             // ]
-        ];
     
         // Define the order data
         $orderData = [
             "items" => $orderItems,
-            "amount" => 89000,
+            "amount" => $sumGrossTotalAmount,
             "currency" => "NOK",
             "reference" => "Subscription Test Order"
         ];
@@ -181,4 +210,5 @@ class PaymentController extends Controller
         $userData=$this->getUser();
         return view('pages/payment/paymenthistory', compact('userData'));
     }
+    
 }
