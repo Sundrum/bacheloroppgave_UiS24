@@ -17,40 +17,49 @@ class CheckoutController extends Controller
         Log::info("checkout method");
         $payment_id = request()->paymentId;
         $language = Auth::user()->user_language;
+        $customer_id = Auth::user()->customer_id_ref;
         $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
+
+        self::initPaymentEntry($payment_id, $customer_id);
+        // self::initSubscriptionEntry($, $customer_id, $payment_id);
+        // self::initSubscriptionPaymentEntry($, $payment_id);
+
         return view('pages/payment/checkout', ['paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
     }
     //Handles checkout success
-    public function success()
-    {
-        $payment_id = request()->payment_id;
-        $nets_response = Payment::getNetsResponse($payment_id);
-
-        $user_id = Auth::user()->user_id;
-        $user = User::find($user_id);
-        $payment = new Payment;
-        $payment->payment_id = $payment_id;
-        $payment->payment_status = 3; //Completed
-        $payment->customer_id_ref = $user->customer_id_ref;
+    public function success(Request $request)
+    {     
+        $payment_id = $request->query('payment_id');
+        $payment = Payment::find($payment_id);
+        $payment->payment_status = 3; //Success
         $payment->save();
 
-        if ($nets_response->payment->subscription)
-        {
-            $subscription = new Subscription;
-            $subscription->subscription_id = $nets_response->payment->subscription->id;
-            $subscription->customer_id_ref = $user->customer_id_ref;
-            $subscription->interval = 31556926; // One year
-            //$subscription->serialnumber = $nets_response->payment->orderDetails->serialNumber;
-            $subscription->subscription_status = 2; //Active
-            $subscription->save();
-
-            $subscription_payment = new SubscriptionPayment;
-            $subscription_payment->subscription_id = $nets_response->payment->subscription->id;
-            $subscription_payment->payment_id = $payment_id;
-            $subscription_payment->save();
-        }
         self::setActivity("Checkout success", "success");
-        Log::info("success method");
-        return view('pages/payment/checkoutsuccess');
+        return view('pages/payment/checkoutsuccess', compact('payment_id'));
+    }
+
+    public static function initPaymentEntry($payment_id, $customer_id_ref){
+        $payment = new Payment;
+        $payment->payment_id = $payment_id;
+        $payment->payment_status = 0; //Created
+        $payment->customer_id_ref = $customer_id_ref;
+        $payment->save();
+    }
+
+    public static function initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber){
+        $subscription = new Subscription;
+        $subscription->subscription_id = $subscription_id;
+        $subscription->customer_id_ref = $customer_id_ref;
+        $subscription->interval = 31556926; // One year
+        $subscription->serialnumber = $serialnumber;
+        $subscription->subscription_status = 0; //Inactive
+        $subscription->save();
+    }
+
+    public static function initSubscriptionPaymentEntry($subscription_id, $payment_id){
+        $subscription_payment = new SubscriptionPayment;
+        $subscription_payment->subscription_id = $subscription_id;
+        $subscription_payment->payment_id = $payment_id;
+        $subscription_payment->save();
     }
 }

@@ -30,9 +30,9 @@
     <section class="bg-white card-rounded">
         <div class="row mt-3 text-center" id="title">
             <h4>Next Payment</h4>
-            <p>{{$nextPaymentDate}}</p>
-            <p>{{$lastPaymentObject->payment->paymentDetails->cardDetails->maskedPan}}</p>
-            <p>{{$lastPaymentObject->payment->orderDetails->amount}} {{ $lastPaymentObject->payment->orderDetails->currency }}</p>
+            <p>{{$nextPaymentDate ?? 'N/A'}}</p>
+            <p>{{$lastPaymentObject->payment->paymentDetails->cardDetails->maskedPan ?? 'N/A'}}</p>
+            <p>{{$lastPaymentObject->payment->orderDetails->amount ?? 'N/A'}} {{ $lastPaymentObject->payment->orderDetails->currency ?? 'N/A'}}</p>
         </div>
     </section>
 

@@ -20,5 +20,5 @@ return [
     'demo' => 'Demo',
     'subscriptions' => 'Abonnementer',
     'subscriptionbilling' => 'Abonnement og Faktura',
-
+    'shop' => 'Kjøp'
 ];

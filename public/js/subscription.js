@@ -33,19 +33,28 @@ function checkoutButtonClickHandler() {
             reference : "irrigation-sensor",
             name : "Irrigation Sensor",
             quantity : 1,
-            unit : "day",
+            unit : "pcs",
             unitPrice : 1500000,
             grossTotalAmount : 1500000,
             netTotalAmount : 1500000 
         },
         {   
-            reference : "irrigation-sensor",
-            name : "Irrigation Sensor",
+            reference : "irrigation-sensor-subscription",
+            name : "Irrigation Sensor Subscription",
             quantity : 1,
-            unit : "day",
-            unitPrice : 1500000,
-            grossTotalAmount : 1500000,
-            netTotalAmount : 1500000 
+            unit : "year",
+            unitPrice : 150000,
+            grossTotalAmount : 150000,
+            netTotalAmount : 150000 
+        },
+        {
+            reference : "portal-subscription",
+            name : "Portal Subscription",
+            quantity : 1,
+            unit : "year",
+            unitPrice : 89000,
+            grossTotalAmount : 89000,
+            netTotalAmount : 89000
         }
         //{ product_price: 1500000, subscription_price: 150000 }
     ]; // Create the array of items

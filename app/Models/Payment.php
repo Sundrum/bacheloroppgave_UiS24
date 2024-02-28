@@ -74,29 +74,13 @@ class Payment extends Model
 
     public static function joinNetsResponseAndPayments($customerId)
     {
-        // Get the payments for the customer
-        $payments = self::getPaymentsForCustomer($customerId);
-
-        // Initialize an empty array to store the joined results
-        $joinedResults = [];
-
-        // Loop through each payment
-        foreach ($payments as $payment) {
-            // Get the Nets response for the payment
-            $netsResponse = Payment::getNetsResponse($payment->payment_id);
-            $netsResponseArray = json_decode(json_encode($netsResponse), true);
-
-            Log::info($netsResponseArray);
-            // If Nets response is not an error
-            if (!isset($netsResponse->error)) {
-                // Add the payment and Nets response to the joined results array
-                $joinedResults[] = (object) [
-                    'payment' => $payment,
-                    'netsResponse' => $netsResponse
-                ];
+        $payments = self::getPaymentsForCustomer($customerId); 
+        foreach ($payments as $payment) {                                               // Loop through each payment
+            $netsResponse = Payment::getNetsResponse($payment->payment_id);             // Get the Nets response for the payment
+            if ($netsResponse) {
+                $payment->nets = $netsResponse->payment;
             }
         }
-
-        return $joinedResults;
+        return $payments;
     }
 }

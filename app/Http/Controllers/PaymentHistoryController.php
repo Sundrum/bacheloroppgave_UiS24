@@ -13,17 +13,10 @@ class PaymentHistoryController extends Controller
 {
     public function paymentHistory(){
         $userData=$this->getUser();
-
-        $payments= Payment::getPaymentsForCustomer($userData['customer_id']);
-        $paymentData=[];
-        foreach ($payments as $payment) {
-            $netsResponse = Payment::getNetsResponse($payment->payment_id);
-            Log::info('Payment ID: ' . $payment->payment_id, (array) $netsResponse);
-            $paymentData[] = $netsResponse;
-        }
-
+        $paymentData= Payment::joinNetsResponseAndPayments($userData['customer_id']);
         return view('pages/payment/paymenthistory', compact('userData', 'paymentData'));
     }
+
     public function getUser()
     {
         //$user = User::select('users.*', 'customer.customer_name')

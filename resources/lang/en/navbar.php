@@ -21,5 +21,5 @@ return [
     'demo' => 'Demo',
     'subscriptions' => 'Subscriptions',
     'subscriptionbilling' => 'Subscriptions and Billing',
-
+    'shop' => 'Shop',
 ];

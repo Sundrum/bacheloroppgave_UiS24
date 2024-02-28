@@ -7,6 +7,9 @@ use App\Models\Subscription;
 use App\Models\Payment;
 use App\Models\SubscriptionPayment;
 use App\Models\Product;
+use DateTime;
+use DateTimeZone;
+use DateInterval;
 use Log;
 use Auth;
 
@@ -41,7 +44,6 @@ class PaymentController extends Controller
         $payload = $this->createPayload($userData,$items);
         Log::info("Payload gotten");
         assert(json_decode($payload) && json_last_error() == JSON_ERROR_NONE);
-        Log::info($payload);
         //Generates payment object
         $ch = curl_init('https://test.api.dibspayment.eu/v1/payments');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -53,9 +55,10 @@ class PaymentController extends Controller
                 'Authorization:' . $secretAPIKey));                                                
         $result = curl_exec($ch);
         $data = json_decode($result);
+        Log::info($result);
         $paymentId = $data->paymentId;
         
-        
+
         // Access the paymentId value
         echo $result;
     }
@@ -103,6 +106,7 @@ class PaymentController extends Controller
         //         "netTotalAmount" => 80100
         //     ]
         // ];
+
         $sumGrossTotalAmount=0;
         $orderItems = [];
         foreach ($items as $item) {
@@ -145,10 +149,14 @@ class PaymentController extends Controller
             "currency" => "NOK",
             "reference" => "Subscription Test Order"
         ];
+    
+        $currentDateTime = new DateTime('now', new DateTimeZone('UTC'));
+        $oneYearLater = $currentDateTime->add(new DateInterval('P1Y'));
+        $oneYearLaterFormatted = $oneYearLater->format('Y-m-d\TH:i:sP');
 
         $subscription = [
             "interval" => 1,
-            "endDate" => "2024-02-18T00:00:00+00:00",
+            "endDate" => $oneYearLaterFormatted,
         ];
     
         // Combine checkout and order data into the final payload

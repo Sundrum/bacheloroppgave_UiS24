@@ -13,6 +13,7 @@ class Subscription extends Model
     protected $table = 'subscriptions';
     protected $primaryKey = 'subscription_id';
     public $timestamps = true;
+    public $incrementing = false;
 
     protected $fillable = [
         'interval',

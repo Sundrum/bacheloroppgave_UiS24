@@ -33,7 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
         language: GetLang(),
       };
       const checkout = new Dibs.Checkout(checkoutOptions);
-      checkout.setTheme(setTheme("#ffffff", "#ffffff"));
+      var theme = {
+        "backgroundColor": "#white",
+        "panelColor": "#white",
+        "buttonbackgroundColor":"#00265a",
+        "primaryColor":"#00265a",
+        "linkColor":"#00265a",
+        "primaryOutlineColor":"#00265a",
+        "outlineColor":"#00265a",
+      };
+      checkout.setTheme(theme);
       checkout.on('payment-completed', function (response) {
         window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
       });
