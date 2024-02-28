@@ -92,20 +92,6 @@ class PaymentController extends Controller
                 ]
             ]
         ];
-    
-        // Define the order items
-
-        // $orderItems = [
-        //     [
-        //         "reference" => "portal-access-subscription",
-        //         "name" => "Portal Access Subscription",
-        //         "quantity" => 1,
-        //         "unit" => "day",
-        //         "unitPrice" => '15000',
-        //         "grossTotalAmount" => 89000,
-        //         "netTotalAmount" => 80100
-        //     ]
-        // ];
 
         $sumGrossTotalAmount=0;
         $orderItems = [];
@@ -122,25 +108,6 @@ class PaymentController extends Controller
             ];
             $sumGrossTotalAmount += $item['grossTotalAmount'];
         }
-
-            // [
-            //     "reference" => "irrigation-sensor",
-            //     "name" => "Irrigation Sensor",
-            //     "quantity" => 1,
-            //     "unit" => "pcs",
-            //     "unitPrice" => 1500000,
-            //     "grossTotalAmount" => 1500000,
-            //     "netTotalAmount" => 1350000
-            // ],
-            // [
-            //     "reference" => "irrigation-subscription",
-            //     "name" => "Irrigation Sensor Subscription",
-            //     "quantity" => 1,
-            //     "unit" => "pcs",
-            //     "unitPrice" => 150000,
-            //     "grossTotalAmount" => 150000,
-            //     "netTotalAmount" => 135000
-            // ]
     
         // Define the order data
         $orderData = [

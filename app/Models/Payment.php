@@ -13,19 +13,22 @@ class Payment extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-    public function getStatus()
+    public function getStatus($status = null)
     {
-        switch ($this->subscription_status) {
-            case 0:
-                return 'Created';
-            case 1:
-                return 'Cancelled';
-            case 2:
-                return 'Failed';
-            case 3:
-                return 'Completed';
+        $statusCodes = [
+            0 => 'Created',
+            1 => 'Cancelled',
+            2 => 'Failed',
+            3 => 'Completed'
+        ];
+    
+        if ($status !== null) {
+            return $statusCodes[$status] ?? 'Unknown';
         }
+    
+        return $statusCodes[$this->subscription_status] ?? 'Unknown';
     }
+    
     public static function getNetsResponse($paymentId)
     {
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
