@@ -5,7 +5,7 @@
     <section class="bg-white card-rounded">
         <div class="row text-center mt-5">
             <div class="col-md-12">
-                <table class="table table-bordered">
+                <table class="table table-striped">
                     <thead>
                       <tr>
                             <td onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">

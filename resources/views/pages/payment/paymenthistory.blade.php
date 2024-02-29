@@ -27,7 +27,7 @@
                 <option value="2">Failed</option>
                 <option value="3">Completed</option>
             </select>
-            <table class="table table-bordered">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>Date</th>

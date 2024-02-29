@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\SubscriptionPayment;
+use App\Models\Sensorunit;
 use Log;
 use Auth;
 class CheckoutController extends Controller
@@ -21,6 +22,12 @@ class CheckoutController extends Controller
         $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
 
         self::initPaymentEntry($payment_id, $customer_id);
+        $sensorUnits=Sensorunit::getSensorunits();
+        $paddedIncrementedDigits = str_pad(intval(substr($sensorUnits[count($sensorUnits) - 1]->serialnumber, -5)) + 1, 5, '0', STR_PAD_LEFT);
+        $newSerialNumber = '21-9031-AA-' . $paddedIncrementedDigits;
+        dd($newSerialNumber);
+
+        //PASSE PÅ AT ALLE INIT KJØRER ELLER INGEN.(??)
         // self::initSubscriptionEntry($, $customer_id, $payment_id);
         // self::initSubscriptionPaymentEntry($, $payment_id);
 
@@ -33,7 +40,6 @@ class CheckoutController extends Controller
         $payment = Payment::find($payment_id);
         $payment->payment_status = 3; //Success
         $payment->save();
-
         self::setActivity("Checkout success", "success");
         return view('pages/payment/checkoutsuccess', compact('payment_id'));
     }
@@ -61,5 +67,12 @@ class CheckoutController extends Controller
         $subscription_payment->subscription_id = $subscription_id;
         $subscription_payment->payment_id = $payment_id;
         $subscription_payment->save();
+    }
+
+    public static function initPaymentsUnitsEntry($payment_id, $serialnumber){
+        $paymentsUnits = new PaymentsUnits;
+        $paymentsUnits->payment_id = $payment_id;
+        $paymentsUnits->serialnumber = $serialnumber;
+        $paymentsUnits->save();
     }
 }

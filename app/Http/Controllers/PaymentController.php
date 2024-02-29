@@ -74,6 +74,7 @@ class PaymentController extends Controller
                 "supportedTypes"=> ["B2B"], //"B2B","B2C" 
                 "default"=> "B2B"
             ],
+            //"charge"=>true,
             "appearance" => [
                 "textOptions" => [
                     "completePaymentButtonText" => "Yabba Dabba Doo"
@@ -125,12 +126,13 @@ class PaymentController extends Controller
             "interval" => 1,
             "endDate" => $oneYearLaterFormatted,
         ];
+
     
         // Combine checkout and order data into the final payload
         $payload = [
             "checkout" => $checkoutData,
             "order" => $orderData,
-            "subscription" => $subscription
+            "subscription" => $subscription,
         ];
     
         // Convert the payload array to JSON and return it

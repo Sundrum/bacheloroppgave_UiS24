@@ -7,6 +7,9 @@ use Auth;
 use Session;
 use App\Models\Sensorunit;
 use App\Models\User;
+use App\Models\Subscription;
+use App\Models\Payment;
+use App\Models\PaymentsUnits;
 
 class SubscriptionsController extends Controller
 {
@@ -23,7 +26,12 @@ class SubscriptionsController extends Controller
             Log::error("User not found");
         }
         $sensorUnits = Sensorunit::getSensorunitsForCustomer($user->customer_id_ref);
-        //dd($sensorUnits);
+        foreach ($sensorUnits as $sensorUnit) {
+            $subscriptionData = Subscription::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorUnit->serialnumber);
+            $paymentData = Payment::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorUnit->serialnumber);
+            $sensorUnit->subscriptionData = $subscriptionData->isNotEmpty() ? $subscriptionData : false;
+            $sensorUnit->paymentData = $paymentData->isNotEmpty() ? $paymentData : false;
+        }
         self::setActivity("Entered subscriptions", "subscriptions");
         return view('pages/payment/subscriptions', compact('sensorUnits', 'user'));
     }

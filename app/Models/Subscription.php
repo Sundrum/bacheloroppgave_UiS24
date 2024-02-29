@@ -43,6 +43,19 @@ class Subscription extends Model
         return $formatted;
     }
 
+    public static function getSubscriptionsForCustomer($customerId) {
+        $subscriptions = Subscription::select('*')
+            ->where('subscriptions.customer_id_ref', '=', $customerId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $subscriptions;
+    }
+    public static function getByCustomerIdAndSerialNumber($customerId, $serialNumber)
+    {
+        return self::where('customer_id_ref', $customerId)
+                   ->where('serialnumber', $serialNumber)
+                   ->get();
+    }
 }
 
 

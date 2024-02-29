@@ -15,7 +15,6 @@ class SubscriptionBillingController extends Controller
 {
     public function subscriptionbilling()
     {
-        Log::info("SUBSCRIPTION BILLING1");
         $user_id = Session::get('user_id');
         if ($user_id == null) {
             Log::error("user_id not found");
@@ -32,18 +31,13 @@ class SubscriptionBillingController extends Controller
         $Sub = SubscriptionPayment::Join($customer_id);
 
         if ($Sub->isEmpty()) {
-            // Access the payment attributes
-            Log::info("SUBSCRIPTION BILLING1");
-            Log::info($Sub);
             // Access other attributes as needed
             Log::info("Payment not found for ID: $Sub");
             return view('pages/payment/subscriptionbilling');
         } else {
             // Handle the case where the payment with the given $paymentId is not found
-            Log::info("SUBSCRIPTION BILLING2");
             $lastPaymentDate = $Sub[0]->updated_at;
             $interval = $Sub[0]->interval;
-            Log::info("SUBSCRIPTION BILLING3");
             $nextPaymentDate = Subscription::getPaymentDate($lastPaymentDate, $interval);
             $lastPaymentId='01b3000065ccbb89c07bfb936313aa83';
             $lastPaymentObject = Payment::getNetsResponse($lastPaymentId);

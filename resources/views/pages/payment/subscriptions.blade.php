@@ -17,7 +17,8 @@
                         <thead>
                             <tr>
                                 <th>Subscription Name</th>
-                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Subscription</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -25,10 +26,20 @@
                             @foreach ($sensorUnits as $sensorUnit)
                             <tr>
                                 <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                @if ($sensorUnit->paid_subscription)
+                                {{-- @if ($sensorUnit->paid_subscription)
                                 <td>Paid</td>
                                 @else
                                 <td>Not Paid</td>
+                                @endif --}}
+                                @if ($sensorUnit->paymentData)
+                                <td>Data</td>
+                                @else
+                                <td>No Data</td>
+                                @endif
+                                @if ($sensorUnit->subscriptionData)
+                                <td>Data</td>
+                                @else
+                                <td>No Data</td>
                                 @endif
                                 <td>
                                     <form action="{{ route('subscriptiondetails') }}" method="POST">
@@ -60,5 +71,8 @@
             </div>
         </div>
     </div>
+    <script>
+        console.log(@json(compact('sensorUnits', 'user')));
+    </script>
 </section>
 @endsection

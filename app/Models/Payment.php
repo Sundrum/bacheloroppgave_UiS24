@@ -86,4 +86,11 @@ class Payment extends Model
         }
         return $payments;
     }
+    public static function getByCustomerIdAndSerialNumber($customerId, $serialNumber)
+    {
+        return self::join('paymentsUnits', 'paymentsUnits.payment_id', '=', 'payments.payment_id')
+                   ->where('payments.customer_id_ref', $customerId)
+                   ->where('paymentsUnits.serialnumber', $serialNumber)
+                   ->get();
+    } 
 }
