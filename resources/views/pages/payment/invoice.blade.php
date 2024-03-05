@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Invoice</h1>
-    <p>Invoice ID: {{ $netsResponse->payment->paymentId }}</p>
+    <p>Invoice ID: {{ $invoice_number }}</p>
     <p>Date: {{ $netsResponse->payment->created }}</p>
     <br>
     <h4>Supplier</h4>
@@ -22,7 +22,7 @@
     <p>{{ $netsResponse->payment->consumer->billingAddress->addressLine1 }}, {{ $netsResponse->payment->consumer->billingAddress->postalCode}} {{ $netsResponse->payment->consumer->billingAddress->city }} {{ $netsResponse->payment->consumer->billingAddress->country }}</p>
     <br>
     <h4>Order lines</h4>
-    <table class="table table-bordered">
+    <table>
         <tr>
             <th>Product</th>
             <th>Quantity</th>
@@ -34,13 +34,13 @@
             <th>Currency</th>
         </tr>
         <tr>
-            <td>{{ $netsResponse->payment->orderDetails->reference }}</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>{{ $netsResponse->payment->orderDetails->amount }}</td>
+            <td>{{ $product->product_name }}</td>
+            <td>{{ $amount }}</td>
+            <td>{{ $product->product_price }}</td>
+            <td>25%</td>
+            <td>{{ $product->product_price / 1.25 }}</td>
+            <td>{{ $product->product_price * 0.25 }}</td>
+            <td>{{ $product->product_price }}</td>
             <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
         </tr>
     </table>

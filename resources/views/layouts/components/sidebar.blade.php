@@ -39,7 +39,7 @@
     </li>
     <li class="sidebar-item">
         <a onclick="loadContent('{{route('shop')}}')" href="{{route('shop')}}">
-            <i class="fa fa-2x cart-shopping"></i>
+            <i class="fa fa-2x fa-dollar-sign"></i>
             <span class="links_name">@lang('navbar.shop')</span>
         </a>
         <span class="tooltip-right">@lang('navbar.shop')</span>

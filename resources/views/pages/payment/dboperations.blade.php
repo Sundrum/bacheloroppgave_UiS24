@@ -5,6 +5,20 @@
     </div>
     <div class="row text-center mt-5">
         <div class="col-12">
+            <h4>Create a new sensor unit</h4>
+        </div>
+    </div>
+    <form action="{{ route('createsensorunit') }}" method="POST">
+    <input type="text" name="payment_id" placeholder="Existing Payment ID">
+    <input type="text" name="serialnumber" placeholder="A new serialnumber">
+    </form>
+</section>
+
+<section class="bg-white card-rounded">
+    <div class="row mt-3 text-center">
+    </div>
+    <div class="row text-center mt-5">
+        <div class="col-12">
             <h4>Edit and delete database tables</h4>
         </div>
     </div>

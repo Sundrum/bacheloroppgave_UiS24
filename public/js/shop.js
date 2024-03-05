@@ -47,7 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 console.log(this.response);
 
-                window.location = checkoutRoute + "?paymentId=" + data.paymentId; //from subscriptions.blade.php
+                // Construct the URL with both paymentId and productId
+                var redirectUrl = checkoutRoute + "?paymentId=" + data.paymentId + "&productId=" + productId;
+
+                // Redirect to the constructed URL
+                window.location = redirectUrl;    
             }
             request.onerror = function () { console.error('connection error'); }
             request.send();

@@ -115,24 +115,18 @@ class PaymentController extends Controller
             "items" => $orderItems,
             "amount" => $sumGrossTotalAmount,
             "currency" => "NOK",
-            "reference" => "Subscription Test Order"
+            "reference" => $orderItems[0]['reference'],
         ];
     
         $currentDateTime = new DateTime('now', new DateTimeZone('UTC'));
         $oneYearLater = $currentDateTime->add(new DateInterval('P1Y'));
         $oneYearLaterFormatted = $oneYearLater->format('Y-m-d\TH:i:sP');
 
-        $subscription = [
-            "interval" => 1,
-            "endDate" => $oneYearLaterFormatted,
-        ];
-
     
         // Combine checkout and order data into the final payload
         $payload = [
             "checkout" => $checkoutData,
             "order" => $orderData,
-            "subscription" => $subscription,
         ];
     
         // Convert the payload array to JSON and return it

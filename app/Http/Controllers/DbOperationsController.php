@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\SubscriptionPayment;
+use App\Models\PaymentsProducts;
+use App\Models\PaymentsUnits;
+use App\Models\Sensorunit;
 use Log;
 use Auth;
 class DbOperationsController extends Controller
@@ -27,6 +30,11 @@ class DbOperationsController extends Controller
         {
             $id = $request->payment_id;
             $payment = Payment::find($id);
+            PaymentsProducts::where('payment_id', $id)->delete();
+            if (!$payment)
+            {
+                return redirect()->back()->with('error', 'Payment not found');
+            }
             $payment->delete();
             return redirect()->back()->with('success', 'Payment deleted successfully');
         }
@@ -54,5 +62,13 @@ class DbOperationsController extends Controller
         $subscription->subscription_status = $request->subscription_status;
         $subscription->save();
         return redirect()->back()->with('success', 'Subscription updated successfully');  
+    }
+
+    public function createSensorunit(Request $request)
+    {
+        $sensorunit = $request->sensorunit;
+        $payment_id = $request->payment_id;
+
+        return redirect()->back()->with('success', 'Sensorunit created successfully');
     }
 }

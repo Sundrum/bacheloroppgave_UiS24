@@ -26,8 +26,10 @@ Route::get('/paymenthistory', [App\Http\Controllers\PaymentHistoryController::cl
 Route::get('/dboperations', [App\Http\Controllers\DbOperationsController::class, 'DbOperations'])->name('dboperations');
 Route::post('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'delete'])->name('dboperationsdeleted');
 Route::post('/dboperationsupdated', [App\Http\Controllers\DbOperationsController::class, 'update'])->name('dboperationsupdated');
+Route::post('/createsensorunit', [App\Http\Controllers\DbOperationsController::class, 'createSensorunit'])->name('createsensorunit');
 Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
+
 
 
 /***

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Log;
+use DB;
 
 class Payment extends Model
 {
@@ -92,5 +93,20 @@ class Payment extends Model
                    ->where('payments.customer_id_ref', $customerId)
                    ->where('paymentsUnits.serialnumber', $serialNumber)
                    ->get();
-    } 
+                } 
+                
+    public static function getUnallocatedProductsForCustomer($customerId)
+    {
+        $products = DB::table('payments')
+            ->leftJoin('paymentsUnits', 'payments.payment_id', '=', 'paymentsUnits.payment_id')
+            ->join('paymentsProducts', 'paymentsProducts.payment_id', '=', 'payments.payment_id')
+            ->join('products', 'paymentsProducts.product_id', '=', 'products.product_id')
+            ->where('payments.customer_id_ref', $customerId)    //only for specific customer
+            ->whereNotNull('products.subscription_price')       //only subscription products
+            ->whereNull('paymentsUnits.serialnumber')           //only unallocated sensors
+            ->get();
+        
+        return $products;
+    }
+
 }

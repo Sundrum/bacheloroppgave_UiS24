@@ -23,14 +23,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($sensorUnits as $sensorUnit)
+                            @foreach ($allocatedSensorUnitsSub as $sensorUnit)
                             <tr>
                                 <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                {{-- @if ($sensorUnit->paid_subscription)
-                                <td>Paid</td>
-                                @else
-                                <td>Not Paid</td>
-                                @endif --}}
                                 @if ($sensorUnit->paymentData)
                                 <td>Data</td>
                                 @else
@@ -72,7 +67,56 @@
         </div>
     </div>
     <script>
-        console.log(@json(compact('sensorUnits', 'user')));
+        console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
+    </script>
+</section>
+<section class="bg-white card-rounded">
+    <div class="row mt-3 text-center">
+    </div>
+    <div class="row text-center mt-5">
+        <div class="col-12">
+            <h4>Subscriptionorders for {{ $user->user_name }}</h4>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Subscription Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($unallocatedSensorUnitsSub as $sensorUnit)
+                            <tr>
+                                <td>{{ $sensorUnit->product_name }}</td>
+                                <td>{{ $sensorUnit->Amount }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    
+                <h4>Payment</h4>
+                <button id="checkout-button" class="btn btn-primary">Proceed to Checkout</button>
+                <button id="retrievePayment" class="btn btn-primary">retrievePayment</button>
+
+                {{-- Blade Routes --}}
+                <script>
+                    var checkoutRoute = "{{ route('checkout') }}";
+                    var updateUserDataRoute = "{{ route('updateUserData') }}";
+                    var retrievePaymentRoute = "{{ route('retrievePayment') }}";
+                </script>                
+                <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
     </script>
 </section>
 @endsection

@@ -25,15 +25,21 @@ class SubscriptionsController extends Controller
         if ($user == null) {
             Log::error("User not found");
         }
+
+        //Get all subscription sensors for customer:
         $sensorUnits = Sensorunit::getSensorunitsForCustomer($user->customer_id_ref);
-        foreach ($sensorUnits as $sensorUnit) {
-            $subscriptionData = Subscription::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorUnit->serialnumber);
+        $allocatedSensorUnitsSub = Sensorunit::getSensorUnitsWithSubscriptionForCustomer($user->customer_id_ref);
+        $unallocatedSensorUnitsSub= Payment::getUnallocatedProductsForCustomer($user->customer_id_ref);
+
+        //Get subscription data for allocated sensorunits:
+        foreach ($allocatedSensorUnitsSub as $sensorUnit) {
+            $subscriptionData = Subscription::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorUnit->serialnumber); 
             $paymentData = Payment::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorUnit->serialnumber);
-            $sensorUnit->subscriptionData = $subscriptionData->isNotEmpty() ? $subscriptionData : false;
-            $sensorUnit->paymentData = $paymentData->isNotEmpty() ? $paymentData : false;
+            $sensorUnit->subscriptionData = $subscriptionData->isNotEmpty() ? $subscriptionData : false; //append susbcription data
+            $sensorUnit->paymentData = $paymentData->isNotEmpty() ? $paymentData : false;   //append payment data
         }
         self::setActivity("Entered subscriptions", "subscriptions");
-        return view('pages/payment/subscriptions', compact('sensorUnits', 'user'));
+        return view('pages/payment/subscriptions', compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user'));
     }
 
     public function subscriptionDetails(Request $request)

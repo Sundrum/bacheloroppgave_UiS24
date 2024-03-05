@@ -77,14 +77,12 @@
 </section>
 <script src="https://kit.fontawesome.com/bc63d04dca.js" crossorigin="anonymous"></script>
 <script>
-
     var yearFilter = document.getElementById('year-filter');
     var monthFilter = document.getElementById('month-filter');
     var statusFilter = document.getElementById('status-filter');
     yearFilter.addEventListener('change', filterTable);
     monthFilter.addEventListener('change', filterTable);
     statusFilter.addEventListener('change', filterTable);
-
     function filterTable() {
         var selectedYear = yearFilter.value;
         var selectedMonth = monthFilter.value;
@@ -103,7 +101,6 @@
             }
         });
     }
-
 </script>
 <style>
     .btn-PDF {
