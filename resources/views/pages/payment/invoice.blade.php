@@ -4,11 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        h4 {
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Invoice</h1>
-    <p>Invoice ID: {{ $invoice_number }}</p>
+    <h1>Payment receipt</h1>
+    <p>Receipt ID: {{ $invoice_number }}</p>
     <p>Date: {{ $netsResponse->payment->created }}</p>
     <br>
     <h4>Supplier</h4>

@@ -1,17 +1,33 @@
 @extends('layouts.app')
 @section('content')
+
 <section class="bg-white card-rounded">
     <div class="row mt-3 text-center">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
     </div>
     <div class="row text-center mt-5">
         <div class="col-12">
-            <h4>Create a new sensor unit</h4>
+            <h4>New sensorunit</h4>
         </div>
     </div>
-    <form action="{{ route('createsensorunit') }}" method="POST">
-    <input type="text" name="payment_id" placeholder="Existing Payment ID">
-    <input type="text" name="serialnumber" placeholder="A new serialnumber">
+    <form method="POST" action=" {{ route('dboperationsnewunit') }}">
+        @csrf
+        <input type="text" name="payment_id" placeholder="An existing payment ID" size="30">
+        <input type="text" name="serialnumber" placeholder="A new serialnumber" >
+        <input type="text" name="product_id_ref" placeholder="The corresponding product ID" size="30">
+        <input type="text" name="customer_id_ref" placeholder="The corresponding customer ID" size="30"> <br> <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <br>
 </section>
 
 <section class="bg-white card-rounded">

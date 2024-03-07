@@ -43,10 +43,18 @@ class Sensorunit extends Model
         return $sensorUnits;
     }
     
-
     public static function getUnit($id) {
         $sensorunit = DB::table('sensorunits')
                     ->where('sensorunits.sensorunit_id', $id)
+                    ->join('customer', 'customer_id_ref', '=', 'customer_id')
+                    ->join('products', 'product_id_ref', '=', 'product_id')
+                    ->first();
+        return $sensorunit;
+    }
+
+    public static function getUnitWithSerialnumber($serialnumber) {
+        $sensorunit = DB::table('sensorunits')
+                    ->where('sensorunits.serialnumber', $serialnumber)
                     ->join('customer', 'customer_id_ref', '=', 'customer_id')
                     ->join('products', 'product_id_ref', '=', 'product_id')
                     ->first();

@@ -25,11 +25,10 @@
                     <td>NOK {{ $product->product_price }} + NOK {{ $product->subscription_price }} yearly fee</td>
                     <td><img src="{{ $product->product_image_url }}" alt="{{ $product->product_name }}" style="width: 100px; height: 80px;"></td>
                     <td>
-                        <button class="checkout-button" 
+                        <button class="checkout-button btn-7g" 
                         data-product-id="{{ $product->product_id }}"
                         data-product-name="{{ $product->product_name }}"
-                        data-product-price="{{ $product->product_price }}"
-                        data-subscription-price="{{ $product->subscription_price }}"> 
+                        data-product-price="{{ $product->product_price }}"> 
                         Buy
                         </button>
                     </td>

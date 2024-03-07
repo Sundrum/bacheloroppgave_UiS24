@@ -45,7 +45,9 @@ class SubscriptionsController extends Controller
     public function subscriptionDetails(Request $request)
     {
         $sensorunit_id = $request->input('id');
-        $sensorUnit = Sensorunit::getUnit($sensorunit_id);
+        $isActive = $request->input('isActive');
+        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunit_id);
+
 
         $user_id = Session::get('user_id');
         if ($user_id == null) {
@@ -60,7 +62,6 @@ class SubscriptionsController extends Controller
         {
             return view('fallback');
         }
-        //dd($sensorUnit);
-        return view('pages/payment/subscriptiondetails', compact('sensorUnit'));
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','isActive'));
     }
 }

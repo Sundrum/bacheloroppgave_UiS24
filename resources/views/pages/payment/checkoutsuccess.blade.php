@@ -9,15 +9,15 @@
     <div class="col-12">
         <h4> @lang('dashboard.paymentcompleted') </h4>
     </div>
-    <h4>Invoice</h4>
+    <h4>Bilag</h4>
     <form action="{{ route('invoice') }}" method="POST">
         @csrf
     <input type="hidden" name="payment_id" value="{{$payment_id}}">
-    <button type="submit"> Download invoice PDF</button>
+    <button type="submit"> Last ned bilag PDF </button>
     </form>
     <br>
     <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}" class="btn btn-primary">
-    Back to subscriptions page
+    Tilbake til abonnementer
     </a>
 
 

@@ -15,6 +15,9 @@ class PaymentsUnits extends Model
 
    protected $table = 'paymentsUnits';
    protected $primaryKey = ['serialnumber', 'payment_id'];
+   public $incrementing = false;
+    public $timestamps = false;
+    protected $fillable = ['payment_id', 'product_id'];
 
 
    public static function Join($payment_id){

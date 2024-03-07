@@ -9,6 +9,8 @@ use App\Models\SubscriptionPayment;
 use App\Models\PaymentsProducts;
 use App\Models\PaymentsUnits;
 use App\Models\Sensorunit;
+use App\Models\Product;
+use App\Models\Customer;
 use Log;
 use Auth;
 class DbOperationsController extends Controller
@@ -63,12 +65,45 @@ class DbOperationsController extends Controller
         $subscription->save();
         return redirect()->back()->with('success', 'Subscription updated successfully');  
     }
-
-    public function createSensorunit(Request $request)
+    public function newSensorUnit(Request $request)
     {
-        $sensorunit = $request->sensorunit;
         $payment_id = $request->payment_id;
+        $serialnumber = $request->serialnumber;
+        $product_id = $request->product_id_ref;
+        $customer_id = $request->customer_id_ref;
+        $payment = Payment::find($payment_id);
+        if (!$payment)
+        {
+            return redirect()->back()->with('error', 'Payment not found');
+        }
+        $sensorunit = Sensorunit::where('serialnumber', $serialnumber)->first();
+        if ($sensorunit)
+        {
+            return redirect()->back()->with('error', 'Sensor unit already exists');
+        }
+        $product = Product::find($product_id);
+        if (!$product)
+        {
+            return redirect()->back()->with('error', 'Product not found');
+        }
+        $customer = Customer::find($customer_id);
+        if (!$customer)
+        {
+            return redirect()->back()->with('error', 'Customer not found');
+        }
 
-        return redirect()->back()->with('success', 'Sensorunit created successfully');
+        $sensorunit = new Sensorunit;
+        $sensorunit->serialnumber = $serialnumber;
+        $sensorunit->customer_id_ref = $customer_id;
+        $sensorunit->product_id_ref = $product_id;
+        $sensorunit->sensorunit_position = 0;
+        $sensorunit->save();
+
+        $payments_units = new PaymentsUnits;
+        $payments_units->payment_id = $payment_id;
+        $payments_units->serialnumber = $serialnumber;
+        $payments_units->save();
+        
+        return redirect()->back()->with('success', 'Sensor unit added successfully');
     }
 }

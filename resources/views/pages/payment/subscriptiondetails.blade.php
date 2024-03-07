@@ -25,21 +25,22 @@
                 <td>{{$sensorUnit->serialnumber}}</td>
                 <td>{{$sensorUnit->product_description}}</td>
                 <td>{{$sensorUnit->sensorunit_installdate}}</td>
-                @if ($sensorUnit->paid_subscription)
-                <td>Paid</td>
-                @else
-                <td>Not Paid</td>
-                @endif
-                <td>N/A</td>
+                <td>{{ $isActive === 'true' ? 'Active' : ($isActive === 'false' ? 'Inactive' : 'Unknown') }}</td>
+                <td>{{$sensorUnit->subscription_price}},- nok</td>
             </tr>
         </tbody>
     </table>
     <div class="center-container">
-        <a class="neat-button">Manage payment method</a>
-        @if ($sensorUnit->paid_subscription)
-        <a class="neat-button" id="danger">Cancel subscription</a>
-        @else
-        <a class="neat-button">Reactivate subscription</a>
+        @if ($isActive=="true")
+        <a class="btn-7g">Manage payment method</a>
+        <a class="btn-7r">Cancel subscription</a>
+        @elseif ($isActive=="false")
+        <Button class="checkout-button btn-7g"
+            data-product-id="{{ $sensorUnit->product_id }}"
+            data-product-name="{{ $sensorUnit->product_name }}"
+            data-subscription-price="{{ $sensorUnit->subscription_price }}">
+            Activate
+        </Button>
         @endif
     </div>
 </section>
@@ -70,3 +71,7 @@
         color: #ffff
     }
 </style>
+<script>
+    var checkoutRoute = "{{ route('checkout') }}";
+</script>
+<script src="{{asset('js/shop.js')}}"></script>

@@ -26,9 +26,11 @@ class PaymentController extends Controller
 
         // Retrieve the 'items' query parameter from the request
         $itemsString = $request->query('items');
-
         // Parse the items string into an array
         $items = json_decode(urldecode($itemsString), true);
+        // Retrieve the 'subscriptionOrder' query parameter from the request
+        // $subOrder = $request->query('subOrder');
+        // dd($subOrder);
 
 
 

@@ -12,28 +12,57 @@ document.addEventListener('DOMContentLoaded', function () {
             var grossTotalAmount = productPrice;
             var netTotalAmount = productPrice / (1 + VAT);
 
-            var items = [
-                {
+            // var items = [
+            //     {
+            //         reference: productName,
+            //         name: productName,
+            //         quantity: 1,
+            //         unit: "pcs",
+            //         unitPrice: unitPrice*100,
+            //         grossTotalAmount: grossTotalAmount*100,
+            //         netTotalAmount: netTotalAmount*100
+            //     },
+            //     {
+            //         reference: productName + " subscription",
+            //         name: productName + " Subscription",
+            //         quantity: 1,
+            //         unit: "year",
+            //         unitPrice: (subscriptionPrice / (1 + VAT))*100,
+            //         grossTotalAmount: (subscriptionPrice)*100,
+            //         netTotalAmount: (subscriptionPrice / (1 + VAT))*100
+            //     }
+            // ];
+            var items =[];
+            var subscriptionOrder = false;
+            // Check if productPrice exists and add product-related data
+            if (productPrice) {
+                items.push({
                     reference: productName,
                     name: productName,
                     quantity: 1,
                     unit: "pcs",
-                    unitPrice: unitPrice*100,
-                    grossTotalAmount: grossTotalAmount*100,
-                    netTotalAmount: netTotalAmount*100
-                },
-                {
+                    unitPrice: (productPrice / (1 + VAT))*100,
+                    grossTotalAmount: (productPrice)*100,
+                    netTotalAmount: (productPrice / (1 + VAT))*100
+                });
+            }
+            // Check if subscriptionPrice exists and add subscription-related data
+            else if (subscriptionPrice) {
+                items.push({
                     reference: productName + " subscription",
                     name: productName + " Subscription",
                     quantity: 1,
                     unit: "year",
-                    unitPrice: (subscriptionPrice / (1 + VAT))*100,
-                    grossTotalAmount: (subscriptionPrice)*100,
-                    netTotalAmount: (subscriptionPrice / (1 + VAT))*100
-                }
-            ];
+                    unitPrice: (subscriptionPrice / (1 + VAT)) * 100,
+                    grossTotalAmount: subscriptionPrice * 100,
+                    netTotalAmount: (subscriptionPrice / (1 + VAT)) * 100
+                });
+                subscriptionOrder=true;
+            }
+
             var request = new XMLHttpRequest();
             var itemsString = encodeURIComponent(JSON.stringify(items));
+            var subOrder = encodeURIComponent(JSON.stringify(items));
             var url = '/api/create-payment?items=' + itemsString;  
             
             request.open('GET', url , true);

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- ALLOCATED SUBSCRIPTION SENSORS --}}
 <section class="bg-white card-rounded">
     <div class="row mt-3 text-center">
     </div>
@@ -12,56 +13,52 @@
     <div class="row mt-5">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Subscription Name</th>
-                                <th>Payment</th>
-                                <th>Subscription</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($allocatedSensorUnitsSub as $sensorUnit)
-                            <tr>
-                                <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                @if ($sensorUnit->paymentData)
-                                <td>Data</td>
-                                @else
-                                <td>No Data</td>
-                                @endif
-                                @if ($sensorUnit->subscriptionData)
-                                <td>Data</td>
-                                @else
-                                <td>No Data</td>
-                                @endif
-                                <td>
-                                    <form action="{{ route('subscriptiondetails') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{$sensorUnit->sensorunit_id}}" />
-                                        <button type="submit" style="border: none; background-color: transparent;">
-                                            <i class="fa fa-2x fa-bars"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                                @php
+                                $isActive = $sensorUnit->paymentData && !$sensorUnit->subscriptionData ? 'false' : ($sensorUnit->subscriptionData ? 'true' : 'null');
+                                @endphp
+                                <tr>
+                                    {{-- UNACTIVATED SENSORS  --}}
+                                    @if ($isActive=='false') 
+                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
+                                        <td>Inactive</td>
+                                    {{-- ACTIVE SENSORS  --}}
+                                    @elseif ($isActive=='true') 
+                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
+                                        <td>Active</td>
+                                    {{-- NO DATA SENSORS  --}}
+                                    @elseif (!$sensorUnit->paymentData && !$sensorUnit->subscriptionData) 
+                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
+                                        <td></td>
+                                    {{-- ELSE --}}
+                                    @else 
+                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
+                                        <td></td>
+                                    @endif
+                                    <td>
+                                        <form action="{{ route('subscriptiondetails') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{$sensorUnit->serialnumber}}" />
+                                            <input type="hidden" name="isActive" value="{{ $isActive }}" />
+                                            <button class="{{ $isActive === 'true' ? 'btn-7g' : ($isActive === 'false' ? 'btn-7r' : 'btn-7g') }}" type="submit">
+                                                MANAGE
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
-                    </table>
-                    
-                <h4>Payment</h4>
-                <button id="checkout-button" class="btn btn-primary">Proceed to Checkout</button>
-                <button id="retrievePayment" class="btn btn-primary">retrievePayment</button>
-
-                {{-- Blade Routes --}}
-                <script>
-                    var checkoutRoute = "{{ route('checkout') }}";
-                    var updateUserDataRoute = "{{ route('updateUserData') }}";
-                    var retrievePaymentRoute = "{{ route('retrievePayment') }}";
-                </script>                
+                    </table>           
                 <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
-
                 </div>
             </div>
         </div>
@@ -69,54 +66,47 @@
     <script>
         console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
     </script>
-</section>
-<section class="bg-white card-rounded">
-    <div class="row mt-3 text-center">
-    </div>
-    <div class="row text-center mt-5">
-        <div class="col-12">
-            <h4>Subscriptionorders for {{ $user->user_name }}</h4>
+
+
+    {{-- SUBSCRIPTION ORDERS --}}
+    <section class="bg-white card-rounded">
+        <div class="row mt-3 text-center">
         </div>
-    </div>
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Subscription Name</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($unallocatedSensorUnitsSub as $sensorUnit)
-                            <tr>
-                                <td>{{ $sensorUnit->product_name }}</td>
-                                <td>{{ $sensorUnit->Amount }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    
-                <h4>Payment</h4>
-                <button id="checkout-button" class="btn btn-primary">Proceed to Checkout</button>
-                <button id="retrievePayment" class="btn btn-primary">retrievePayment</button>
+        <div class="row text-center mt-5">
+            <div class="col-12">
+                <h4>Orders for {{ $user->user_name }}</h4>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Subscription Name</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($unallocatedSensorUnitsSub as $sensorUnit)
+                                <tr>
+                                    <td>{{ $sensorUnit->product_name }}</td>
+                                    <td>{{ $sensorUnit->Amount }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>             
+                    <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
 
-                {{-- Blade Routes --}}
-                <script>
-                    var checkoutRoute = "{{ route('checkout') }}";
-                    var updateUserDataRoute = "{{ route('updateUserData') }}";
-                    var retrievePaymentRoute = "{{ route('retrievePayment') }}";
-                </script>                
-                <script type="text/javascript" src="{{asset('js/subscription.js')}}"></script>
-
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
-    </script>
+        <script>
+            console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
+        </script>
+    </section>
+
 </section>
 @endsection
