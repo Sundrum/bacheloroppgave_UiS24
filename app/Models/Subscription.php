@@ -27,7 +27,7 @@ class Subscription extends Model
             case 0:
                 return 'Inactive';
             case 1:
-                return 'Not Paid';
+                return 'Canceled';
             case 2:
                 return 'Active';
             default:
@@ -55,6 +55,15 @@ class Subscription extends Model
         return self::where('customer_id_ref', $customerId)
                    ->where('serialnumber', $serialNumber)
                    ->get();
+    }
+    public static function getSubscriptionsForCustomerJoinAll($customerId) {
+        $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
+            ->orderBy('subscriptions.created_at', 'desc')
+            ->join('customer', 'subscriptions.customer_id_ref', '=', 'customer.customer_id')
+            ->join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->join('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->get();
+        return $subscriptions;
     }
 }
 

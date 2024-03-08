@@ -33,12 +33,19 @@
     <div class="center-container">
         @if ($isActive=="true")
         <a class="btn-7g">Manage payment method</a>
-        <a class="btn-7r">Cancel subscription</a>
+        <Button class="cancel-button btn-7r"
+            data-product-id="{{ $sensorUnit->product_id }}"
+            data-product-name="{{ $sensorUnit->product_name }}"
+            data-subscription-price="{{ $sensorUnit->subscription_price }}"
+            data-serialnumber="{{ $sensorUnit->serialnumber}}">
+            Cancel subscription
+        </Button>
         @elseif ($isActive=="false")
         <Button class="checkout-button btn-7g"
             data-product-id="{{ $sensorUnit->product_id }}"
             data-product-name="{{ $sensorUnit->product_name }}"
-            data-subscription-price="{{ $sensorUnit->subscription_price }}">
+            data-subscription-price="{{ $sensorUnit->subscription_price }}"
+            data-serialnumber="{{ $sensorUnit->serialnumber}}">
             Activate
         </Button>
         @endif
@@ -73,5 +80,7 @@
 </style>
 <script>
     var checkoutRoute = "{{ route('checkout') }}";
+    console.log("sensorUnit:", {!! json_encode($sensorUnit) !!});
 </script>
 <script src="{{asset('js/shop.js')}}"></script>
+<script src="{{asset('js/subscriptiondetails.js')}}"></script>

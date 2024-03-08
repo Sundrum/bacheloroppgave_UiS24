@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var buttons = document.querySelectorAll('.checkout-button');
+    var buttons = document.querySelectorAll('.cancel-button');
     buttons.forEach(function (button) {
         button.addEventListener('click', function () {
 

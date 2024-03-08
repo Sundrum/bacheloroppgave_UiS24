@@ -9,6 +9,7 @@ use App\Models\Subscription;
 use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
 use App\Models\PaymentsProducts;
+use App\Models\PaymentsUnits;
 
 use Log;
 use Auth;
@@ -21,6 +22,7 @@ class CheckoutController extends Controller
 
     $product_id = $request->input('productId');
     $payment_id = $request->input('paymentId');
+    $serial_number = $request->input('serialNumber', null); // Default value if serialNumber is not present
     $language = Auth::user()->user_language;
     $customer_id = Auth::user()->customer_id_ref;
     $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
@@ -28,7 +30,9 @@ class CheckoutController extends Controller
     //Initialize DB
     self::initPaymentEntry($payment_id, $customer_id);
     self::initPaymentsProductsEntry($payment_id, $product_id);
-
+    if ($serial_number) {
+        self::initPaymentsUnitsEntry($payment_id,$serial_number);
+    } 
     
     return view('pages/payment/checkout', ['paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
    }
@@ -40,7 +44,17 @@ class CheckoutController extends Controller
        $payment = Payment::find($payment_id);
        $payment->payment_status = 3; //Success
        $payment->save();
-      
+
+       //Subscription DB
+       $netsResponse = Payment::getNetsResponse($payment_id);
+       $is_subscription = isset($netsResponse->payment->subscription);
+       if ($is_subscription){
+            $subscription_id= $netsResponse->payment->subscription->id;
+            $customer_id_ref= $payment->customer_id_ref;
+            $paymentUnit = PaymentsUnits::firstDistinctPaymentUnit($payment_id);
+            $serialnumber = $paymentUnit->serialnumber ?? null; //set serialnumber if it exists, else null.
+            self::initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber);
+       }
        self::setActivity("Checkout success", "success");
        return view('pages/payment/checkoutsuccess', compact('payment_id'));
    }
@@ -67,7 +81,7 @@ class CheckoutController extends Controller
        $subscription->customer_id_ref = $customer_id_ref;
        $subscription->interval = 31556926; // One year
        $subscription->serialnumber = $serialnumber;
-       $subscription->subscription_status = 0; //Inactive
+       $subscription->subscription_status = 2; //Active
        $subscription->save();
    }
 

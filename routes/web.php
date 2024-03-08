@@ -13,7 +13,7 @@
 
 // Sigurd og Kristian
 
-Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']); // API
+Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']);// API
 Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
 Route::get('/subscriptionbilling', [App\Http\Controllers\SubscriptionBillingController::class, 'subscriptionbilling'])->name('subscriptionbilling');
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
@@ -27,6 +27,8 @@ Route::get('/dboperations', [App\Http\Controllers\DbOperationsController::class,
 Route::post('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'delete'])->name('dboperationsdeleted');
 Route::post('/dboperationsupdated', [App\Http\Controllers\DbOperationsController::class, 'update'])->name('dboperationsupdated');
 Route::post('/dboperationsnewunit', [App\Http\Controllers\DbOperationsController::class, 'newSensorUnit'])->name('dboperationsnewunit');
+Route::post('/dboperationsprice', [App\Http\Controllers\DbOperationsController::class, 'changePrice'])->name('dboperationsprice');
+Route::post('/subscriptionpaymentdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletesubpay'])->name('subscriptionpaymentdelete');
 Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
 

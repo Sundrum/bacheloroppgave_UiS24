@@ -29,5 +29,9 @@ class PaymentsUnits extends Model
            ->get();
        return $paymentsunits;
    }
+   public static function firstDistinctPaymentUnit($paymentId){
+        $paymentUnit = self::where('payment_id', $paymentId)->first();
+        return $paymentUnit;
+    }
 }
 

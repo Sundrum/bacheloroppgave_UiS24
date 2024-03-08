@@ -642,6 +642,7 @@ class ComposerStaticInitb55dadca9d58eed72d829eebeda7faaf
         'App\\Models\\Nets' => __DIR__ . '/../..' . '/app/Models/Nets.php',
         'App\\Models\\PasswordReset' => __DIR__ . '/../..' . '/app/Models/PasswordReset.php',
         'App\\Models\\Payment' => __DIR__ . '/../..' . '/app/Models/Payment.php',
+        'App\\Models\\PaymentsProducts' => __DIR__ . '/../..' . '/app/Models/PaymentsProducts.php',
         'App\\Models\\PaymentsUnits' => __DIR__ . '/../..' . '/app/Models/PaymentsUnits.php',
         'App\\Models\\Probe' => __DIR__ . '/../..' . '/app/Models/Probe.php',
         'App\\Models\\Product' => __DIR__ . '/../..' . '/app/Models/Product.php',

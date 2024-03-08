@@ -21,18 +21,26 @@ class InvoiceController extends Controller
 
         $netsResponse = Payment::getNetsResponse($payment_id);
         $netsResponse->payment->orderDetails->amount = $netsResponse->payment->orderDetails->amount /100;
+        $date = date('d-m-y', strtotime($netsResponse->payment->created));
         $netsResponse->payment->created = date('jS \of F, Y', strtotime($netsResponse->payment->created));
 
         $paymentProduct = PaymentsProducts::where('payment_id', $payment_id)->first();
 
+        $customer_id = Payment::where('payment_id', $payment_id)->first()->customer_id_ref;
         $product_id = $paymentProduct->product_id;
         $amount = $paymentProduct->Amount;
 
         $product = Product::find($product_id);
+        $price_ex_vat = $product->product_price / 1.25;
+        $vat = $product->product_price - $price_ex_vat;
 
+        $subscription_ex_vat = $product->subscription_price / 1.25;
+        $subscription_vat = $product->subscription_price - $subscription_ex_vat;
+
+        $is_subscription = isset($netsResponse->payment->subscription);
         $invoice_number = $organization_id . '-' . $payment_id;
-        $PDF_name = $invoice_number . '.pdf';
-        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount'));
+        $PDF_name = $organization_id . '-' . $customer_id . '-' . $date . '.pdf';
+        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'is_subscription', 'subscription_ex_vat', 'subscription_vat'));
 
         return $pdf->download($PDF_name);
     }

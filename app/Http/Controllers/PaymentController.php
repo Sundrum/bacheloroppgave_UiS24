@@ -22,29 +22,18 @@ class PaymentController extends Controller
     public function createPayment(Request $request)
     {
         Log::info("createPayment function");
-        //Log::info($items);
 
-        // Retrieve the 'items' query parameter from the request
-        $itemsString = $request->query('items');
-        // Parse the items string into an array
-        $items = json_decode(urldecode($itemsString), true);
-        // Retrieve the 'subscriptionOrder' query parameter from the request
-        // $subOrder = $request->query('subOrder');
-        // dd($subOrder);
-
-
+        $itemsString = $request->query('items');                    // Retrieve the array 'items' query parameter from the request
+        $items = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
+        Log::info($items);
+        $subOrder = array_shift($items)['subOrder'];
+        $newOrder = array_shift($items)['newOrder'];
 
         $userData=$this->getUser();
-        Log::info("User Data", $userData);
-        //Handles insufficient user data
-            // if ($this->IsEmpty($userData)){
-            //     Log::info("User Data IsEmpty!");
-            //     return response()->json($userData);
-            // }
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         //Generates Payload
-        $payload = $this->createPayload($userData,$items);
-        Log::info("Payload gotten");
+        $payload = $this->createPayload($subOrder,$items);
+        Log::info("Payload created");
         assert(json_decode($payload) && json_last_error() == JSON_ERROR_NONE);
         //Generates payment object
         $ch = curl_init('https://test.api.dibspayment.eu/v1/payments');
@@ -65,7 +54,7 @@ class PaymentController extends Controller
         echo $result;
     }
 
-    public function createPayload($userData, $items)
+    public function createPayload($subOrder, $items)
     {   
         // Define the checkout data
         $checkoutData = [
@@ -105,7 +94,9 @@ class PaymentController extends Controller
                 "name" => $item['name'],
                 "quantity" => $item['quantity'],
                 "unit" => $item['unit'],
-                "unitPrice" => $item['unitPrice'], // Fill in the unit price with the product price
+                "unitPrice" => $item['unitPrice'],
+                "taxRate"=> $item['taxRate'],
+                "taxAmount"=> $item['taxAmount'],
                 "grossTotalAmount" => $item['grossTotalAmount'],
                 "netTotalAmount" => $item['netTotalAmount']
             ];
@@ -124,13 +115,20 @@ class PaymentController extends Controller
         $oneYearLater = $currentDateTime->add(new DateInterval('P1Y'));
         $oneYearLaterFormatted = $oneYearLater->format('Y-m-d\TH:i:sP');
 
-    
+        
         // Combine checkout and order data into the final payload
         $payload = [
             "checkout" => $checkoutData,
             "order" => $orderData,
         ];
-    
+        // include subscription if subscription order
+        if ($subOrder) {
+            $subscription = [
+                    "interval"=> 0,
+                    "endDate"=> "2031-07-18T00:00:00+00:00"
+            ];  
+            $payload["subscription"] = $subscription;
+        }
         // Convert the payload array to JSON and return it
         return json_encode($payload, JSON_PRETTY_PRINT);
     }

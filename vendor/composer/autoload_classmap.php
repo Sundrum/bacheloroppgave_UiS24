@@ -88,6 +88,7 @@ return array(
     'App\\Models\\Nets' => $baseDir . '/app/Models/Nets.php',
     'App\\Models\\PasswordReset' => $baseDir . '/app/Models/PasswordReset.php',
     'App\\Models\\Payment' => $baseDir . '/app/Models/Payment.php',
+    'App\\Models\\PaymentsProducts' => $baseDir . '/app/Models/PaymentsProducts.php',
     'App\\Models\\PaymentsUnits' => $baseDir . '/app/Models/PaymentsUnits.php',
     'App\\Models\\Probe' => $baseDir . '/app/Models/Probe.php',
     'App\\Models\\Product' => $baseDir . '/app/Models/Product.php',

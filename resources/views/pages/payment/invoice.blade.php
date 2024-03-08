@@ -69,16 +69,29 @@
             <th>Total Incl VAT</th>
             <th>Currency</th>
         </tr>
-        <tr>
-            <td>{{ $product->product_name }}</td>
-            <td>{{ $amount }}</td>
-            <td>{{ $product->product_price }}</td>
-            <td>25%</td>
-            <td>{{ $product->product_price / 1.25 }}</td>
-            <td>{{ $product->product_price * 0.25 }}</td>
-            <td>{{ $product->product_price }}</td>
-            <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
-        </tr>
+        @if (!$is_subscription)
+            <tr>
+                <td>{{ $product->product_name }}</td>
+                <td>{{ $amount }}</td>
+                <td>{{ $price_ex_vat }}</td>
+                <td>25%</td>
+                <td>{{ $price_ex_vat}}</td>
+                <td>{{ $vat }}</td>
+                <td>{{ $product->product_price }}</td>
+                <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
+            </tr>
+        @else
+            <tr>
+                <td>{{ $product->product_name }} subscription</td>
+                <td>{{ $amount }}</td>
+                <td>{{ $subscription_ex_vat }}</td>
+                <td>25%</td>
+                <td>{{ $subscription_ex_vat}}</td>
+                <td>{{ $subscription_vat }}</td>
+                <td>{{ $product->subscription_price }}</td>
+                <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
+            </tr>
+        @endif
     </table>
 </body>
 </html>

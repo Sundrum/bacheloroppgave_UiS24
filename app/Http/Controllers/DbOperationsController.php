@@ -23,8 +23,46 @@ class DbOperationsController extends Controller
         $subscriptions = Subscription::select('*')
             ->orderBy('created_at', 'asc')
             ->get();
-        return view('pages/payment/dboperations')->with('payments', $payments)->with('subscriptions', $subscriptions);
+        $products = Product::whereNotNull('product_price')
+            ->where('product_price', '>', 0)
+            ->orWhere('subscription_price', '>', 0)
+            ->get();
+
+        $subscriptionpayments = SubscriptionPayment::select('*')
+            ->get();
+
+        return view('pages/payment/dboperations', compact('payments', 'subscriptions', 'products', 'subscriptionpayments'));
     }
+
+    public function changePrice (Request $request)
+    {
+        $product_id = $request->product_id;
+        $product = Product::find($product_id);
+        if (!$product)
+        {
+            return redirect()->back()->with('error', 'Product not found');
+        }
+        $product->product_price = $request->product_price;
+        $product->subscription_price = $request->subscription_price;
+        $product->save();
+        return redirect()->back()->with('success', 'Price updated successfully');
+    }
+
+    public function deletesubpay(Request $request)
+    {
+        $payment_id = $request->payment_id;
+        $subscription_id = $request->subscription_id;
+        $subscription_payment = SubscriptionPayment::where('payment_id', $payment_id)
+            ->where('subscription_id', $subscription_id)
+            ->first();
+        if ($subscription_payment) {
+            $subscription_payment->delete();
+        }else{
+            return redirect()->back()->with('error', 'Subscription payment not found');
+        }
+        return redirect()->back()->with('success', 'Subscription payment deleted successfully');
+    }
+
 
     public function delete(Request $request)
     {
@@ -32,7 +70,15 @@ class DbOperationsController extends Controller
         {
             $id = $request->payment_id;
             $payment = Payment::find($id);
-            PaymentsProducts::where('payment_id', $id)->delete();
+            // if (PaymentsProducts::where('payment_id', $id)->exists()) {
+            // PaymentsProducts::where('payment_id', $id)->delete();
+            // }
+            // if (SubscriptionPayment::where('payment_id', $id)->exists()) {
+            // SubscriptionPayment::where('payment_id', $id)->delete();
+            // }
+            // if (PaymentsUnits::where('payment_id', $id)->exists()) {
+            // PaymentsUnits::where('payment_id', $id)->delete();
+            // }
             if (!$payment)
             {
                 return redirect()->back()->with('error', 'Payment not found');

@@ -22,7 +22,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($allocatedSensorUnitsSub as $sensorUnit)
+                            {{-- @foreach ($allocatedSensorUnitsSub as $sensorUnit) --}}
+                            @foreach ($subscriptions as $sensorUnit)
                                 @php
                                 $isActive = $sensorUnit->paymentData && !$sensorUnit->subscriptionData ? 'false' : ($sensorUnit->subscriptionData ? 'true' : 'null');
                                 @endphp
@@ -64,12 +65,12 @@
         </div>
     </div>
     <script>
-        console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
+        console.log(@json(compact('subscriptions', 'user')));
     </script>
 
 
     {{-- SUBSCRIPTION ORDERS --}}
-    <section class="bg-white card-rounded">
+    {{-- <section class="bg-white card-rounded">
         <div class="row mt-3 text-center">
         </div>
         <div class="row text-center mt-5">
@@ -86,6 +87,7 @@
                                 <tr>
                                     <th>Subscription Name</th>
                                     <th>Amount</th>
+                                    <th>Payment ID</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,6 +95,7 @@
                                 <tr>
                                     <td>{{ $sensorUnit->product_name }}</td>
                                     <td>{{ $sensorUnit->Amount }}</td>
+                                    <td>{{ $sensorUnit->payment_id }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -106,7 +109,7 @@
         <script>
             console.log(@json(compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user')));
         </script>
-    </section>
+    </section> --}}
 
 </section>
 @endsection

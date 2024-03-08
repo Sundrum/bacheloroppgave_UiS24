@@ -35,6 +35,44 @@
     </div>
     <div class="row text-center mt-5">
         <div class="col-12">
+            <h4>Change price of products</h4>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Image</th>
+                    <th>Price</th>
+                    <th>Subscription price</th>
+                    <th>Save</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($products as $product)
+                <form method="POST" action="{{ route('dboperationsprice') }}">
+                    @csrf
+                    <tr>
+                        <td>
+                            {{$product->product_name}}
+                            <input type="hidden" name="product_id" value="{{$product->product_id}}" />
+                        </td>
+                        <td><img src="{{ $product->product_image_url }}" alt="{{ $product->product_name }}" style="width: 100px; height: 80px;"></td>
+                        <td><input type="text" name="product_price" value="{{$product->product_price}}"></td>
+                        <td><input type="text" name="subscription_price" value="{{$product->subscription_price}}"></td>
+                        <td><button class="btn-7g" type="submit"><i class="fa fa-lg fa-check"></i></button></td>
+                    </tr>
+                </form>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="bg-white card-rounded">
+    <div class="row mt-3 text-center">
+    </div>
+    <div class="row text-center mt-5">
+        <div class="col-12">
             <h4>Edit and delete database tables</h4>
         </div>
     </div>
@@ -119,6 +157,30 @@
                         </form>
                     </td>
                 </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Subscription id</th>
+                <th>Payment id</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($subscriptionpayments as $subscriptionpayment)
+            <tr>
+                <form action="{{ route('subscriptionpaymentdelete') }}" method="POST">
+                    @csrf
+                    <td>{{$subscriptionpayment->subscription_id}}</td>
+                    <td>{{$subscriptionpayment->payment_id}}</td>
+                    <input type="hidden" name="subscription_id" value="{{$subscriptionpayment->subscription_id}}" />
+                    <input type="hidden" name="payment_id" value="{{$subscriptionpayment->payment_id}}" />
+                    <td><button type="submit" class="btn-7r"><i class="fa fa-lg fa-trash"></i></button></td>
+                </form>
+            </tr>
             @endforeach
         </tbody>
     </table>

@@ -9,8 +9,11 @@ class SubscriptionPayment extends Model
 {
     use HasFactory;
 
-    protected $table = 'subscription_payments';
+    protected $table = 'subscriptions_payments';
     protected $primaryKey = ['subscription_id', 'payment_id'];
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $fillable = ['subscription_id', 'payment_id'];
 
 
 
