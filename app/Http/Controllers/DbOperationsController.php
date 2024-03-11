@@ -39,12 +39,20 @@ class DbOperationsController extends Controller
 
     public function changePrice (Request $request)
     {
+        $validator = validator($request->all(), [
+            'product_price' => ['required', 'numeric', 'min:0'],
+            'subscription_price' => ['required', 'numeric', 'min:0'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', 'Invalid input');
+        }
         $product_id = $request->product_id;
         $product = Product::find($product_id);
         if (!$product)
         {
             return redirect()->back()->with('error', 'Product not found');
         }
+
         $product->product_price = $request->product_price;
         $product->subscription_price = $request->subscription_price;
         $product->save();

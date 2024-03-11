@@ -67,4 +67,74 @@ class SubscriptionsController extends Controller
         }
         return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
     }
+    public function cancelSubscription(Request $request)
+    {
+        $sensorunitId = $request->input('sensorunitId');
+        $subscriptionId = $request->input('subscriptionId');
+        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
+        $subscription = Subscription::find($subscriptionId);
+        $subscription->subscription_status = 1;
+        $subscription->save();
+
+        $user_id = Session::get('user_id');
+        if ($user_id == null) {
+            $user_id = Auth::user()->id;
+        }
+
+        $user = User::find($user_id);
+        if ($user == null) {
+            Log::error("User not found");
+        }
+        if ($sensorUnit->customer_id_ref != $user->customer_id_ref)
+        {
+            return view('fallback');
+        }
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+    }
+    public function reactivateSubscription(Request $request)
+    {
+        $sensorunitId = $request->input('sensorunitId');
+        $subscriptionId = $request->input('subscriptionId');
+        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
+        $subscription = Subscription::find($subscriptionId);
+        $subscription->subscription_status = 2;
+        $subscription->save();
+
+        $user_id = Session::get('user_id');
+        if ($user_id == null) {
+            $user_id = Auth::user()->id;
+        }
+
+        $user = User::find($user_id);
+        if ($user == null) {
+            Log::error("User not found");
+        }
+        if ($sensorUnit->customer_id_ref != $user->customer_id_ref)
+        {
+            return view('fallback');
+        }
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+    }
+    public function manageSubscription(Request $request)
+    {
+        $sensorunitId = $request->input('sensorunitId');
+        $subscriptionId = $request->input('subscriptionId');
+        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
+        $subscription = Subscription::find($subscriptionId);
+
+        $user_id = Session::get('user_id');
+        if ($user_id == null) {
+            $user_id = Auth::user()->id;
+        }
+
+        $user = User::find($user_id);
+        if ($user == null) {
+            Log::error("User not found");
+        }
+        if ($sensorUnit->customer_id_ref != $user->customer_id_ref)
+        {
+            return view('fallback');
+        }
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+    }
 }

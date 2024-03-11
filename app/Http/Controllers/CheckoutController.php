@@ -75,7 +75,6 @@ class CheckoutController extends Controller
         $paymentProduct->save();
    }
 
-   //not currently in use:
    public static function initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber){
        $subscription = new Subscription;
        $subscription->subscription_id = $subscription_id;
@@ -83,17 +82,19 @@ class CheckoutController extends Controller
        $subscription->interval = 31556926; // One year
        $subscription->serialnumber = $serialnumber;
        $subscription->subscription_status = 2; //Active
+       $subscription->next_payment=now()->addSeconds($subscription->interval)->toDateString();
        $subscription->save();
-   }
-
-   public static function initSubscriptionPaymentEntry($subscription_id, $payment_id){
-       $subscription_payment = new SubscriptionPayment;
-       $subscription_payment->subscription_id = $subscription_id;
-       $subscription_payment->payment_id = $payment_id;
-       $subscription_payment->save();
-   }
-
-   public static function initPaymentsUnitsEntry($payment_id, $serialnumber){
+    }
+    
+    public static function initSubscriptionPaymentEntry($subscription_id, $payment_id){
+        $subscription_payment = new SubscriptionPayment;
+        $subscription_payment->subscription_id = $subscription_id;
+        $subscription_payment->payment_id = $payment_id;
+        $subscription_payment->save();
+    }
+    
+    //not currently in use:
+    public static function initPaymentsUnitsEntry($payment_id, $serialnumber){
        $paymentsUnits = new PaymentsUnits;
        $paymentsUnits->payment_id = $payment_id;
        $paymentsUnits->serialnumber = $serialnumber;

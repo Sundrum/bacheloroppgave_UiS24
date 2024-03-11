@@ -18,9 +18,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
 
-        $schedule->call(function () {
-            Log::info("Called from schedule 13:00");
-        })->dailyAt('13:00');
+        // $schedule->call(function () {
+        //     Log::info("Called from schedule 13:00");
+        // })->dailyAt('13:00');
+        
+        $schedule->command('custom:task')->dailyAt('00:00');
     }
 
     /**

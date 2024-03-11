@@ -38,10 +38,17 @@ class InvoiceController extends Controller
         $subscription_ex_vat = $product->subscription_price / 1.25;
         $subscription_vat = $product->subscription_price - $subscription_ex_vat;
 
-        $is_subscription = isset($netsResponse->payment->subscription);
+        if($netsResponse->payment->orderDetails->amount == $product->product_price){
+            $ordertype = 0;
+        } else if($netsResponse->payment->orderDetails->amount == $product->subscription_price){
+            $ordertype = 1;
+        } else if($netsResponse->payment->orderDetails->amount == $product->product_price + $product->subscription_price) {
+            $ordertype = 2;
+        }
+
         $invoice_number = $organization_id . '-' . $payment_id;
         $PDF_name = $organization_id . '-' . $customer_id . '-' . $date . '.pdf';
-        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'is_subscription', 'subscription_ex_vat', 'subscription_vat', 'ordertype'));
+        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype'));
 
         return $pdf->download($PDF_name);
     }

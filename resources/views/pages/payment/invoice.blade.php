@@ -80,6 +80,7 @@
                 <td>{{ $product->product_price }}</td>
                 <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
             </tr>
+        @endif
         @if ($ordertype == '1' || $ordertype == '2')
             <tr>
                 <td>{{ $product->product_name }} subscription fee</td>
@@ -90,6 +91,18 @@
                 <td>{{ $subscription_vat }}</td>
                 <td>{{ $product->subscription_price }}</td>
                 <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
+            </tr>
+        @endif
+        @if ($ordertype == '2')
+            <tr>
+                <td>Sum</td>
+                <td></td>
+                <td>{{ $price_ex_vat + $subscription_ex_vat }}</td>
+                <td></td>
+                <td>{{ $price_ex_vat + $subscription_ex_vat }}</td>
+                <td>{{ $vat + $subscription_vat }}</td>
+                <td>{{ $product->product_price + $product->subscription_price }}</td>
+                <td>NOK</td>
             </tr>
         @endif
     </table>

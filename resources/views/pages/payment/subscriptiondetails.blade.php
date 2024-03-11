@@ -40,22 +40,31 @@
             Activate
         </Button>
         @elseif ($subscription->subscription_status==1) {{--  Canceled --}}
-        <Button class="cancel-button btn-7r"
-            data-product-id="{{ $sensorUnit->product_id }}"
-            data-product-name="{{ $sensorUnit->product_name }}"
-            data-subscription-price="{{ $sensorUnit->subscription_price }}"
-            data-serialnumber="{{ $sensorUnit->serialnumber}}">
-            Reactivate
-        </Button>
+        <form action="{{ route('reactivateSubscription') }}" method="POST">
+            @csrf
+            <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
+            <input type="hidden" name="subscriptionId" value="{{ $subscription->subscription_id }}" />
+            <button class="btn-7r" type="submit">
+                Reactivate
+            </button>
+        </form>
         @elseif ($subscription->subscription_status==2) {{--  Active --}}
-        <a class="btn-7g">Manage payment method</a>
-        <Button class="cancel-button btn-7r"
-            data-product-id="{{ $sensorUnit->product_id }}"
-            data-product-name="{{ $sensorUnit->product_name }}"
-            data-subscription-price="{{ $sensorUnit->subscription_price }}"
-            data-serialnumber="{{ $sensorUnit->serialnumber}}">
-            Cancel subscription
-        </Button>
+        <form action="{{ route('manageSubscription') }}" method="POST">
+            @csrf
+            <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
+            <input type="hidden" name="subscriptionId" value="{{ $subscription->subscription_id }}" />
+            <button class="btn-7g" type="submit">
+                Manage payment method
+            </button>
+        </form>
+        <form action="{{ route('cancelSubscription') }}" method="POST">
+            @csrf
+            <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
+            <input type="hidden" name="subscriptionId" value="{{ $subscription->subscription_id }}" />
+            <button class="btn-7r" type="submit">
+                Cancel subscription
+            </button>
+        </form>
         @endif
     </div>
 </section>
@@ -88,7 +97,9 @@
 </style>
 <script>
     var checkoutRoute = "{{ route('checkout') }}";
+    var cancelSubscriptionRoute = "{{ route('cancelSubscription') }}";
     console.log("sensorUnit:", {!! json_encode($sensorUnit) !!});
+
 </script>
 <script src="{{asset('js/shop.js')}}"></script>
 <script src="{{asset('js/subscriptiondetails.js')}}"></script>

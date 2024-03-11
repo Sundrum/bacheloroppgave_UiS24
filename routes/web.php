@@ -20,6 +20,9 @@ Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checko
 Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
 //Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 Route::post('/subscriptiondetails', [App\Http\Controllers\SubscriptionsController::class, 'subscriptionDetails'])->name('subscriptiondetails');
+Route::post('/cancelSubscription', [App\Http\Controllers\SubscriptionsController::class, 'cancelSubscription'])->name('cancelSubscription');
+Route::post('/reactivateSubscription', [App\Http\Controllers\SubscriptionsController::class, 'reactivateSubscription'])->name('reactivateSubscription');
+Route::post('/manageSubscription', [App\Http\Controllers\SubscriptionsController::class, 'manageSubscription'])->name('manageSubscription');
 Route::get('/updateUserData', [App\Http\Controllers\PaymentController::class, 'updateUserData'])->name('updateUserData');
 Route::get('/retrievePayment', [App\Http\Controllers\retrievePaymentController::class, 'retrievePayment'])->name('retrievePayment');
 Route::get('/paymenthistory', [App\Http\Controllers\PaymentHistoryController::class, 'paymentHistory'])->name('paymenthistory');
