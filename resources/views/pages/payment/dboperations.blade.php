@@ -161,6 +161,7 @@
         </tbody>
     </table>
 
+    <h4>Subscription Payment table</h4>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -178,6 +179,31 @@
                     <td>{{$subscriptionpayment->payment_id}}</td>
                     <input type="hidden" name="subscription_id" value="{{$subscriptionpayment->subscription_id}}" />
                     <input type="hidden" name="payment_id" value="{{$subscriptionpayment->payment_id}}" />
+                    <td><button type="submit" class="btn-7r"><i class="fa fa-lg fa-trash"></i></button></td>
+                </form>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <h4>Payments Units table</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Serialnumber</th>
+                <th>Payment id</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($paymentsunits as $paymentunit)
+            <tr>
+                <form action="{{ route('paymentsunitsdelete') }}" method="POST">
+                    @csrf
+                    <td>{{$paymentunit->serialnumber}}</td>
+                    <td>{{$paymentunit->payment_id}}</td>
+                    <input type="hidden" name="serialnumber" value="{{$paymentunit->serialnumber}}" />
+                    <input type="hidden" name="payment_id" value="{{$paymentunit->payment_id}}" />
                     <td><button type="submit" class="btn-7r"><i class="fa fa-lg fa-trash"></i></button></td>
                 </form>
             </tr>

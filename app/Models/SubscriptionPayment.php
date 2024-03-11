@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SubscriptionPayment extends Model
-{
-    use HasFactory;
-
+{    
     protected $table = 'subscriptions_payments';
     protected $primaryKey = ['subscription_id', 'payment_id'];
     public $incrementing = false;
@@ -26,5 +24,12 @@ class SubscriptionPayment extends Model
             ->get();
         return $subscriptionpayment;
     }
+
+    public static function GetWithPaymentID($payment_id){
+        $subscriptionpayment = self::where('subscriptions_payments.payment_id', '=', $payment_id)
+            ->first();
+        return $subscriptionpayment;
+    }
+    
 }
 

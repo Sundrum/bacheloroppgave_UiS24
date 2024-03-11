@@ -25,35 +25,23 @@
                             {{-- @foreach ($allocatedSensorUnitsSub as $sensorUnit) --}}
                             @foreach ($subscriptions as $sensorUnit)
                                 @php
-                                $isActive = $sensorUnit->paymentData && !$sensorUnit->subscriptionData ? 'false' : ($sensorUnit->subscriptionData ? 'true' : 'null');
+                                $status = $sensorUnit->subscription_status === 0 ? 'Inactive' : ($sensorUnit->subscription_status === 1 ? 'Canceled' : ($sensorUnit->subscription_status === 2 ? 'Active' : 'Unknown'));
                                 @endphp
                                 <tr>
-                                    {{-- UNACTIVATED SENSORS  --}}
-                                    @if ($isActive=='false') 
-                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                        <td>Inactive</td>
-                                    {{-- ACTIVE SENSORS  --}}
-                                    @elseif ($isActive=='true') 
-                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                        <td>Active</td>
-                                    {{-- NO DATA SENSORS  --}}
-                                    @elseif (!$sensorUnit->paymentData && !$sensorUnit->subscriptionData) 
-                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                        <td></td>
-                                    {{-- ELSE --}}
-                                    @else 
-                                        <td>{{ $sensorUnit->product_name }}, {{ $sensorUnit->serialnumber }}</td>
-                                        <td></td>
-                                    @endif
+                                    {{-- SENSORS  --}} 
+                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ', ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }}</td>
+                                    <td>{{ $sensorUnit->serialnumber ? $status : 'Ordered' }}</td>                                    
                                     <td>
-                                        <form action="{{ route('subscriptiondetails') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{$sensorUnit->serialnumber}}" />
-                                            <input type="hidden" name="isActive" value="{{ $isActive }}" />
-                                            <button class="{{ $isActive === 'true' ? 'btn-7g' : ($isActive === 'false' ? 'btn-7r' : 'btn-7g') }}" type="submit">
-                                                MANAGE
-                                            </button>
-                                        </form>
+                                        @if ($sensorUnit->serialnumber)
+                                            <form action="{{ route('subscriptiondetails') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
+                                                <input type="hidden" name="subscriptionId" value="{{ $sensorUnit->subscription_id }}" />
+                                                <button class="{{ $status === 'Active' ? 'btn-7g' : 'btn-7r' }}" type="submit">
+                                                    MANAGE
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

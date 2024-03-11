@@ -39,18 +39,18 @@ class SubscriptionsController extends Controller
             $sensorUnit->paymentData = $paymentData->isNotEmpty() ? $paymentData : false;   //append payment data
         }
         $subscriptions=Subscription::getSubscriptionsForCustomerJoinAll($user->customer_id_ref);
-        Log::info($subscriptions);
         self::setActivity("Entered subscriptions", "subscriptions");
         return view('pages/payment/subscriptions', compact('subscriptions', 'user'));
         // return view('pages/payment/subscriptions', compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user'));
     }
-
+    
     public function subscriptionDetails(Request $request)
     {
-        $sensorunit_id = $request->input('id');
-        $isActive = $request->input('isActive');
-        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunit_id);
+        $sensorunitId = $request->input('sensorunitId');
+        $subscriptionId = $request->input('subscriptionId');
 
+        $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
+        $subscription = Subscription::find($subscriptionId);
 
         $user_id = Session::get('user_id');
         if ($user_id == null) {
@@ -65,6 +65,6 @@ class SubscriptionsController extends Controller
         {
             return view('fallback');
         }
-        return view('pages/payment/subscriptiondetails', compact('sensorUnit','isActive'));
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
     }
 }

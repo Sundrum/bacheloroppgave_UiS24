@@ -25,7 +25,7 @@ class PaymentController extends Controller
 
         $itemsString = $request->query('items');                    // Retrieve the array 'items' query parameter from the request
         $items = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
-        Log::info($items);
+        
         $subOrder = array_shift($items)['subOrder'];
         $newOrder = array_shift($items)['newOrder'];
 

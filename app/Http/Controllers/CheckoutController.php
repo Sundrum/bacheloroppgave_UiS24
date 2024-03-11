@@ -54,6 +54,7 @@ class CheckoutController extends Controller
             $paymentUnit = PaymentsUnits::firstDistinctPaymentUnit($payment_id);
             $serialnumber = $paymentUnit->serialnumber ?? null; //set serialnumber if it exists, else null.
             self::initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber);
+            self::initSubscriptionPaymentEntry($subscription_id,$payment_id);
        }
        self::setActivity("Checkout success", "success");
        return view('pages/payment/checkoutsuccess', compact('payment_id'));

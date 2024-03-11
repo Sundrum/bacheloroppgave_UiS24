@@ -69,7 +69,7 @@
             <th>Total Incl VAT</th>
             <th>Currency</th>
         </tr>
-        @if (!$is_subscription)
+        @if ($ordertype == '0' || $ordertype == '2')
             <tr>
                 <td>{{ $product->product_name }}</td>
                 <td>{{ $amount }}</td>
@@ -80,9 +80,9 @@
                 <td>{{ $product->product_price }}</td>
                 <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
             </tr>
-        @else
+        @if ($ordertype == '1' || $ordertype == '2')
             <tr>
-                <td>{{ $product->product_name }} subscription</td>
+                <td>{{ $product->product_name }} subscription fee</td>
                 <td>{{ $amount }}</td>
                 <td>{{ $subscription_ex_vat }}</td>
                 <td>25%</td>

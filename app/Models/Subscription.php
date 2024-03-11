@@ -56,15 +56,21 @@ class Subscription extends Model
                    ->where('serialnumber', $serialNumber)
                    ->get();
     }
+
     public static function getSubscriptionsForCustomerJoinAll($customerId) {
         $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
             ->orderBy('subscriptions.created_at', 'desc')
             ->join('customer', 'subscriptions.customer_id_ref', '=', 'customer.customer_id')
-            ->join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
-            ->join('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->leftJoin('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->leftJoin('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->leftJoin('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
+            ->leftJoin('paymentsProducts', 'subscriptions_payments.payment_id', '=', 'paymentsProducts.payment_id')
+            ->leftJoin('products AS payment_products', 'paymentsProducts.product_id', '=', 'payment_products.product_id')
+            ->select('subscriptions.*', 'payment_products.*')
             ->get();
         return $subscriptions;
     }
+    
 }
 
 

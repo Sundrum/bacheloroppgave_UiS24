@@ -25,13 +25,29 @@
                 <td>{{$sensorUnit->serialnumber}}</td>
                 <td>{{$sensorUnit->product_description}}</td>
                 <td>{{$sensorUnit->sensorunit_installdate}}</td>
-                <td>{{ $isActive === 'true' ? 'Active' : ($isActive === 'false' ? 'Inactive' : 'Unknown') }}</td>
+                <td>{{$subscription->subscription_status === 0 ? 'Inactive' : ($subscription->subscription_status === 1 ? 'Canceled' : ($subscription->subscription_status === 2 ? 'Active' : 'Unknown')) }}</td>
                 <td>{{$sensorUnit->subscription_price}},- nok</td>
             </tr>
         </tbody>
     </table>
     <div class="center-container">
-        @if ($isActive=="true")
+        @if ($subscription->subscription_status==0) {{-- Inactive --}}
+        <Button class="checkout-button btn-7g"
+            data-product-id="{{ $sensorUnit->product_id }}"
+            data-product-name="{{ $sensorUnit->product_name }}"
+            data-subscription-price="{{ $sensorUnit->subscription_price }}"
+            data-serialnumber="{{ $sensorUnit->serialnumber}}">
+            Activate
+        </Button>
+        @elseif ($subscription->subscription_status==1) {{--  Canceled --}}
+        <Button class="cancel-button btn-7r"
+            data-product-id="{{ $sensorUnit->product_id }}"
+            data-product-name="{{ $sensorUnit->product_name }}"
+            data-subscription-price="{{ $sensorUnit->subscription_price }}"
+            data-serialnumber="{{ $sensorUnit->serialnumber}}">
+            Reactivate
+        </Button>
+        @elseif ($subscription->subscription_status==2) {{--  Active --}}
         <a class="btn-7g">Manage payment method</a>
         <Button class="cancel-button btn-7r"
             data-product-id="{{ $sensorUnit->product_id }}"
@@ -39,14 +55,6 @@
             data-subscription-price="{{ $sensorUnit->subscription_price }}"
             data-serialnumber="{{ $sensorUnit->serialnumber}}">
             Cancel subscription
-        </Button>
-        @elseif ($isActive=="false")
-        <Button class="checkout-button btn-7g"
-            data-product-id="{{ $sensorUnit->product_id }}"
-            data-product-name="{{ $sensorUnit->product_name }}"
-            data-subscription-price="{{ $sensorUnit->subscription_price }}"
-            data-serialnumber="{{ $sensorUnit->serialnumber}}">
-            Activate
         </Button>
         @endif
     </div>

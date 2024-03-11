@@ -31,7 +31,10 @@ class DbOperationsController extends Controller
         $subscriptionpayments = SubscriptionPayment::select('*')
             ->get();
 
-        return view('pages/payment/dboperations', compact('payments', 'subscriptions', 'products', 'subscriptionpayments'));
+        $paymentsunits = PaymentsUnits::select('*')
+            ->get();
+
+        return view('pages/payment/dboperations', compact('payments', 'subscriptions', 'products', 'subscriptionpayments', 'paymentsunits'));
     }
 
     public function changePrice (Request $request)
@@ -55,12 +58,23 @@ class DbOperationsController extends Controller
         $subscription_payment = SubscriptionPayment::where('payment_id', $payment_id)
             ->where('subscription_id', $subscription_id)
             ->first();
-        if ($subscription_payment) {
-            $subscription_payment->delete();
-        }else{
-            return redirect()->back()->with('error', 'Subscription payment not found');
-        }
+        $subscription_payment->delete();
         return redirect()->back()->with('success', 'Subscription payment deleted successfully');
+    }
+
+    public function deletepayunits(Request $request)
+    {
+        $payment_id = $request->payment_id;
+        $serialnumber = $request->serialnumber;
+        $payments_units = PaymentsUnits::where('payment_id', $payment_id)
+            ->where('serialnumber', $serialnumber)
+            ->first();
+        if ($payments_units) {
+            $payments_units->delete();
+        }else{
+            return redirect()->back()->with('error', 'Payment unit not found');
+        }
+        return redirect()->back()->with('success', 'Payment unit deleted successfully');
     }
 
 
@@ -149,6 +163,11 @@ class DbOperationsController extends Controller
         $payments_units->payment_id = $payment_id;
         $payments_units->serialnumber = $serialnumber;
         $payments_units->save();
+
+        $subscription_payment=SubscriptionPayment::GetWithPaymentID($payment_id);
+        $subscription=Subscription::find($subscription_payment->subscription_id);
+        $subscription->serialnumber=$serialnumber;
+        $subscription->save();
         
         return redirect()->back()->with('success', 'Sensor unit added successfully');
     }

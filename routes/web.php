@@ -29,6 +29,7 @@ Route::post('/dboperationsupdated', [App\Http\Controllers\DbOperationsController
 Route::post('/dboperationsnewunit', [App\Http\Controllers\DbOperationsController::class, 'newSensorUnit'])->name('dboperationsnewunit');
 Route::post('/dboperationsprice', [App\Http\Controllers\DbOperationsController::class, 'changePrice'])->name('dboperationsprice');
 Route::post('/subscriptionpaymentdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletesubpay'])->name('subscriptionpaymentdelete');
+Route::post('/paymentsunitsdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletepayunits'])->name('paymentsunitsdelete');
 Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
 

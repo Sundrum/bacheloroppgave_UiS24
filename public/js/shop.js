@@ -12,13 +12,24 @@ document.addEventListener('DOMContentLoaded', function () {
             var unitPrice = productPrice / (1 + VAT);
             var grossTotalAmount = productPrice;
             var netTotalAmount = productPrice / (1 + VAT);
-
             var items =[];
 
-            if(subscriptionPrice){items.push({subOrder:true});}
-            else{items.push({subOrder:false});}
-            if(productPrice){items.push({newOrder:true});}
-            else{items.push({newOrder:false});}
+            if(subscriptionPrice)
+            {
+                items.push({subOrder:true});
+            }
+            else
+            {
+                items.push({subOrder:false});
+            }
+            if(productPrice)
+            {
+                items.push({newOrder:true});
+            }
+            else
+            {
+                items.push({newOrder:false});
+            }
 
             // Check if productPrice exists and add product-related data
             if (productPrice) {
@@ -64,14 +75,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.location = updateUserDataRoute; //from subscriptions.blade.php
                     return;
                 }
-                console.log(this.response);
-
                 // Construct the URL with both paymentId and productId
+                var redirectUrl = checkoutRoute + "?paymentId=" + data.paymentId + "&productId=" + productId;
                 if (serialnumber){
-                    var redirectUrl = checkoutRoute + "?paymentId=" + data.paymentId + "&productId=" + productId + "&serialNumber=" + serialnumber;
-                }
-                else{
-                    var redirectUrl = checkoutRoute + "?paymentId=" + data.paymentId + "&productId=" + productId;
+                    redirectUrl += "&serialNumber=" + serialnumber;
                 }
 
                 // Redirect to the constructed URL
