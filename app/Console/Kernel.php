@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
         //     Log::info("Called from schedule 13:00");
         // })->dailyAt('13:00');
         
-        $schedule->command('custom:task')->dailyAt('00:00');
+        // $schedule->command('custom:task')->dailyAt('00:00');
     }
 
     /**

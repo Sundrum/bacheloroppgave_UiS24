@@ -28,7 +28,7 @@ class PaymentController extends Controller
         
         $subOrder = array_shift($items)['subOrder'];
         $newOrder = array_shift($items)['newOrder'];
-
+        
         $userData=$this->getUser();
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         //Generates Payload

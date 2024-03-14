@@ -10,17 +10,17 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Product</th>
+                    <th style="padding-left: 1em;">Product</th>
                     <th>Description</th>
                     <th>Price</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody >
                 @foreach($products as $product)
                 <tr>
-                    <td>{{ $product->product_name }}</td>
+                    <td style="padding-left: 1em;">{{ $product->product_name }}</td>
                     <td>{{ $product->product_description }}</td>
                     <td>NOK {{ $product->product_price }} + NOK {{ $product->subscription_price }} yearly fee</td>
                     <td><img src="{{ $product->product_image_url }}" alt="{{ $product->product_name }}" style="width: 100px; height: 80px;"></td>
