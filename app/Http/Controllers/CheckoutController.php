@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Subscription;
 use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
@@ -18,14 +19,21 @@ class CheckoutController extends Controller
    //Handles checkout page
    public function checkout(Request $request)
     {
+    
     self::setActivity("Entered checkout", "checkout");
 
-    $product_id = $request->input('productId');
     $payment_id = $request->input('paymentId');
-    $serial_number = $request->input('serialNumber', null); // Default value if serialNumber is not present
+    $product_id = $request->input('productId', null);
+    $serial_number = $request->input('serialNumber', null);
     $language = Auth::user()->user_language;
     $customer_id = Auth::user()->customer_id_ref;
     $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
+
+    if ($product_id===null){
+        $unit = Sensorunit::where('serialnumber', $serial_number)->first();
+        $product = Product::find($unit->product_id_ref);
+        $product_id = $product->product_id;
+    }
 
     //Initialize DB
     self::initPaymentEntry($payment_id, $customer_id);

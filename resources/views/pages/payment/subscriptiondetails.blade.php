@@ -33,10 +33,9 @@
     <div class="center-container">
         @if ($subscription->subscription_status==0) {{-- Inactive --}}
         <Button class="checkout-button btn-7g"
-            data-product-id="{{ $sensorUnit->product_id }}"
-            data-product-name="{{ $sensorUnit->product_name }}"
-            data-subscription-price="{{ $sensorUnit->subscription_price }}"
-            data-serialnumber="{{ $sensorUnit->serialnumber}}">
+            data-serialnumber="{{ $sensorUnit->serialnumber}}"
+            data-subscription-order="{{ true }}"
+            data-new-order="{{ false }}">
             Activate
         </Button>
         @elseif ($subscription->subscription_status==1) {{--  Canceled --}}

@@ -14,7 +14,7 @@
                             <td onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
                                 Payment History
                             </td>
-                            <td>
+                            <td onclick="loadContent('{{route('managebilling')}}')" href="{{route('managebilling')}}">
                                 Manage Billing Details
                             </td>
                       </tr>

@@ -38,7 +38,7 @@ class SubscriptionsController extends Controller
             $sensorUnit->subscriptionData = $subscriptionData->isNotEmpty() ? $subscriptionData : false; //append susbcription data
             $sensorUnit->paymentData = $paymentData->isNotEmpty() ? $paymentData : false;   //append payment data
         }
-        $subscriptions=Subscription::getSubscriptionsForCustomerJoinAll($user->customer_id_ref);
+        $subscriptions=Subscription::getSubscriptionsForCustomerJoinAllDistinctSN($user->customer_id_ref);
         self::setActivity("Entered subscriptions", "subscriptions");
         return view('pages/payment/subscriptions', compact('subscriptions', 'user'));
         // return view('pages/payment/subscriptions', compact('allocatedSensorUnitsSub','unallocatedSensorUnitsSub', 'user'));

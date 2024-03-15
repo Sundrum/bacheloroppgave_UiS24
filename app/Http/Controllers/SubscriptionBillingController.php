@@ -25,9 +25,6 @@ class SubscriptionBillingController extends Controller
             Log::error("User not found");
         }
         $customer_id = $user->customer_id_ref;
-
-        $payment_id = '0044000065ca120c5d4f663879361566';
-
         $Sub = SubscriptionPayment::Join($customer_id);
 
         if ($Sub->isEmpty()) {

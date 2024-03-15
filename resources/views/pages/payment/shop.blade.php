@@ -27,9 +27,8 @@
                     <td>
                         <button class="checkout-button btn-7g" 
                         data-product-id="{{ $product->product_id }}"
-                        data-product-name="{{ $product->product_name }}"
-                        data-product-price="{{ $product->product_price }}"
-                        data-subscription-price="{{ $product->subscription_price }}"> 
+                        data-subscription-order="{{ true }}"
+                        data-new-order="{{ true }}"> 
                         Buy
                         </button>
                     </td>

@@ -35,6 +35,7 @@ Route::post('/subscriptionpaymentdelete' , [App\Http\Controllers\DbOperationsCon
 Route::post('/paymentsunitsdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletepayunits'])->name('paymentsunitsdelete');
 Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
+Route::get('/managebilling', [App\Http\Controllers\ManageBillingController::class, 'managebilling'])->name('managebilling');
 
 
 

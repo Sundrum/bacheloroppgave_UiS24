@@ -7,6 +7,7 @@ use App\Models\Subscription;
 use App\Models\Payment;
 use App\Models\SubscriptionPayment;
 use App\Models\Product;
+use App\Models\Sensorunit;
 use DateTime;
 use DateTimeZone;
 use DateInterval;
@@ -15,7 +16,7 @@ use Auth;
 
 class PaymentController extends Controller
 {
-    
+
     //Genreates (user sepcific) payment object
     //public function createPayment($items)
     //public function createPayment()
@@ -24,11 +25,10 @@ class PaymentController extends Controller
         Log::info("createPayment function");
 
         $itemsString = $request->query('items');                    // Retrieve the array 'items' query parameter from the request
-        $items = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
-        
-        $subOrder = array_shift($items)['subOrder'];
-        $newOrder = array_shift($items)['newOrder'];
-        
+        $itemsDecode = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
+        $subOrder = array_shift($itemsDecode)['subOrder'];
+        $newOrder = array_shift($itemsDecode)['newOrder'];
+        $items =  $this->generateItemsList($itemsDecode,$subOrder,$newOrder);
         $userData=$this->getUser();
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         //Generates Payload
@@ -133,6 +133,70 @@ class PaymentController extends Controller
         return json_encode($payload, JSON_PRETTY_PRINT);
     }
     //Returns associative array of user info
+    public function generateItemsList($items,$subOrder,$newOrder)
+    {
+
+        $VAT= 0.25;
+        $itemList = [];
+
+        foreach ($items as $item) {
+            if (isset($item['productId']) && $newOrder) {
+                $product = Product::find($item['productId']);
+                $itemList[] = [
+                    'reference' => $product->product_name,
+                    'name' => $product->product_name,
+                    'quantity' => 1,
+                    'unit' => 'pcs',
+                    'unitPrice' => ($product->product_price / (1 + $VAT)) * 100,
+                    'taxRate' => $VAT * 10000,
+                    'taxAmount' => (($product->product_price / (1 + $VAT)) * 100) * $VAT,
+                    'grossTotalAmount' => $product->product_price * 100,
+                    'netTotalAmount' => ($product->product_price / (1 + $VAT)) * 100,
+                ];
+            }
+            if (isset($item['productId']) && $subOrder) {
+                $product = Product::find($item['productId']);
+                $itemList[] = [
+                    'reference' => $product->product_name . " subscription",
+                    'name' => $product->product_name . " Subscription",
+                    'quantity' => 1,
+                    'unit' => 'year',
+                    'unitPrice' => ($product->subscription_price / (1 + $VAT)) * 100,
+                    'taxRate' => $VAT * 10000,
+                    'taxAmount' => (($product->subscription_price / (1 + $VAT)) * 100) * $VAT,
+                    'grossTotalAmount' => $product->subscription_price * 100,
+                    'netTotalAmount' => ($product->subscription_price / (1 + $VAT)) * 100,
+                ];
+            }
+            if (isset($item['serialnumber']) && $subOrder) {
+                $itemSerialNumber = $item['serialnumber'];
+                $typeOfSerialNumber = gettype($itemSerialNumber);
+                $unit = Sensorunit::where('serialnumber', $item['serialnumber'])->first();
+                $user = User::find(Auth::user()->user_id);
+                if ($user->customer_id_ref==$unit->customer_id_ref)
+                {
+                    $product = Product::find($unit->product_id_ref);
+                    $itemList[] = [
+                        'reference' => $product->product_name . " subscription",
+                        'name' => $product->product_name . " Subscription",
+                        'quantity' => 1,
+                        'unit' => 'year',
+                        'unitPrice' => ($product->subscription_price / (1 + $VAT)) * 100,
+                        'taxRate' => $VAT * 10000,
+                        'taxAmount' => (($product->subscription_price / (1 + $VAT)) * 100) * $VAT,
+                        'grossTotalAmount' => $product->subscription_price * 100,
+                        'netTotalAmount' => ($product->subscription_price / (1 + $VAT)) * 100,
+                    ];
+                }
+                else {
+                    $errorMessage = "Mismatch between user (ID: " . $user->customer_id_ref. ") and sensorunits owner (ID: " . $unit->customer_id_ref . ")";
+                    trigger_error($errorMessage);
+                    return;
+                }
+            }
+        }
+        return $itemList;
+    }
     public function getUser()
     {
         //$user = User::select('users.*', 'customer.customer_name')
