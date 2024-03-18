@@ -15,7 +15,10 @@
    <script>
     var language = {{$language}};
     var checkoutKey = "{{ $checkoutKey }}";
-    console.log("card number: 4268270087374847")
+    console.log("visacard: 4268270087374847")
+    console.log("mastercard: 5213199803453465")
+    var managebool = "{{$managebool}}";
+    var subscriptionId = "{{$subscriptionId ?? ''}}";
   </script>
    <script  type="text/javascript" src="{{asset('js/checkout.js')}}"></script>
 @endsection

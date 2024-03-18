@@ -4,6 +4,11 @@
 {{-- ALLOCATED SUBSCRIPTION SENSORS --}}
 <section class="bg-white card-rounded">
     <div class="row mt-3 text-center">
+        @if($serialnumber !== null)
+            <div class="alert alert-success" role="alert">
+                Payment details for sensorunit {{ $serialnumber }} have been successfully updated.
+            </div>
+        @endif
     </div>
     <div class="row text-center mt-5">
         <div class="col-12">
@@ -29,7 +34,7 @@
                                 @endphp
                                 <tr>
                                     {{-- SENSORS  --}} 
-                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ', ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }}</td>
+                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ', ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }} <br> ID={{$sensorUnit->subscription_id}}</td>
                                     <td>{{ $sensorUnit->serialnumber ? $status : 'Ordered' }}</td>                                    
                                     <td>
                                         @if ($sensorUnit->serialnumber)

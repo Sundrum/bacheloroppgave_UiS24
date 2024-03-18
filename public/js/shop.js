@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var subOrder = button.getAttribute('data-subscription-order');
             var newOrder = button.getAttribute('data-new-order');
             var serialnumber= button.getAttribute('data-serialnumber');
+            var subscriptionId = button.getAttribute('data-subscription-id');
             var items =[];
 
             items.push({subOrder:subOrder});
@@ -28,7 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var request = new XMLHttpRequest();
             var itemsString = encodeURIComponent(JSON.stringify(items));
-            var url = '/api/create-payment?items=' + itemsString;  
+            if(subscriptionId){
+                var url = '/api/create-payment?items=' + itemsString + '&subscriptionId=' + subscriptionId;
+            }
+            else{
+                var url = '/api/create-payment?items=' + itemsString;  
+            }
             request.open('GET', url , true);
             request.onload = function () {
                 const data = JSON.parse(this.response);        // If parse error, check output 

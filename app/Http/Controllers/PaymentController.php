@@ -24,15 +24,15 @@ class PaymentController extends Controller
     {
         Log::info("createPayment function");
 
-        $itemsString = $request->query('items');                    // Retrieve the array 'items' query parameter from the request
+        $itemsString = $request->query('items');                 // Retrieve the array 'items' query parameter from the request
+        $subscriptionId = $request->query('subscriptionId');
         $itemsDecode = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
         $subOrder = array_shift($itemsDecode)['subOrder'];
         $newOrder = array_shift($itemsDecode)['newOrder'];
         $items =  $this->generateItemsList($itemsDecode,$subOrder,$newOrder);
-        $userData=$this->getUser();
+        $payload = $this->createPayload($subOrder,$items, $subscriptionId);
+
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
-        //Generates Payload
-        $payload = $this->createPayload($subOrder,$items);
         Log::info("Payload created");
         assert(json_decode($payload) && json_last_error() == JSON_ERROR_NONE);
         //Generates payment object
@@ -45,16 +45,14 @@ class PaymentController extends Controller
                 'Accept: application/json',
                 'Authorization:' . $secretAPIKey));                                                
         $result = curl_exec($ch);
-        $data = json_decode($result);
         Log::info($result);
-        $paymentId = $data->paymentId;
         
 
         // Access the paymentId value
         echo $result;
     }
 
-    public function createPayload($subOrder, $items)
+    public function createPayload($subOrder, $items, $subscriptionId)
     {   
         // Define the checkout data
         $checkoutData = [
@@ -68,7 +66,7 @@ class PaymentController extends Controller
             //"charge"=>true,
             "appearance" => [
                 "textOptions" => [
-                    "completePaymentButtonText" => "Yabba Dabba Doo"
+                    "completePaymentButtonText" => "Complete Payment",
                 ],
                 "displayOptions" => [
                     "showMerchantName" => true,
@@ -123,15 +121,28 @@ class PaymentController extends Controller
         ];
         // include subscription if subscription order
         if ($subOrder) {
-            $subscription = [
+            if ($subscriptionId)
+            {
+                $subscription = [
+                        "interval"=> 0,
+                        "endDate"=> "3024-07-18T00:00:00+00:00",
+                        "subscriptionId" => $subscriptionId,
+                ];  
+                $payload["subscription"] = $subscription;
+            }
+            else
+            {
+                $subscription = [
                     "interval"=> 0,
-                    "endDate"=> "2031-07-18T00:00:00+00:00"
-            ];  
-            $payload["subscription"] = $subscription;
+                    "endDate"=> "3024-07-18T00:00:00+00:00",
+                ];  
+                $payload["subscription"] = $subscription;
+            }
         }
         // Convert the payload array to JSON and return it
         return json_encode($payload, JSON_PRETTY_PRINT);
     }
+
     //Returns associative array of user info
     public function generateItemsList($items,$subOrder,$newOrder)
     {

@@ -34,7 +34,7 @@ class CheckoutController extends Controller
         $product = Product::find($unit->product_id_ref);
         $product_id = $product->product_id;
     }
-
+    $managebool = false;
     //Initialize DB
     self::initPaymentEntry($payment_id, $customer_id);
     self::initPaymentsProductsEntry($payment_id, $product_id);
@@ -42,7 +42,7 @@ class CheckoutController extends Controller
         self::initPaymentsUnitsEntry($payment_id,$serial_number);
     } 
     
-    return view('pages/payment/checkout', ['paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
+    return view('pages/payment/checkout', ['managebool' => $managebool, 'paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
    }
    //Handles checkout success
    public function success(Request $request)
@@ -50,8 +50,10 @@ class CheckoutController extends Controller
        //Payment DB
        $payment_id = $request->query('payment_id');
        $payment = Payment::find($payment_id);
-       $payment->payment_status = 3; //Success
-       $payment->save();
+       if ($payment){
+           $payment->payment_status = 3; //Success
+           $payment->save();
+       }
 
        //Subscription DB
        $netsResponse = Payment::getNetsResponse($payment_id);
@@ -101,12 +103,23 @@ class CheckoutController extends Controller
         $subscription_payment->save();
     }
     
-    //not currently in use:
     public static function initPaymentsUnitsEntry($payment_id, $serialnumber){
        $paymentsUnits = new PaymentsUnits;
        $paymentsUnits->payment_id = $payment_id;
        $paymentsUnits->serialnumber = $serialnumber;
        $paymentsUnits->save();
    }
+
+    public function manageBilling(Request $request){
+        self::setActivity("Managing billingdetails", "managebilling");
+
+        $subscriptionId = $request->input('subscriptionId');
+        $paymentId = $request->input('paymentId');
+        $language = Auth::user()->user_language;
+        $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
+        $managebool = true;
+
+        return view('pages/payment/checkout', ['managebool' => $managebool, 'subscriptionId' => $subscriptionId, 'paymentId' => $paymentId, 'language' => $language, 'checkoutKey' => $checkoutKey]);
+    }
 
 }

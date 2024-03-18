@@ -75,7 +75,6 @@ class Payment extends Model
             ->get();
         return $payments;
     }
-
     public static function joinNetsResponseAndPayments($customerId)
     {
         $payments = self::getPaymentsForCustomer($customerId); 

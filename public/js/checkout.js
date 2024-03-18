@@ -44,7 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
       };
       checkout.setTheme(theme);
       checkout.on('payment-completed', function (response) {
-        window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
+        if (!managebool){
+          window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
+        }else{
+          window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId;
+        
+        }
       });
     } else {
       console.log("Expected a paymentId");   // No paymentId provided, 

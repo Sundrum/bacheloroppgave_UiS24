@@ -36,7 +36,7 @@ class SubscriptionBillingController extends Controller
             $lastPaymentDate = $Sub[0]->updated_at;
             $interval = $Sub[0]->interval;
             $nextPaymentDate = Subscription::getPaymentDate($lastPaymentDate, $interval);
-            $lastPaymentId='01b3000065ccbb89c07bfb936313aa83';
+            $lastPaymentId = Payment::getPaymentsForCustomer($customer_id)->first()->payment_id;
             $lastPaymentObject = Payment::getNetsResponse($lastPaymentId);
         }
         return view('pages/payment/subscriptionbilling',compact('Sub', 'nextPaymentDate', 'lastPaymentObject'));
