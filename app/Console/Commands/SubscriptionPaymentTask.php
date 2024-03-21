@@ -77,6 +77,11 @@ class SubscriptionPaymentTask extends Command
 
             while ($status === "Processing") {
                 $retryCount++;
+                if ($retryCount >= $maxRetries) {// Maximum retries reached, generate an error and exit the loop
+                    Log::error("ERROR: subscriptionPayment:task reached maximum retry attempts. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
+                    break;
+                }
+
                 $chargesJSON = $this->retreiveChargeDetails($bulkId, $numSubscriptions);
 
                 if ($chargesJSON) {
@@ -91,14 +96,6 @@ class SubscriptionPaymentTask extends Command
                     sleep(60);// Sleep for 1 minute before retrying
                     }
                 } else {
-                    
-
-                    if ($retryCount >= $maxRetries) {
-                        // Maximum retries reached, generate an error and exit the loop
-                        Log::error("ERROR: subscriptionPayment:task reached maximum retry attempts.");
-                        break;
-                    }
-
                     Log::error("ERROR: subscriptionPayment:task unable to retrieve charge. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
                 }
             }

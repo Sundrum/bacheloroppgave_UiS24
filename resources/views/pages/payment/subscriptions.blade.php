@@ -34,7 +34,7 @@
                                 @endphp
                                 <tr>
                                     {{-- SENSORS  --}} 
-                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ', ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }} <br> ID={{$sensorUnit->subscription_id}}</td>
+                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ' ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }}</td>
                                     <td>{{ $sensorUnit->serialnumber ? $status : 'Ordered' }}</td>                                    
                                     <td>
                                         @if ($sensorUnit->serialnumber)

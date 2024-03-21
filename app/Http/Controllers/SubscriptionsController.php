@@ -79,8 +79,7 @@ class SubscriptionsController extends Controller
         $subscriptionId = $request->input('subscriptionId');
         $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
         $subscription = Subscription::find($subscriptionId);
-        $subscription->subscription_status = 1;
-        $subscription->save();
+
 
         $user_id = Session::get('user_id');
         if ($user_id == null) {
@@ -91,10 +90,18 @@ class SubscriptionsController extends Controller
         if ($user == null) {
             Log::error("User not found");
         }
+
+        // Authenticate that the user actually owns the sensor unit and subscription (inspect element tampering on the form)
         if ($sensorUnit->customer_id_ref != $user->customer_id_ref)
         {
             return view('fallback');
         }
+        if ($subscription->customer_id_ref != $user->customer_id_ref)
+        {
+            return view('fallback');
+        }
+        $subscription->subscription_status = 1;
+        $subscription->save();
         return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
     }
     public function reactivateSubscription(Request $request)
@@ -103,22 +110,31 @@ class SubscriptionsController extends Controller
         $subscriptionId = $request->input('subscriptionId');
         $sensorUnit = Sensorunit::getUnitWithSerialnumber($sensorunitId);
         $subscription = Subscription::find($subscriptionId);
-        $subscription->subscription_status = 2;
-        $subscription->save();
-
+        
         $user_id = Session::get('user_id');
         if ($user_id == null) {
             $user_id = Auth::user()->id;
         }
-
+        
         $user = User::find($user_id);
         if ($user == null) {
             Log::error("User not found");
         }
+
+        // Authenticate that the user actually owns the sensor unit and subscription (inspect element tampering on the form)
         if ($sensorUnit->customer_id_ref != $user->customer_id_ref)
         {
             return view('fallback');
         }
+        if ($subscription->customer_id_ref != $user->customer_id_ref)
+        {
+            return view('fallback');
+        }
+
+        // Reactivate the subscription
+        $subscription->subscription_status = 2;
+        $subscription->save();
+
         return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
     }
     public function manageSubscription(Request $request)
@@ -140,7 +156,7 @@ class SubscriptionsController extends Controller
         //Perform security check
         if ($sensorUnit->customer_id_ref != $customer_id)
         {
-            return view('pages/payment/subcriptiondetails');
+            return view('fallback');
         }
 
         //get subscription id

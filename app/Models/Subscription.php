@@ -96,13 +96,12 @@ class Subscription extends Model
             })
             // Ensure only the newest subscriptions for each serial number are retrieved
             ->whereNull('s2.subscription_id')
+
             // Order the results by the creation date of subscriptions in descending order
             ->orderBy('subscriptions.created_at', 'desc')
             // Get the results
             ->get();
-        // Return the subscriptions
-        return $subscriptions;
-    }
+        }
     public static function getSubscriptionsForCustomerJoinAllDistinctSN($customerId) {
         // Select subscriptions for a specific customer
         $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
@@ -127,11 +126,33 @@ class Subscription extends Model
             })
             // Ensure only the newest subscriptions for each serial number are retrieved
             ->whereNull('s2.subscription_id')
+
             // Order the results by the creation date of subscriptions in descending order
             ->orderBy('subscriptions.created_at', 'desc')
             // Get the results
             ->get();
 
+        // Only store the first entry of all duplicate subscription_ids
+        $subscriptions = $subscriptions->unique('subscription_id');
+        // Return the subscriptions
+        return $subscriptions;
+    }
+    public static function getSubscriptionsForCustomerJoinAllDistinctSNfunkerikke($customerId) {
+        $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
+            ->select('subscriptions.*', 'customer.*', 'sensorunits.*', 'products.product_name', 'payment_products.product_name AS payment_product_name', 'paymentsProducts.*')
+            ->leftJoin('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->leftJoin('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->leftJoin('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
+            ->leftJoin('paymentsProducts', 'subscriptions_payments.payment_id', '=', 'paymentsProducts.payment_id')
+            ->leftJoin('products AS payment_products', 'paymentsProducts.product_id', '=', 'payment_products.product_id')
+            ->leftJoin('customer', 'subscriptions.customer_id_ref', '=', 'customer.customer_id')
+            ->leftJoin('subscriptions AS s2', function ($join) {
+                $join->on('sensorunits.serialnumber', '=', 's2.serialnumber')
+                    ->whereRaw('s2.created_at > subscriptions.created_at');
+            })
+            ->whereNull('s2.subscription_id')
+            ->orderBy('subscriptions.created_at', 'desc')
+            ->get();
         // Only store the first entry of all duplicate subscription_ids
         $subscriptions = $subscriptions->unique('subscription_id');
         // Return the subscriptions

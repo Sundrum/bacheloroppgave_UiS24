@@ -14,9 +14,6 @@
                             <td onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
                                 Payment History
                             </td>
-                            <td onclick="loadContent('{{route('managebilling')}}')" href="{{route('managebilling')}}">
-                                Manage Billing Details
-                            </td>
                       </tr>
                     </thead>
                   </table>
@@ -34,13 +31,7 @@
             <p>{{$lastPaymentObject->payment->paymentDetails->cardDetails->maskedPan ?? 'N/A'}}</p>
             <p>{{$lastPaymentObject->payment->orderDetails->amount ?? 'N/A'}} {{ $lastPaymentObject->payment->orderDetails->currency ?? 'N/A'}}</p>
         </div>
-    </section>
-
-    <h6 style="color: gray;">Payment History<h6>
-        <section class="bg-white card-rounded">
-            <div class="row mt-3 text-center" id="title">
-            </div>
-        </section>
+    </section>  
 </div>
 @endsection
 <style>

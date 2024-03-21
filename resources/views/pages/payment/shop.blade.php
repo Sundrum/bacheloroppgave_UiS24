@@ -26,10 +26,10 @@
                     <td><img src="{{ $product->product_image_url }}" alt="{{ $product->product_name }}" style="width: 100px; height: 80px;"></td>
                     <td>
                         <button class="checkout-button btn-7g" 
-                        data-product-id="{{ $product->product_id }}"
-                        data-subscription-order="{{ true }}"
-                        data-new-order="{{ true }}"> 
-                        Buy
+                            data-product-id="{{ $product->product_id }}"
+                            data-subscription-order="{{ true }}"
+                            data-new-order="{{ true }}"> 
+                            Buy
                         </button>
                     </td>
                 </tr>

@@ -41,12 +41,14 @@
         @elseif ($subscription->subscription_status==1) {{--  Cancelled --}}
         <form action="{{ route('reactivateSubscription') }}" method="POST">
             @csrf
+            <input type="hidden" name="subscriptionId" value="{{$subscription->subscription_id}}">
             <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
             <button class="btn-7r" type="submit">
                 Reactivate
             </button>
         </form>
         @elseif ($subscription->subscription_status==2) {{--  Active --}}
+        <div id="container1">
             <button class="manage-button btn-7g"
             data-serialnumber="{{ $sensorUnit->serialnumber }}"
             data-subscription-id="{{ $subscription->subscription_id }}"
@@ -54,20 +56,26 @@
             data-subscription-order="{{ true }}">
                 Manage payment method
             </button>
-        <form action="{{ route('cancelSubscription') }}" method="POST">
-            @csrf
-            <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
-            <input type="hidden" name="subscriptionId" value="{{ $subscription->subscription_id }}" />
-            <button class="btn-7r" type="submit">
-                Cancel subscription
-            </button>
-        </form>
+        </div>
+        <div id="container2">
+            <form id="cancelSubscriptionForm" action="{{ route('cancelSubscription') }}" method="POST">
+                @csrf
+                <input type="hidden" name="sensorunitId" value="{{$sensorUnit->serialnumber}}" />
+                <input type="hidden" name="subscriptionId" value="{{ $subscription->subscription_id }}" />
+                <button class="btn-7r" type="button" onclick="confirmCancellation()">
+                    Cancel subscription
+                </button>
+            </form>
+        </div>
         @endif
     </div>
 </section>
 @endsection
 
 <style>
+    #container2 {
+        margin-top: 1em;
+    }
     .center-container {
         display: flex;
         align-items: center;
@@ -97,6 +105,13 @@
     var manageRoute = "{{ route('managebilling') }}";
     var cancelSubscriptionRoute = "{{ route('cancelSubscription') }}";
     console.log("sensorUnit:", {!! json_encode($sensorUnit) !!});
+
+    function confirmCancellation() {
+        if (confirm("Are you sure you want to cancel the subscription?")) {
+            document.getElementById("cancelSubscriptionForm").submit();
+        }
+    }
+
 </script>
 <script src="{{asset('js/shop.js')}}"></script>
 <script src="{{asset('js/subscriptiondetails.js')}}"></script>

@@ -6,6 +6,7 @@ use Log;
 use Auth;
 use Session;
 use App\Models\Sensorunit;
+use App\Models\Customer;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Payment;
@@ -27,6 +28,8 @@ class SubscriptionBillingController extends Controller
         $customer_id = $user->customer_id_ref;
         $Sub = SubscriptionPayment::Join($customer_id);
 
+        $paid_subscription = Customer::where("customer_id", $customer_id)->first()->paid_subscription;
+
         if ($Sub->isEmpty()) {
             // Access other attributes as needed
             Log::info("Payment not found for ID: $Sub");
@@ -39,6 +42,6 @@ class SubscriptionBillingController extends Controller
             $lastPaymentId = Payment::getPaymentsForCustomer($customer_id)->first()->payment_id;
             $lastPaymentObject = Payment::getNetsResponse($lastPaymentId);
         }
-        return view('pages/payment/subscriptionbilling',compact('Sub', 'nextPaymentDate', 'lastPaymentObject'));
+        return view('pages/payment/subscriptionbilling',compact('Sub', 'nextPaymentDate', 'lastPaymentObject', 'paid_subscription'));
     }
 }
