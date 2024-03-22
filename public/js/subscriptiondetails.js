@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var url = '/api/create-payment?items=' + itemsString + '&subscriptionId=' + subscriptionId;
             request.open('GET', url , true);
             request.onload = function () {
+                console.log(this.response);
                 const data = JSON.parse(this.response);        // If parse error, check output 
                 if (!data.paymentId) {                         // from create-payment.php, Handles insufficient user data
                     console.error('Error: Check output from create-payment.php');

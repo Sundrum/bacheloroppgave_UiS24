@@ -22,10 +22,38 @@ class PaymentController extends Controller
     //public function createPayment()
     public function createPayment(Request $request)
     {
-        Log::info("createPayment function");
 
+        Log::info("createPayment function");
+        // $user_id = Auth::user()->id;
+
+        // $user = User::find($user_id);
+        // if ($user == null) {
+        //     Log::error("User not found");
+        // }
+        
         $itemsString = $request->query('items');                 // Retrieve the array 'items' query parameter from the request
         $subscriptionId = $request->query('subscriptionId');
+
+        if ($subscriptionId){
+            $sub = Subscription::find($subscriptionId);
+            $user = User::find(Auth::user()->user_id);
+            if ($user->customer_id_ref!==$sub->customer_id_ref){
+                return;
+            }
+        }
+        // ERROR BELOW: $user->customer_id_ref Attempt to read property customer_id_ref on null
+
+        // if ($subscriptionId)
+        // {
+        //     $subscription = Subscription::find($subscriptionId);
+        //     if (!$subscription) {
+        //         return response()->json(['error' => 'Subscription not found'], 404);
+        //     }
+        //     else if ($subscription->customer_id_ref != $user->customer_id_ref) {
+        //         return response()->json(['error'=> 'Not your subscription'],404);
+        //     }
+        // }
+
         $itemsDecode = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
         $subOrder = array_shift($itemsDecode)['subOrder'];
         $newOrder = array_shift($itemsDecode)['newOrder'];
