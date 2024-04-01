@@ -43,26 +43,91 @@ class SubscriptionPaymentTask extends Command
      */
     public function handle()
     {
-        // Your task logic here
-        // This could be sending emails, generating reports, etc.
         $this->info('CUSTOM TASK INITIATED:');
         Log::info('CUSTOM TASK INITIATED:');
-
-        //HERE WE GO:
 
         // Retrieve the current date
         $currentDate = new DateTime('now', new DateTimeZone('Europe/Oslo'));
         $currentDate->setTime(0, 0, 0);
         $currentDateString = $currentDate->format('Y-m-d');
+        try {
+            $this->chargeSubscriptions($currentDateString);
+        } catch (\Exception $e) {
+            Log::error("Failed to charge subscriptions" . $e->getMessage());
+        }
+        try {
+            $this->cancelSubscriptions($currentDateString);
+        } catch (\Exception $e) {
+            Log::error("Failed to cancel subscriptions" . $e->getMessage());
+        }
+        try {
+            $this->outdatedSubscriptions($currentDateString);
+        } catch (\Exception $e) {
+            Log::error("Failed to outdate subscriptions" . $e->getMessage());
+        }
 
+        $this->info('CUSTOM TASK COMPLETED:');
+        Log::info('CUSTOM TASK COMPLETED:');
+    }
+
+    public function outdatedSubscriptions($currentDateString)
+    {   
+        // Retrieve subscriptions with status !=0 and next_payment date less than today's date
+        //$subscriptions = Subscription::outdatedSubscriptionData($currentDateString);
+        $subscriptions = Subscription::outdatedSubscriptionData('2024-03-18');
+        $numSubscriptions = count($subscriptions);
+        if ($numSubscriptions === 0) {
+            Log::info("No subscriptions found for outdated processing. DATE->". $currentDateString);
+            $this->info('CUSTOM TASK outdated COMPLETED.');
+            Log::info('CUSTOM TASK outdated COMPLETED.');
+            return;
+        }
+        foreach ($subscriptions as $subscription) {
+            try {
+                $subscription->subscription_status=0;
+                $subscription->save();
+            } catch (\Exception $e) {
+                Log::error("Failed to update subscription entry: " . $e->getMessage());
+            }
+        }
+        $this->info('CUSTOM TASK outdated COMPLETED.');
+        Log::info('CUSTOM TASK outdated COMPLETED.');
+    }
+
+    public function cancelSubscriptions($currentDateString)
+    {   
+        // Retrieve subscriptions with status 1 and next_payment date equal to today's date
+        //$subscriptions = Subscription::cancelSubscriptionData($currentDateString);
+        $subscriptions = Subscription::cancelSubscriptionData('2024-03-18');
+        $numSubscriptions = count($subscriptions);
+        if ($numSubscriptions === 0) {
+            Log::info("No subscriptions found for cancel processing. DATE->". $currentDateString);
+            $this->info('CUSTOM TASK cancel COMPLETED.');
+            Log::info('CUSTOM TASK cancel COMPLETED.');
+            return;
+        }
+        foreach ($subscriptions as $subscription) {
+            try {
+                $subscription->subscription_status=0;
+                $subscription->save();
+            } catch (\Exception $e) {
+                Log::error("Failed to update subscription entry: " . $e->getMessage());
+            }
+        }
+        $this->info('CUSTOM TASK cancel COMPLETED.');
+        Log::info('CUSTOM TASK cancel COMPLETED.');
+    }
+
+    public function chargeSubscriptions($currentDateString)
+    {   
         // Retrieve subscriptions with status 2 and next_payment date equal to today's date
         //$subscriptions = Subscription::chargeSubscriptionData($currentDateString);
         $subscriptions = Subscription::chargeSubscriptionData('2024-03-18');
         $numSubscriptions = count($subscriptions);
         if ($numSubscriptions === 0) {
-            Log::info("No subscriptions found for processing. DATE->". $currentDateString);
-            $this->info('CUSTOM TASK COMPLETED.');
-            Log::info('CUSTOM TASK COMPLETED.');
+            Log::info("No subscriptions found for charge processing. DATE->". $currentDateString);
+            $this->info('CUSTOM TASK charge COMPLETED.');
+            Log::info('CUSTOM TASK charge COMPLETED.');
             return;
         }
         $payload = $this->createPayload($subscriptions, $currentDateString);
@@ -103,11 +168,9 @@ class SubscriptionPaymentTask extends Command
             Log::error("ERROR: subscriptionPayment:task unable to charge subscriptions. DATE->". $currentDateString);
         }
 
-        $this->info('CUSTOM TASK COMPLETED.');
-        Log::info('CUSTOM TASK COMPLETED.');
-
+        $this->info('CUSTOM TASK charge COMPLETED.');
+        Log::info('CUSTOM TASK charge COMPLETED.');
     }
-    
     public function createPayload($subscriptions,$date)
     {   
         // Initialize payload array
@@ -207,6 +270,7 @@ class SubscriptionPaymentTask extends Command
             return false;
         }
     }
+
     public function readCharge($charge, $currentDate){
         $subscription=Subscription::find($charge['subscriptionId']);
         if ($charge['status']==='Succeeded'){
@@ -228,25 +292,21 @@ class SubscriptionPaymentTask extends Command
         try {
             $subscription->save();
         } catch (\Exception $e) {
-            // Log or handle the exception, but continue execution
             Log::error("Failed to update subscription entry: " . $e->getMessage());
         }
         try {
             $this->initPaymentEntry($charge['paymentId'], $subscription->customer_id_ref, $payment_status);
         } catch (\Exception $e) {
-            // Log or handle the exception, but continue execution
             Log::error("Failed to initialize payment entry: " . $e->getMessage());
         }
         try {
             $this->initSubscriptionPaymentEntry($charge['subscriptionId'], $charge['paymentId']);
         } catch (\Exception $e) {
-            // Log or handle the exception, but continue execution
             Log::error("Failed to initialize subscription-payment entry: " . $e->getMessage());
         }
         try {
             $this->initPaymentsUnitsEntry($charge['paymentId'], $subscription->serialnumber);
         } catch (\Exception $e) {
-            // Log or handle the exception, but continue execution
             Log::error("Failed to initialize payment units entry: " . $e->getMessage());
         }
     }
@@ -254,7 +314,7 @@ class SubscriptionPaymentTask extends Command
     public static function initPaymentEntry($payment_id, $customer_id_ref,$payment_status){
         $payment = new Payment;
         $payment->payment_id = $payment_id;
-        $payment->payment_status = 0; //Created
+        $payment->payment_status = $payment_status; 
         $payment->customer_id_ref = $customer_id_ref;
         $payment->save();
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Subscription extends Model
 {
@@ -168,6 +169,29 @@ class Subscription extends Model
             ->get();
         return $subscriptions;
     }
+
+    public static function cancelSubscriptionData($date){
+        $subscriptions = Subscription::where('subscription_status', 1)
+            ->whereDate('next_payment', $date)
+            ->select('subscriptions.*', 'products.*') // Select specific columns from subscriptions and products tables
+            ->Join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->Join('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->get();
+        return $subscriptions;
+    }
+
+    public static function outdatedSubscriptionData($date) {
+        $subscriptions = Subscription::where('subscription_status', '!=', 0)
+            ->whereRaw('next_payment < ?', [$date])
+            ->select('subscriptions.*', 'products.*')
+            ->join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->join('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
+            ->get();
+    
+        return $subscriptions;
+    }
+    
+    
 }
 
 
