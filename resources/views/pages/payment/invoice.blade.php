@@ -53,9 +53,31 @@
     <p>Org. nr: 913 036 999</p>
     <br>
     <h4>Customer</h4>
-    <p>{{ $netsResponse->payment->consumer->company->contactDetails->firstName }} {{ $netsResponse->payment->consumer->company->contactDetails->lastName }}</p>
-    <p>{{ $netsResponse->payment->consumer->company->name }}</p>
-    <p>{{ $netsResponse->payment->consumer->billingAddress->addressLine1 }}, {{ $netsResponse->payment->consumer->billingAddress->postalCode}} {{ $netsResponse->payment->consumer->billingAddress->city }} {{ $netsResponse->payment->consumer->billingAddress->country }}</p>
+    <p>{{ $netsResponse->payment->consumer->company->contactDetails->firstName ?? $customer->customer_maincontact ?? 'No main contact' }} {{ $netsResponse->payment->consumer->company->contactDetails->lastName ?? '' }}</p>
+    <p>{{ $netsResponse->payment->consumer->company->name ?? $customer->customer_name ?? 'No customer name' }}</p>
+    <p>{{ $netsResponse->payment->consumer->billingAddress->addressLine1 ?? 
+            $customer->customer_invoiceaddr1 ??
+            $customer->customer_invoiceaddr2 ??
+            $customer->customer_visitaddr1 ?? 
+            $customer->customer_visitaddr2 ??
+            $customer->customer_deliveraddr1 ??
+            $customer->customer_deliveraddr2 ??
+            'No address'}}, 
+        {{ $netsResponse->payment->consumer->billingAddress->postalCode ?? 
+            $customer->customer_invoicepostcode ??
+            $customer->customer_visitpostcode ??
+            $customer->customer_deliverpostcode ??
+            'No postal code' }}, 
+        {{ $netsResponse->payment->consumer->billingAddress->city ?? 
+            $customer->customer_invoicecity ??
+            $customer->customer_visitcity ??
+            $customer->customer_delivercity ??
+            'No city' }},
+        {{ $netsResponse->payment->consumer->billingAddress->country ?? 
+            $customer->customer_invoicecountry ??
+            $customer->customer_visitcountry ??
+            $customer->customer_delivercountry ??
+            'No country' }}</p>
     <br>
     <h4>Order lines</h4>
     <table>
@@ -93,7 +115,29 @@
                 <td>{{ $netsResponse->payment->orderDetails->currency }}</td>
             </tr>
         @endif
-        @if ($ordertype == '2')
+        @if ($ordertype == '0')
+            <tr>
+                <td>Sum</td>
+                <td></td>
+                <td>{{ $price_ex_vat }}</td>
+                <td></td>
+                <td>{{ $price_ex_vat }}</td>
+                <td>{{ $vat }}</td>
+                <td>{{ $product->product_price }}</td>
+                <td>NOK</td>
+            </tr>
+        @elseif ($ordertype == '1')
+            <tr>
+                <td>Sum</td>
+                <td></td>
+                <td>{{ $subscription_ex_vat }}</td>
+                <td></td>
+                <td>{{ $subscription_ex_vat }}</td>
+                <td>{{ $subscription_vat }}</td>
+                <td>{{ $product->subscription_price }}</td>
+                <td>NOK</td>
+            </tr>
+        @elseif ($ordertype == '2')
             <tr>
                 <td>Sum</td>
                 <td></td>

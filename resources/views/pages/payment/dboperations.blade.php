@@ -126,6 +126,7 @@
                 <th>Interval</th>
                 <th>Serial Number</th>
                 <th>Status</th>
+                <th>Next Payment</th>
                 <th>Save</th>
                 <th>Remove</th>
             </tr>
@@ -139,12 +140,13 @@
                         {{$subscription->subscription_id}}
                         <input type="hidden" name="subscription_id" value="{{$subscription->subscription_id}}" />
                     </td>
-                    <td><input type="text" name="customer_id_ref" value="{{$subscription->customer_id_ref}}" size="7"></td>
+                    <td><input type="text" name="customer_id_ref" value="{{$subscription->customer_id_ref}}" size="5"></td>
                     <td>{{$subscription->created_at}}</td>
                     <td>{{$subscription->updated_at}}</td>
-                    <td><input type="text" name="interval" value="{{$subscription->interval}}" size="15"></td>
-                    <td><input type="text" name="serialnumber" value="{{$subscription->serialnumber}}"></td>
+                    <td><input type="text" name="interval" value="{{$subscription->interval}}" size="11"></td>
+                    <td><input type="text" name="serialnumber" value="{{$subscription->serialnumber}}" size="15"></td>
                     <td><input type="text" name="subscription_status" value="{{$subscription->subscription_status}}" size="7"></td>
+                    <td><input type="text" name="next_payment" value="{{$subscription->next_payment}}" size="11"></td>
                     <td><button class="btn-7g" type="submit"><i class="fa fa-lg fa-check"></i></button></td>
             </form>
                     <td>

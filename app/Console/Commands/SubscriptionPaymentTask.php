@@ -44,7 +44,7 @@ class SubscriptionPaymentTask extends Command
     public function handle()
     {
         $this->info('CUSTOM TASK INITIATED:');
-        Log::info('CUSTOM TASK INITIATED:');
+        //Log::info('CUSTOM TASK INITIATED:');
 
         // Retrieve the current date
         $currentDate = new DateTime('now', new DateTimeZone('Europe/Oslo'));
@@ -53,33 +53,33 @@ class SubscriptionPaymentTask extends Command
         try {
             $this->chargeSubscriptions($currentDateString);
         } catch (\Exception $e) {
-            Log::error("Failed to charge subscriptions" . $e->getMessage());
+            //Log::error("Failed to charge subscriptions" . $e->getMessage());
         }
         try {
             $this->cancelSubscriptions($currentDateString);
         } catch (\Exception $e) {
-            Log::error("Failed to cancel subscriptions" . $e->getMessage());
+            //Log::error("Failed to cancel subscriptions" . $e->getMessage());
         }
         try {
             $this->outdatedSubscriptions($currentDateString);
         } catch (\Exception $e) {
-            Log::error("Failed to outdate subscriptions" . $e->getMessage());
+            //Log::error("Failed to outdate subscriptions" . $e->getMessage());
         }
 
         $this->info('CUSTOM TASK COMPLETED:');
-        Log::info('CUSTOM TASK COMPLETED:');
+        //Log::info('CUSTOM TASK COMPLETED:');
     }
 
     public function outdatedSubscriptions($currentDateString)
     {   
         // Retrieve subscriptions with status !=0 and next_payment date less than today's date
-        //$subscriptions = Subscription::outdatedSubscriptionData($currentDateString);
-        $subscriptions = Subscription::outdatedSubscriptionData('2024-03-18');
+        $subscriptions = Subscription::outdatedSubscriptionData($currentDateString);
+        //$subscriptions = Subscription::outdatedSubscriptionData('2024-03-18');
         $numSubscriptions = count($subscriptions);
         if ($numSubscriptions === 0) {
-            Log::info("No subscriptions found for outdated processing. DATE->". $currentDateString);
+            //Log::info("No subscriptions found for outdated processing. DATE->". $currentDateString);
             $this->info('CUSTOM TASK outdated COMPLETED.');
-            Log::info('CUSTOM TASK outdated COMPLETED.');
+            //Log::info('CUSTOM TASK outdated COMPLETED.');
             return;
         }
         foreach ($subscriptions as $subscription) {
@@ -87,23 +87,23 @@ class SubscriptionPaymentTask extends Command
                 $subscription->subscription_status=0;
                 $subscription->save();
             } catch (\Exception $e) {
-                Log::error("Failed to update subscription entry: " . $e->getMessage());
+                //Log::error("Failed to update subscription entry: " . $e->getMessage());
             }
         }
         $this->info('CUSTOM TASK outdated COMPLETED.');
-        Log::info('CUSTOM TASK outdated COMPLETED.');
+        //Log::info('CUSTOM TASK outdated COMPLETED.');
     }
 
     public function cancelSubscriptions($currentDateString)
     {   
         // Retrieve subscriptions with status 1 and next_payment date equal to today's date
-        //$subscriptions = Subscription::cancelSubscriptionData($currentDateString);
-        $subscriptions = Subscription::cancelSubscriptionData('2024-03-18');
+        $subscriptions = Subscription::cancelSubscriptionData($currentDateString);
+        //$subscriptions = Subscription::cancelSubscriptionData('2024-03-18');
         $numSubscriptions = count($subscriptions);
         if ($numSubscriptions === 0) {
-            Log::info("No subscriptions found for cancel processing. DATE->". $currentDateString);
+            //Log::info("No subscriptions found for cancel processing. DATE->". $currentDateString);
             $this->info('CUSTOM TASK cancel COMPLETED.');
-            Log::info('CUSTOM TASK cancel COMPLETED.');
+            //Log::info('CUSTOM TASK cancel COMPLETED.');
             return;
         }
         foreach ($subscriptions as $subscription) {
@@ -111,23 +111,23 @@ class SubscriptionPaymentTask extends Command
                 $subscription->subscription_status=0;
                 $subscription->save();
             } catch (\Exception $e) {
-                Log::error("Failed to update subscription entry: " . $e->getMessage());
+                //Log::error("Failed to update subscription entry: " . $e->getMessage());
             }
         }
         $this->info('CUSTOM TASK cancel COMPLETED.');
-        Log::info('CUSTOM TASK cancel COMPLETED.');
+        //Log::info('CUSTOM TASK cancel COMPLETED.');
     }
 
     public function chargeSubscriptions($currentDateString)
     {   
         // Retrieve subscriptions with status 2 and next_payment date equal to today's date
-        //$subscriptions = Subscription::chargeSubscriptionData($currentDateString);
-        $subscriptions = Subscription::chargeSubscriptionData('2024-03-18');
+        $subscriptions = Subscription::chargeSubscriptionData($currentDateString);
+        //$subscriptions = Subscription::chargeSubscriptionData('2024-03-18');
         $numSubscriptions = count($subscriptions);
         if ($numSubscriptions === 0) {
-            Log::info("No subscriptions found for charge processing. DATE->". $currentDateString);
+            //Log::info("No subscriptions found for charge processing. DATE->". $currentDateString);
             $this->info('CUSTOM TASK charge COMPLETED.');
-            Log::info('CUSTOM TASK charge COMPLETED.');
+            //Log::info('CUSTOM TASK charge COMPLETED.');
             return;
         }
         $payload = $this->createPayload($subscriptions, $currentDateString);
@@ -143,7 +143,7 @@ class SubscriptionPaymentTask extends Command
             while ($status === "Processing") {
                 $retryCount++;
                 if ($retryCount >= $maxRetries) {// Maximum retries reached, generate an error and exit the loop
-                    Log::error("ERROR: subscriptionPayment:task reached maximum retry attempts. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
+                    //Log::error("ERROR: subscriptionPayment:task reached maximum retry attempts. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
                     break;
                 }
 
@@ -161,15 +161,15 @@ class SubscriptionPaymentTask extends Command
                     sleep(60);// Sleep for 1 minute before retrying
                     }
                 } else {
-                    Log::error("ERROR: subscriptionPayment:task unable to retrieve charge. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
+                    //Log::error("ERROR: subscriptionPayment:task unable to retrieve charge. Retry {$retryCount}/{$maxRetries}. ->", [$bulkId]);
                 }
             }
         } else {
-            Log::error("ERROR: subscriptionPayment:task unable to charge subscriptions. DATE->". $currentDateString);
+            //Log::error("ERROR: subscriptionPayment:task unable to charge subscriptions. DATE->". $currentDateString);
         }
 
         $this->info('CUSTOM TASK charge COMPLETED.');
-        Log::info('CUSTOM TASK charge COMPLETED.');
+        //Log::info('CUSTOM TASK charge COMPLETED.');
     }
     public function createPayload($subscriptions,$date)
     {   
@@ -292,22 +292,22 @@ class SubscriptionPaymentTask extends Command
         try {
             $subscription->save();
         } catch (\Exception $e) {
-            Log::error("Failed to update subscription entry: " . $e->getMessage());
+            //Log::error("Failed to update subscription entry: " . $e->getMessage());
         }
         try {
             $this->initPaymentEntry($charge['paymentId'], $subscription->customer_id_ref, $payment_status);
         } catch (\Exception $e) {
-            Log::error("Failed to initialize payment entry: " . $e->getMessage());
+            //Log::error("Failed to initialize payment entry: " . $e->getMessage());
         }
         try {
             $this->initSubscriptionPaymentEntry($charge['subscriptionId'], $charge['paymentId']);
         } catch (\Exception $e) {
-            Log::error("Failed to initialize subscription-payment entry: " . $e->getMessage());
+            //Log::error("Failed to initialize subscription-payment entry: " . $e->getMessage());
         }
         try {
             $this->initPaymentsUnitsEntry($charge['paymentId'], $subscription->serialnumber);
         } catch (\Exception $e) {
-            Log::error("Failed to initialize payment units entry: " . $e->getMessage());
+            //Log::error("Failed to initialize payment units entry: " . $e->getMessage());
         }
     }
 

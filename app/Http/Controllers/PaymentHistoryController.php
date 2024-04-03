@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Payment;
 use App\Models\SubscriptionPayment;
+use App\Models\Customer;
 use Log;
 use Auth;
 
@@ -14,7 +15,9 @@ class PaymentHistoryController extends Controller
     public function paymentHistory(){
         $userData=$this->getUser();
         $paymentData= Payment::joinNetsResponseAndPayments($userData['customer_id']);
-        return view('pages/payment/paymenthistory', compact('userData', 'paymentData'));
+        $user = User::find(Auth::user()->user_id);
+        $customer = Customer::find($user->customer_id_ref);
+        return view('pages/payment/paymenthistory', compact('userData', 'paymentData','customer'));
     }
 
     public function getUser()

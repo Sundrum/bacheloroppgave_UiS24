@@ -130,6 +130,7 @@ class DbOperationsController extends Controller
         $subscription->interval = $request->interval;
         $subscription->serialnumber = $request->serialnumber;
         $subscription->subscription_status = $request->subscription_status;
+        $subscription->next_payment = $request->next_payment;
         $subscription->save();
         return redirect()->back()->with('success', 'Subscription updated successfully');  
     }

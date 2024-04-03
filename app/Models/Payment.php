@@ -107,5 +107,15 @@ class Payment extends Model
         
         return $products;
     }
+    public static function getProductForSubscriptionWithPaymentID($payment_id)
+    {
+        $product = Payment::where('payments.payment_id', $payment_id)
+            ->join('subscriptions_payments', 'payments.payment_id', '=', 'subscriptions_payments.payment_id')
+            ->join('subscriptions', 'subscriptions_payments.subscription_id', '=', 'subscriptions.subscription_id')
+            ->join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->first();
+        return $product;
+    }
+    
 
 }

@@ -55,7 +55,7 @@
                         <td>{{ $time }}</td>
                         <td>{{ $payment->nets->orderDetails->reference ?? 'N/A' }}</td>
                         <td>{{ $payment->nets->orderDetails->amount/100 ?? 'N/A' }} {{ $payment->nets->orderDetails->currency }}</td>
-                        <td>{{ $payment->nets->consumer->company->name ?? 'N/A' }}</td> 
+                        <td>{{ $payment->nets->consumer->company->name ?? $customer->customer_name ?? 'N/A' }}</td> 
                         <td>{{ $payment->nets->paymentDetails->paymentMethod ?? 'N/A'}}</td>
                         <td>{{ $payment->getStatus($payment->payment_status)  ?? 'N/A'}}</td>
                         <td>
