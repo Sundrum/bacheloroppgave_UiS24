@@ -113,34 +113,52 @@ class PaymentController extends Controller
 
         $sumGrossTotalAmount=0;
         $orderItems = [];
-        foreach ($items as $item) {
-            $orderItems[]=   
-            [
-                "reference" => $item['reference'],
-                "name" => $item['name'],
-                "quantity" => $item['quantity'],
-                "unit" => $item['unit'],
-                "unitPrice" => $item['unitPrice'],
-                "taxRate"=> $item['taxRate'],
-                "taxAmount"=> $item['taxAmount'],
-                "grossTotalAmount" => $item['grossTotalAmount'],
-                "netTotalAmount" => $item['netTotalAmount']
+        if($subscriptionId)
+        {
+            foreach ($items as $item) {
+                $orderItems[]=   
+                [
+                    "reference" => 'Change card details',
+                    "name" => 'Change card details',
+                    "quantity" => 1,
+                    "unit" => 'pcs',
+                    "unitPrice" => 0,
+                    "taxRate"=> 0,
+                    "taxAmount"=> 0,
+                    "grossTotalAmount" => 0,
+                    "netTotalAmount" => 0
+                ];
+                $sumGrossTotalAmount += $item['grossTotalAmount'];
+            }
+            $orderData = [
+                "items" => $orderItems,
+                "amount" => 0,
+                "currency" => "NOK",
+                "reference" => $orderItems[0]['reference'],
             ];
-            $sumGrossTotalAmount += $item['grossTotalAmount'];
+        }else{
+            foreach ($items as $item) {
+                $orderItems[]=   
+                [
+                    "reference" => $item['reference'],
+                    "name" => $item['name'],
+                    "quantity" => $item['quantity'],
+                    "unit" => $item['unit'],
+                    "unitPrice" => $item['unitPrice'],
+                    "taxRate"=> $item['taxRate'],
+                    "taxAmount"=> $item['taxAmount'],
+                    "grossTotalAmount" => $item['grossTotalAmount'],
+                    "netTotalAmount" => $item['netTotalAmount']
+                ];
+                $sumGrossTotalAmount += $item['grossTotalAmount'];
+            }
+            $orderData = [
+                "items" => $orderItems,
+                "amount" => $sumGrossTotalAmount,
+                "currency" => "NOK",
+                "reference" => $orderItems[0]['reference'],
+            ];
         }
-    
-        // Define the order data
-        $orderData = [
-            "items" => $orderItems,
-            "amount" => $sumGrossTotalAmount,
-            "currency" => "NOK",
-            "reference" => $orderItems[0]['reference'],
-        ];
-    
-        $currentDateTime = new DateTime('now', new DateTimeZone('UTC'));
-        $oneYearLater = $currentDateTime->add(new DateInterval('P1Y'));
-        $oneYearLaterFormatted = $oneYearLater->format('Y-m-d\TH:i:sP');
-
         
         // Combine checkout and order data into the final payload
         $payload = [

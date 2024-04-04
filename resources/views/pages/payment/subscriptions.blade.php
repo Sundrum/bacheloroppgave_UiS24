@@ -21,7 +21,8 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Subscription Name</th>
+                                <th>Product</th>
+                                <th>Serial Number</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -34,7 +35,8 @@
                                 @endphp
                                 <tr>
                                     {{-- SENSORS  --}} 
-                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->product_name . ' ' . $sensorUnit->serialnumber : $sensorUnit->product_name . '' }}</td>
+                                    <td>{{ $sensorUnit->product_name ?? ' ' }}</td>
+                                    <td>{{ $sensorUnit->serialnumber ? $sensorUnit->serialnumber : ' ' }}</td>
                                     <td>{{ $sensorUnit->serialnumber ? $status : 'Ordered' }}</td>                                    
                                     <td>
                                         @if ($sensorUnit->serialnumber)

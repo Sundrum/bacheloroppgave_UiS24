@@ -72,72 +72,25 @@ class Subscription extends Model
             ->get();
         return $subscriptions;
     }
-    //Returns Distinct SerialNumbers, favoring newest created_at
-    public static function getSubscriptionsForCustomerJoinAllDistinctSNgammel($customerId) {
-        // Select subscriptions for a specific customer
-        $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
-            // Select specific columns from multiple tables
-            ->select('subscriptions.*', 'customer.*', 'sensorunits.*', 'products.*', 'payment_products.*')
-            // Left join with the sensorunits table
-            ->leftJoin('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
-            // Left join with the products table
-            ->leftJoin('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
-            // Left join with the subscriptions_payments table
-            ->leftJoin('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
-            // Left join with the paymentsProducts table
-            ->leftJoin('paymentsProducts', 'subscriptions_payments.payment_id', '=', 'paymentsProducts.payment_id')
-            // Left join with the products table again, aliased as payment_products
-            ->leftJoin('products AS payment_products', 'paymentsProducts.product_id', '=', 'payment_products.product_id')
-            // Left join with the customer table
-            ->leftJoin('customer', 'subscriptions.customer_id_ref', '=', 'customer.customer_id')
-            // Left join with the subscriptions table itself to filter out older subscriptions for the same serial number
-            ->leftJoin('subscriptions AS s2', function ($join) {
-                $join->on('sensorunits.serialnumber', '=', 's2.serialnumber')
-                    ->whereRaw('s2.created_at > subscriptions.created_at');
-            })
-            // Ensure only the newest subscriptions for each serial number are retrieved
-            ->whereNull('s2.subscription_id')
-
-            // Order the results by the creation date of subscriptions in descending order
-            ->orderBy('subscriptions.created_at', 'desc')
-            // Get the results
-            ->get();
-        }
     public static function getSubscriptionsForCustomerJoinAllDistinctSN($customerId) {
-        // Select subscriptions for a specific customer
-        $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
-            // Select specific columns from multiple tables
-            ->select('subscriptions.*', 'customer.*', 'sensorunits.*', 'products.*', 'payment_products.*')
-            // Left join with the sensorunits table
-            ->leftJoin('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
-            // Left join with the products table
-            ->leftJoin('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
-            // Left join with the subscriptions_payments table
-            ->leftJoin('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
-            // Left join with the paymentsProducts table
-            ->leftJoin('paymentsProducts', 'subscriptions_payments.payment_id', '=', 'paymentsProducts.payment_id')
-            // Left join with the products table again, aliased as payment_products
-            ->leftJoin('products AS payment_products', 'paymentsProducts.product_id', '=', 'payment_products.product_id')
-            // Left join with the customer table
-            ->leftJoin('customer', 'subscriptions.customer_id_ref', '=', 'customer.customer_id')
-            // Left join with the subscriptions table itself to filter out older subscriptions for the same serial number
-            ->leftJoin('subscriptions AS s2', function ($join) {
-                $join->on('sensorunits.serialnumber', '=', 's2.serialnumber')
-                    ->whereRaw('s2.created_at > subscriptions.created_at');
-            })
-            // Ensure only the newest subscriptions for each serial number are retrieved
-            ->whereNull('s2.subscription_id')
-
-            // Order the results by the creation date of subscriptions in descending order
+        //Sensors with serialnumber
+        $subscriptions1 = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
             ->orderBy('subscriptions.created_at', 'desc')
-            // Get the results
+            ->join('sensorunits', 'subscriptions.serialnumber', '=', 'sensorunits.serialnumber')
+            ->join('products', 'sensorunits.product_id_ref', '=', 'products.product_id')
             ->get();
-
-        // Only store the first entry of all duplicate subscription_ids
-        $subscriptions = $subscriptions->unique('subscription_id');
-        // Return the subscriptions
+        //Ordered sensors (No serialnumber)
+        $subscriptions2 = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
+            ->orderBy('subscriptions.created_at', 'desc')
+            ->join('subscriptions_payments', 'subscriptions.subscription_id', '=', 'subscriptions_payments.subscription_id')
+            ->join('paymentsProducts', 'subscriptions_payments.payment_id', '=', 'paymentsProducts.payment_id')
+            ->join('products', 'paymentsProducts.product_id', '=', 'products.product_id')
+            ->whereNull('subscriptions.serialnumber')
+            ->get();
+        $subscriptions = $subscriptions1->unique('serialnumber')->merge($subscriptions2);
         return $subscriptions;
     }
+    
     public static function getSubscriptionsForCustomerJoinAllDistinctSNfunkerikke($customerId) {
         $subscriptions = Subscription::where('subscriptions.customer_id_ref', '=', $customerId)
             ->select('subscriptions.*', 'customer.*', 'sensorunits.*', 'products.product_name', 'payment_products.product_name AS payment_product_name', 'paymentsProducts.*')

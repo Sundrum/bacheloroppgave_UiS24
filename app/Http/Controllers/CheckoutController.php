@@ -29,7 +29,7 @@ class CheckoutController extends Controller
     $customer_id = Auth::user()->customer_id_ref;
     $checkoutKey = env('NETS_EASY_CHECKOUT_KEY');
 
-    if ($product_id===null){
+    if ($product_id==null){
         $unit = Sensorunit::where('serialnumber', $serial_number)->first();
         $product = Product::find($unit->product_id_ref);
         $product_id = $product->product_id;

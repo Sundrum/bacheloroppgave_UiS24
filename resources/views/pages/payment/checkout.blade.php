@@ -19,6 +19,6 @@
     console.log("mastercard: 5213199803453465")
     var managebool = "{{$managebool}}";
     var subscriptionId = "{{$subscriptionId ?? ''}}";
+    console.log(managebool)
   </script>
-   <script  type="text/javascript" src="{{asset('js/checkout.js')}}"></script>
-@endsection
+  <script  type="text/javascript" src="{{asset('js/checkout.js')}}"></script>
