@@ -17,8 +17,9 @@
     var checkoutKey = "{{ $checkoutKey }}";
     console.log("visacard: 4268270087374847")
     console.log("mastercard: 5213199803453465")
-    var managebool = "{{$managebool}}";
+    var managebool = @json($managebool);
     var subscriptionId = "{{$subscriptionId ?? ''}}";
-    console.log(managebool)
+    console.log("managebool:" + managebool)
   </script>
   <script  type="text/javascript" src="{{asset('js/checkout.js')}}"></script>
+  @endsection

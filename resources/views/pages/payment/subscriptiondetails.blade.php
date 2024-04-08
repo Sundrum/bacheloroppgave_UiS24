@@ -12,21 +12,23 @@
         <thead>
             <tr>
                 <th>Product Name</th>
-                <th>Product Serial Number</th>
                 <th>Description</th>
-                <th>Installation Date</th>
-                <th>Status</th>
+                <th>Product Serial Number</th>
+                <th>Next Payment</th>
                 <th>Price</th>
+                <th>Payment method</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>{{$sensorUnit->product_name}}</td>
-                <td>{{$sensorUnit->serialnumber}}</td>
                 <td>{{$sensorUnit->product_description}}</td>
-                <td>{{$sensorUnit->sensorunit_installdate}}</td>
-                <td>{{$subscription->subscription_status === 0 ? 'Inactive' : ($subscription->subscription_status === 1 ? 'Canceled' : ($subscription->subscription_status === 2 ? 'Active' : 'Unknown')) }}</td>
+                <td>{{$sensorUnit->serialnumber}}</td>
+                <td>{{$subscription->next_payment}}</td>
                 <td>{{$sensorUnit->subscription_price}},- nok</td>
+                <td>{{$cardType}} {{$maskedPan}}</td>
+                <td>{{$subscription->subscription_status === 0 ? 'Inactive' : ($subscription->subscription_status === 1 ? 'Canceled' : ($subscription->subscription_status === 2 ? 'Active' : 'Unknown')) }}</td>
             </tr>
         </tbody>
     </table>

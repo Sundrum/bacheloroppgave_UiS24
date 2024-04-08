@@ -17,6 +17,8 @@ class SubscriptionsController extends Controller
     {
         $subscription_id = $request->input("subscription_id");
         $serialnumber = null;
+
+        // If user is redirected from the "Manage payment method" site
         if ($subscription_id) {
             $subscription = Subscription::find($subscription_id);
             $serialnumber = $subscription->serialnumber;
@@ -71,7 +73,14 @@ class SubscriptionsController extends Controller
         {
             return view('fallback');
         }
-        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+
+        // Get the payment info on last payment (mainly for payment method)
+        $payment = Payment::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorunitId)->last();
+        $netsResponse = Payment::getNetsResponse($payment->payment_id);
+        $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
+        $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription', 'maskedPan', 'cardType'));
     }
     public function cancelSubscription(Request $request)
     {

@@ -33,10 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         containerId: "checkout-container-div",
         language: GetLang(),
       };
-      console.log(checkoutOptions);
       const checkout = new Dibs.Checkout(checkoutOptions);
-      console.log("CHECKOUT:")
-      console.log(checkout);
       var theme = {
         "backgroundColor": "#white",
         "panelColor": "#white",
@@ -44,17 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
         "primaryColor":"#00265a",
         "linkColor":"#00265a",
         "primaryOutlineColor":"#00265a",
-        "outlineColor":"#00265a"
+        "outlineColor":"#00265a",
       };
       checkout.setTheme(theme);
       checkout.on('payment-completed', function (response) {
-        console.log("Payment completed");
-        console.log(response);
-        window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
-        // }else{
-        //   window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId;
-        
-        // }
+        if (!managebool){
+          window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
+        }else{
+          window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId;
+        }
       });
     } else {
       console.log("Expected a paymentId");   // No paymentId provided, 
