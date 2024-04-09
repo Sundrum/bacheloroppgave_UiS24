@@ -8,22 +8,30 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailables\Attachment;
 
-// This Mailable class is used to send an email to administration when a purchase is made in the portal
-
-class PurchaseMade extends Mailable
+// This Mailable class is used to send status of each scheduled cron job to administration
+// It will be sent once a day
+class SubscriptionTaskStatus extends Mailable
 {
     use Queueable, SerializesModels;
+    public $charge;
+    public $cancelled;
+    public $outdated;
+    public $errors;
+    public $currentDate;
 
     /**
      * Create a new message instance.
-     * @param string $file_path The path to the invoice to attach
+     *
      * @return void
      */
-    public function __construct($file_path)
+    public function __construct($charge, $cancelled, $outdated, $errors, $currentDate)
     {
-        $this->file_path = $file_path;
+        $this->charge = $charge;
+        $this->cancelled = $cancelled;
+        $this->outdated = $outdated;
+        $this->errors = $errors;
+        $this->currentDate = $currentDate;
     }
 
     /**
@@ -34,7 +42,7 @@ class PurchaseMade extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'A purchase has been made in the 7Sense portal',
+            subject: 'Daily subscription payment status',
         );
     }
 
@@ -46,7 +54,7 @@ class PurchaseMade extends Mailable
     public function content()
     {
         return new Content(
-            view: 'email/purchasemade',
+            view: 'email/subscriptiontaskstatus',
         );
     }
 
@@ -57,9 +65,6 @@ class PurchaseMade extends Mailable
      */
     public function attachments()
     {
-        return [
-            Attachment::fromPath($this->file_path)
-                    ->as("customer_invoice.pdf")
-        ];
+        return [];
     }
 }

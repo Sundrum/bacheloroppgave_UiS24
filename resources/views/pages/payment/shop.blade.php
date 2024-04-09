@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('content')
+<button onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}" class="btn-7g">
+    Payment History
+</button>
 <section class="bg-white card-rounded">
     <div class="row mt-3 text-center">
     </div>
-    <a onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
-        Payment History
-    </a>
     <div class="row text-center mt-5">
         <div class="col-12">
             <h4>Shop Products</h4>

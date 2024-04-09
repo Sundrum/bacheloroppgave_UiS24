@@ -192,6 +192,7 @@ class SubscriptionsController extends Controller
     public static function GetMostRecentPaymentForSubscription($subscriptionId){
         $payment_ids = SubscriptionPayment::getPaymentIdsBySubscriptionId($subscriptionId);
         $old_payment = Payment::find($payment_ids[0]);
+        $payment = $old_payment;
         foreach ($payment_ids as $payment_id) {
             $new_payment = Payment::find($payment_id);
             if ($new_payment->created_at > $old_payment->created_at){

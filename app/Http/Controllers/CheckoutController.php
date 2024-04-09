@@ -38,11 +38,23 @@ class CheckoutController extends Controller
     }
     $managebool = false;
     //Initialize DB
-    self::initPaymentEntry($payment_id, $customer_id);
-    self::initPaymentsProductsEntry($payment_id, $product_id);
+    try {
+        self::initPaymentEntry($payment_id, $customer_id);
+    } catch (\Exception $e) {
+        Log::error("An error occurred in initPaymentEntry: " . $e->getMessage());
+    }
+    try {
+        self::initPaymentsProductsEntry($payment_id, $product_id);
+    } catch (\Exception $e) {
+        Log::error("An error occurred in initPaymentsProductsEntry: " . $e->getMessage());
+    }
     if ($serial_number) {
-        self::initPaymentsUnitsEntry($payment_id,$serial_number);
-    } 
+        try {
+            self::initPaymentsUnitsEntry($payment_id, $serial_number);
+        } catch (\Exception $e) {
+            Log::error("An error occurred in initPaymentsUnitsEntry: " . $e->getMessage());
+        }
+    }
     
     return view('pages/payment/checkout', ['managebool' => $managebool, 'paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
    }
@@ -65,8 +77,18 @@ class CheckoutController extends Controller
             $customer_id_ref= $payment->customer_id_ref;
             $paymentUnit = PaymentsUnits::firstDistinctPaymentUnit($payment_id);
             $serialnumber = $paymentUnit->serialnumber ?? null; //set serialnumber if it exists, else null.
-            self::initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber);
-            self::initSubscriptionPaymentEntry($subscription_id,$payment_id);
+            try {
+                self::initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber);
+            } catch (\Exception $e) {
+                Log::error("An error occurred in initSubscriptionEntry: " . $e->getMessage());
+            }
+            
+            try {
+                self::initSubscriptionPaymentEntry($subscription_id, $payment_id);
+            } catch (\Exception $e) {
+                Log::error("An error occurred in initSubscriptionPaymentEntry: " . $e->getMessage());
+            }
+            
        }
 
        //Send mail to 7Sense and inform a sale has been made
@@ -74,7 +96,7 @@ class CheckoutController extends Controller
         $tempFilePath = tempnam(sys_get_temp_dir(), 'invoice_');
         $pdf->save($tempFilePath);
         Mail::to('sigurd.undrum@hotmail.no')->send(new PurchaseMade($tempFilePath));
-       unlink($tempFilePath);
+        unlink($tempFilePath);
 
        self::setActivity("Checkout success", "success");
        return view('pages/payment/checkoutsuccess', compact('payment_id'));

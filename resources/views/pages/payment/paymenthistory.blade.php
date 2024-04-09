@@ -49,6 +49,10 @@
             </table>
         </div>
     </div>
+    <div id="LoadingText" style="text-align: center;">
+    Loading history:
+    <p id="dateCount"></p>
+    </div>
 </section>
 
 
@@ -60,8 +64,9 @@
 
  
 let customer = {!! json_encode($customer ?? null) !!};
-let CSRFtoken = "{{ csrf_token() }}";
-
+document.getElementById('year-filter').addEventListener('change', filterTable);
+document.getElementById('month-filter').addEventListener('change', filterTable);
+document.getElementById('status-filter').addEventListener('change', filterTable);
 
 function submitForm(paymentId) {
     // Find the form element corresponding to the paymentId
@@ -78,6 +83,8 @@ async function fetchPaymentHistory(Date) {
             }
             const paymentData = await response.json();
             // Process payment data and update the UI
+            const dateCountElement = document.getElementById('dateCount');
+            dateCountElement.textContent = Date;
             updatePaymentTable(paymentData);
         } catch (error) {
             //console.error('Error fetching payment history:', error);
@@ -126,6 +133,7 @@ function updatePaymentTable(paymentData) {
         `;
         // Append row to table body
         paymentTableBody.appendChild(row);
+        filterTable();
     });
 }
 function getStatus(statusCode) {
@@ -137,15 +145,21 @@ function getStatus(statusCode) {
     };
     return statusCodes[statusCode] ?? 'Unknown';
 }
-function getDescription(statusCode) {
-    const statusDescriptions = {
-        0: 'Created',
-        1: 'Cancelled',
-        2: 'Failed',
-        3: 'Completed'
-    };
-    return statusDescriptions[statusCode.toString()] || null;
+function getDescription(description) {
+    switch(description) {
+        case "Created":
+            return 0;
+        case "Cancelled":
+            return 1;
+        case "Failed":
+            return 2;
+        case "Completed":
+            return 3;
+        default:
+            return null;
+    }
 }
+
 
 function getPreviousDate(date) {
     // Get the year, month, and day components from the provided date
@@ -182,19 +196,16 @@ let currentDate = new Date();
 let formattedDate = formatDate(currentDate);
 
 // Loop until the date is older than 2020
-while (currentDate.getFullYear() >= 2020) {
-    // Fetch payment history for the current date
-    fetchPaymentHistory(formattedDate);
-
-    // Get the previous date
-    currentDate = getPreviousDate(currentDate);
-    formattedDate = formatDate(currentDate);
+async function LoadPaymentHistory() {
+    while (currentDate.getFullYear() >= 2020) {
+        // Await the fetchPaymentHistory function to finish before continuing
+        await fetchPaymentHistory(formattedDate);
+        
+        // Get the previous date
+        currentDate = getPreviousDate(currentDate);
+        formattedDate = formatDate(currentDate);
+    }
 }
-
-// Event listeners for filter change
-document.getElementById('year-filter').addEventListener('change', filterTable);
-document.getElementById('month-filter').addEventListener('change', filterTable);
-document.getElementById('status-filter').addEventListener('change', filterTable);
 
 // Function to filter the table based on filter options
 function filterTable() {
@@ -204,12 +215,9 @@ function filterTable() {
     const tableRows = document.querySelectorAll('#payment-table-body tr');
     
     tableRows.forEach(row => {
-        console.log("so far so good");
-        //var rowStatus = row.getAttribute('data-status');
-        var rowStatus = row.querySelector('#status').textContent;
-        //var rowYear = row.getAttribute('data-date').split('-')[0];
+
+        var rowStatus = row.querySelector('#status').textContent.trim();
         var rowYear = row.querySelector('#date').textContent.split('-')[0];
-        //var rowMonth = row.getAttribute('data-date').split('-')[1];
         var rowMonth = row.querySelector('#date').textContent.split('-')[1];
 
         if ((!selectedStatus || rowStatus.toString() === getStatus(selectedStatus).toString()) && 
@@ -218,17 +226,12 @@ function filterTable() {
             row.style.display = '';
         } else {
             row.style.display = 'none';
-            console.log("rowStatus:", rowStatus);
-            console.log("getStatus(selectedStatus):", getStatus(selectedStatus));
-            console.log("getDescription(rowStatus):", getDescription(rowStatus));
-            console.log("rowYear:", rowYear);
-            console.log("selectedYear:", selectedYear);
-            console.log("rowMonth:", rowMonth);
-            console.log("selectedMonth:", selectedMonth);
-            console.log("RowSatus=",rowStatus,"SelectedStatus",selectedStatus,"status",getStatus(selectedStatus))
         }
     });
 }
+
+//Entry Point
+LoadPaymentHistory();
 
 </script>
 <style>

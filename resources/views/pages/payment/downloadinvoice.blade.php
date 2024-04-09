@@ -122,10 +122,6 @@
 #downloadButton{
     padding-left: 1em;
 }
-.bg-white.card-rounded {
-    font-family: 'Arial', sans-serif;
-    margin: 20px;
-}
 
 .bg-white.card-rounded h1 {
     color: #333;
@@ -158,7 +154,6 @@
 }
 .bg-white.card-rounded {
     font-family: 'Arial', sans-serif;
-    margin: 20px;
     padding: 20px; /* Add padding */
 }
 

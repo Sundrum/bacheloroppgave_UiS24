@@ -14,7 +14,7 @@
                 <th>Product Name</th>
                 <th>Description</th>
                 <th>Product Serial Number</th>
-                <th>Next Payment</th>
+                <th>{{$subscription->subscription_status === 0 ? 'Last active' : ($subscription->subscription_status === 1 ? 'Active until' : ($subscription->subscription_status === 2 ? 'Next payment' : 'Next payment')) }}</th>
                 <th>Price</th>
                 <th>Payment method</th>
                 <th>Status</th>
