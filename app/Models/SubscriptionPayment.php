@@ -30,6 +30,11 @@ class SubscriptionPayment extends Model
             ->first();
         return $subscriptionpayment;
     }
+
+    public static function getPaymentIdsBySubscriptionId($subscriptionId)
+    {
+        return self::where('subscription_id', $subscriptionId)->pluck('payment_id');
+    }
     
 }
 

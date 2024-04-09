@@ -10,6 +10,9 @@
             </div>
         @endif
     </div>
+    <a onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
+        Payment History
+    </a>
     <div class="row text-center mt-5">
         <div class="col-12">
             <h4>Subscriptions for {{ $user->user_name }}</h4>

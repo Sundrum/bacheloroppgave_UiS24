@@ -15,7 +15,6 @@
 
 Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']);// API
 Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
-Route::get('/subscriptionbilling', [App\Http\Controllers\SubscriptionBillingController::class, 'subscriptionbilling'])->name('subscriptionbilling');
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
 //Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
@@ -36,6 +35,8 @@ Route::post('/paymentsunitsdelete' , [App\Http\Controllers\DbOperationsControlle
 Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
 Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
 Route::get('/managebilling', [App\Http\Controllers\CheckoutController::class, 'manageBilling'])->name('managebilling');
+Route::get('/fetchPaymentHistory', [App\Http\Controllers\PaymentHistoryController::class, 'fetchPaymentHistory'])->name('fetchPaymentHistory');
+Route::get('/downloadinvoice', [App\Http\Controllers\InvoiceController::class, 'downloadinvoice'])->name('downloadinvoice');
 
 
 

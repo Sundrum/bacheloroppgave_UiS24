@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('content')
 
+{{-- IKKE I BRUK LENGER
+VAR OPPRINNELIG EN HOVEDSIDE SOM VISER ABONNEMENTER OG BETALINGSHISTORIKK --}}
+
 <div id="header">
     <section class="bg-white card-rounded">
         <div class="row text-center mt-5">

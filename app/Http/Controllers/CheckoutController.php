@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers;
+use App\Mail\PurchaseMade;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Payment;
@@ -11,7 +12,8 @@ use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
 use App\Models\PaymentsProducts;
 use App\Models\PaymentsUnits;
-
+use Illuminate\Support\Facades\Mail;
+use PDF;
 use Log;
 use Auth;
 class CheckoutController extends Controller
@@ -66,6 +68,14 @@ class CheckoutController extends Controller
             self::initSubscriptionEntry($subscription_id, $customer_id_ref, $serialnumber);
             self::initSubscriptionPaymentEntry($subscription_id,$payment_id);
        }
+
+       //Send mail to 7Sense and inform a sale has been made
+        $pdf = self::generatePDF($payment_id);
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'invoice_');
+        $pdf->save($tempFilePath);
+        Mail::to('sigurd.undrum@hotmail.no')->send(new PurchaseMade($tempFilePath));
+       unlink($tempFilePath);
+
        self::setActivity("Checkout success", "success");
        return view('pages/payment/checkoutsuccess', compact('payment_id'));
    }
@@ -122,4 +132,36 @@ class CheckoutController extends Controller
         return view('pages/payment/checkout', ['managebool' => $managebool, 'subscriptionId' => $subscriptionId, 'paymentId' => $paymentId, 'language' => $language, 'checkoutKey' => $checkoutKey]);
     }
 
+    public static function generatePDF($payment_id){
+        $organization_id = "913036999";
+
+        $netsResponse = Payment::getNetsResponse($payment_id);
+        $netsResponse->payment->orderDetails->amount = $netsResponse->payment->orderDetails->amount /100;
+        $date = date('d-m-y', strtotime($netsResponse->payment->created));
+        $netsResponse->payment->created = date('jS \of F, Y', strtotime($netsResponse->payment->created));
+        $paymentProduct = PaymentsProducts::where('payment_id', $payment_id)->first();
+        $product_id = $paymentProduct->product_id;
+        $amount = $paymentProduct->Amount;
+        $customer=null;
+        $customer_id = Payment::where('payment_id', $payment_id)->first()->customer_id_ref;
+        $product = Product::find($product_id);
+        $price_ex_vat = $product->product_price / 1.25;
+        $vat = $product->product_price - $price_ex_vat;
+
+        $subscription_ex_vat = $product->subscription_price / 1.25;
+        $subscription_vat = $product->subscription_price - $subscription_ex_vat;
+
+        if($netsResponse->payment->orderDetails->amount == $product->product_price){
+            $ordertype = 0;
+        } else if($netsResponse->payment->orderDetails->amount == $product->subscription_price){
+            $ordertype = 1;
+        } else if($netsResponse->payment->orderDetails->amount == $product->product_price + $product->subscription_price) {
+            $ordertype = 2;
+        }
+
+        $invoice_number = $organization_id . '-' . $payment_id;
+        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer'));
+
+        return $pdf;
+    }
 }

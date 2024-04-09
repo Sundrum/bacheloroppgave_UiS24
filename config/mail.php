@@ -99,7 +99,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'no-replay@portal.7sense.no'),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@portal.7sense.no'),
         'name' => env('MAIL_FROM_NAME', '7Sense Portal'),
     ],
 

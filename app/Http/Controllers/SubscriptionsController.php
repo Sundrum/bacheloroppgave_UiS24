@@ -9,6 +9,7 @@ use App\Models\Sensorunit;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Payment;
+use App\Models\SubscriptionPayment;
 use App\Models\PaymentsUnits;
 
 class SubscriptionsController extends Controller
@@ -16,13 +17,10 @@ class SubscriptionsController extends Controller
     public function subscriptions(Request $request)
     {
         $subscription_id = $request->input("subscription_id");
+        $payment_id = $request->input("payment_id");
         $serialnumber = null;
 
-        // If user is redirected from the "Manage payment method" site
-        if ($subscription_id) {
-            $subscription = Subscription::find($subscription_id);
-            $serialnumber = $subscription->serialnumber;
-        }
+        
         $user_id = Session::get('user_id');
         if ($user_id == null) {
             Log::error("user_id not found");
@@ -32,6 +30,24 @@ class SubscriptionsController extends Controller
         $user = User::find($user_id);
         if ($user == null) {
             Log::error("User not found");
+        }
+
+        // If user is redirected from the "Manage payment method" site
+        if ($subscription_id && $payment_id) {
+            $subscription = Subscription::find($subscription_id);
+            $serialnumber = $subscription->serialnumber;
+
+            // New payment entry when you change payment method
+            $payment = new Payment;
+            $payment->payment_id = $payment_id;
+            $payment->payment_status = 3; //Completed
+            $payment->customer_id_ref = $user->customer_id_ref;
+            $payment->save();
+
+            $subscription_payment = new SubscriptionPayment;
+            $subscription_payment->subscription_id = $subscription_id;
+            $subscription_payment->payment_id = $payment_id;
+            $subscription_payment->save();
         }
 
         //Get all subscription sensors for customer:
@@ -73,9 +89,7 @@ class SubscriptionsController extends Controller
         {
             return view('fallback');
         }
-
-        // Get the payment info on last payment (mainly for payment method)
-        $payment = Payment::getByCustomerIdAndSerialNumber($user->customer_id_ref, $sensorunitId)->last();
+        $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
         $netsResponse = Payment::getNetsResponse($payment->payment_id);
         $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
         $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
@@ -172,5 +186,19 @@ class SubscriptionsController extends Controller
         $subscription = Subscription::getByCustomerIdAndSerialNumber($customer_id, $sensorunitId);
         $subscriptionId = $subscription->subscription_id;
         return view('pages/payment/updatepaymentdetails', compact(''));
+    }
+
+
+    public static function GetMostRecentPaymentForSubscription($subscriptionId){
+        $payment_ids = SubscriptionPayment::getPaymentIdsBySubscriptionId($subscriptionId);
+        $old_payment = Payment::find($payment_ids[0]);
+        foreach ($payment_ids as $payment_id) {
+            $new_payment = Payment::find($payment_id);
+            if ($new_payment->created_at > $old_payment->created_at){
+                $payment = $new_payment;
+            }
+            $old_payment = $new_payment;
+        }
+        return $payment;
     }
 }

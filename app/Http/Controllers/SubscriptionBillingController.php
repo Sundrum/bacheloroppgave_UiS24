@@ -14,6 +14,8 @@ use App\Models\SubscriptionPayment;
 
 class SubscriptionBillingController extends Controller
 {
+
+    // KONTROLLEREN IKKE LENGER I BRUK
     public function subscriptionbilling()
     {
         $user_id = Session::get('user_id');

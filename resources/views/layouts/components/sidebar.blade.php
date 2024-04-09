@@ -31,11 +31,11 @@
         <span class="tooltip-right">@lang('navbar.settings')</span>
     </li>
     <li class="sidebar-item">
-        <a onclick="loadContent('{{route('subscriptionbilling')}}')" href="{{route('subscriptionbilling')}}">
+        <a onclick="loadContent('{{route('subscriptions')}}')" href="{{route('subscriptions')}}">
             <i class="fa fa-2x fa-file-invoice"></i>
-            <span class="links_name">@lang('navbar.subscriptionbilling')</span>
+            <span class="links_name">@lang('navbar.subscriptions')</span>
         </a>
-        <span class="tooltip-right">@lang('navbar.subscriptionbilling')</span>
+        <span class="tooltip-right">@lang('navbar.subscriptions')</span>
     </li>
     <li class="sidebar-item">
         <a onclick="loadContent('{{route('shop')}}')" href="{{route('shop')}}">

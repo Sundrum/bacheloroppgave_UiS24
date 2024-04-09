@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!managebool){
           window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
         }else{
-          window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId;
+          window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId + "&payment_id=" + paymentId;
         }
       });
     } else {

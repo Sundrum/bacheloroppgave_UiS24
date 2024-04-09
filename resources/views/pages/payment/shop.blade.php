@@ -3,6 +3,9 @@
 <section class="bg-white card-rounded">
     <div class="row mt-3 text-center">
     </div>
+    <a onclick="loadContent('{{route('paymenthistory')}}')" href="{{route('paymenthistory')}}">
+        Payment History
+    </a>
     <div class="row text-center mt-5">
         <div class="col-12">
             <h4>Shop Products</h4>

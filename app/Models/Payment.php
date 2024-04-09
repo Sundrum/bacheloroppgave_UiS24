@@ -75,9 +75,27 @@ class Payment extends Model
             ->get();
         return $payments;
     }
+    public static function getPaymentsForCustomerAndDate($customerId,$date) {
+        $payments = Payment::select('*')
+            ->where('payments.customer_id_ref', '=', $customerId)
+            ->whereDate('created_at', $date)
+            ->get();
+        return $payments;
+    }
     public static function joinNetsResponseAndPayments($customerId)
     {
         $payments = self::getPaymentsForCustomer($customerId); 
+        foreach ($payments as $payment) {                                               // Loop through each payment
+            $netsResponse = Payment::getNetsResponse($payment->payment_id);             // Get the Nets response for the payment
+            if ($netsResponse) {
+                $payment->nets = $netsResponse->payment;
+            }
+        }
+        return $payments;
+    }
+    public static function joinNetsResponseAndPaymentsForCustomerAndDate($customerId,$date)
+    {
+        $payments = self::getPaymentsForCustomerAndDate($customerId, $date); 
         foreach ($payments as $payment) {                                               // Loop through each payment
             $netsResponse = Payment::getNetsResponse($payment->payment_id);             // Get the Nets response for the payment
             if ($netsResponse) {
