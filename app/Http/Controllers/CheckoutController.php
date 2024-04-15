@@ -12,6 +12,7 @@ use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
 use App\Models\PaymentsProducts;
 use App\Models\PaymentsUnits;
+use App\Models\InvoiceNumber;
 use Illuminate\Support\Facades\Mail;
 use PDF;
 use Log;
@@ -82,7 +83,11 @@ class CheckoutController extends Controller
             } catch (\Exception $e) {
                 Log::error("An error occurred in initSubscriptionEntry: " . $e->getMessage());
             }
-            
+            try {
+                self::initInvoiceNumberEntry($payment_id);
+            } catch (\Exception $e) {
+                Log::error("An error occurred in initInvoiceNumberEntry: " . $e->getMessage());
+            }
             try {
                 self::initSubscriptionPaymentEntry($subscription_id, $payment_id);
             } catch (\Exception $e) {
@@ -92,10 +97,11 @@ class CheckoutController extends Controller
        }
 
        //Send mail to 7Sense and inform a sale has been made
+       $admin_address = env('MAIL_ADMIN_ADDRESS');
         $pdf = self::generatePDF($payment_id);
         $tempFilePath = tempnam(sys_get_temp_dir(), 'invoice_');
         $pdf->save($tempFilePath);
-        Mail::to('sigurd.undrum@hotmail.no')->send(new PurchaseMade($tempFilePath));
+        Mail::to($admin_address)->send(new PurchaseMade($tempFilePath));
         unlink($tempFilePath);
 
        self::setActivity("Checkout success", "success");
@@ -133,6 +139,14 @@ class CheckoutController extends Controller
         $subscription_payment->subscription_id = $subscription_id;
         $subscription_payment->payment_id = $payment_id;
         $subscription_payment->save();
+    }
+
+    public static function initInvoiceNumberEntry($payment_id){
+        $invoiceNumber = new InvoiceNumber;
+        $invoice_number = InvoiceNumber::getNextInvoiceNumber();
+        $invoiceNumber->payment_id = $payment_id;
+        $invoiceNumber->invoice_number = $invoice_number;
+        $invoiceNumber->save();
     }
     
     public static function initPaymentsUnitsEntry($payment_id, $serialnumber){
@@ -181,7 +195,7 @@ class CheckoutController extends Controller
             $ordertype = 2;
         }
 
-        $invoice_number = $organization_id . '-' . $payment_id;
+        $invoice_number = InvoiceNumber::getInvoiceNumber($payment_id);
         $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer'));
 
         return $pdf;

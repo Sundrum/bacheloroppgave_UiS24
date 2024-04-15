@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Attachment;
 
 // This Mailable class is used to send an email to administration when a purchase is made in the portal
+// The class is called in CheckoutController.php success method.
 
 class PurchaseMade extends Mailable
 {

@@ -10,7 +10,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 // This Mailable class is used to send status of each scheduled cron job to administration
-// It will be sent once a day
+// It will be sent once a day at 00:00 UTC
+// The class is called in Console/Commands/SubscriptionPaymentTask.php
 class SubscriptionTaskStatus extends Mailable
 {
     use Queueable, SerializesModels;

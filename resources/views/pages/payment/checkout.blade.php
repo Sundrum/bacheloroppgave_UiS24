@@ -6,6 +6,10 @@
     </div>
     <div class="row text-center mt-5">
     </div>
+    <div id="error-message" class="alert alert-danger" style="display: none;">
+      Error: Checkout page is currently unavailable. Please contact support.
+    </div>
+  
    <div id="checkout-container-div">
      <!-- checkout iframe will be embedded here -->
    </div>
@@ -19,7 +23,6 @@
     console.log("mastercard: 5213199803453465")
     var managebool = @json($managebool);
     var subscriptionId = "{{$subscriptionId ?? ''}}";
-    console.log("managebool:" + managebool)
   </script>
   <script  type="text/javascript" src="{{asset('js/checkout.js')}}"></script>
   @endsection

@@ -12,6 +12,13 @@ function GetLang(){
   return lang
 };
 
+
+// Not implemented, but use this function to handle the case where the SDK fails to load
+function handleSdkLoadFailure() {
+  document.getElementById('error-message').style.display = 'block';
+}
+
+
 function setTheme(bgColor, panelColor){
   var theme = {
     "backgroundColor": bgColor,
@@ -25,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
   {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentId = urlParams.get('paymentId');
-    console.log(paymentId + ' ' + checkoutKey);
     if (paymentId) {
       const checkoutOptions = {
         checkoutKey: checkoutKey,

@@ -76,7 +76,8 @@ class SubscriptionPaymentTask extends Command
         }
 
         $this->info('CUSTOM TASK COMPLETED:');
-        Mail::to('sigurd.undrum@hotmail.no')->send(new SubscriptionTaskStatus($charged, $cancelled, $outdated, $err, $currentDateString));
+        $admin_mail = env('MAIL_ADMIN_ADDRESS');
+        Mail::to($admin_mail)->send(new SubscriptionTaskStatus($charged, $cancelled, $outdated, $err, $currentDateString));
         //Log::info('CUSTOM TASK COMPLETED:');
     }
 
@@ -199,8 +200,8 @@ class SubscriptionPaymentTask extends Command
     {   
         // Initialize payload array
         $payload = [
-            "externalBulkChargeId" => $date,
-            //"externalBulkChargeId" => "18-03-2024-A0042",
+            //"externalBulkChargeId" => $date,
+            "externalBulkChargeId" => "18-03-2024-A0043",
             "subscriptions" => []
         ];
 

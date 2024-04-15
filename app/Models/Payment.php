@@ -10,7 +10,7 @@ class Payment extends Model
 {
 
     protected $table = 'payments';
-    protected $primaryKey = 'payment_id'; // Assuming payment_id is the primary key
+    protected $primaryKey = 'payment_id';
     public $incrementing = false;
     public $timestamps = false;
 

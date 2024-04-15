@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\SubscriptionPayment;
 use App\Models\PaymentsProducts;
 use App\Models\Customer;
+use App\Models\Country;
+use App\Models\InvoiceNumber;
 use DateTime;
 use DateTimeZone;
 use PDF;
@@ -69,10 +71,19 @@ class InvoiceController extends Controller
             $ordertype = 2;
         }
 
-        
-        $invoice_number = $organization_id . '-' . $payment_id;
+        $country = $netsResponse->payment->consumer->billingAddress->country ??
+            $customer->customer_invoicecountry ?? 
+            $customer->customer_visitcountry ?? 
+            $customer->customer_delivercountry ?? 
+            null;      
+
+        if (is_int($country)) {
+            $country = Country::find($country)->name;
+        }
+
+        $invoice_number = InvoiceNumber::getInvoiceNumber($payment_id);
         $PDF_name = $organization_id . '-' . $customer_id . '-' . $date . '.pdf';
-        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer'));
+        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer','country'));
 
         return $pdf->download($PDF_name);
     }
@@ -126,8 +137,17 @@ class InvoiceController extends Controller
             $ordertype = 2;
         }
 
-        $invoice_number = $organization_id . '-' . $payment_id;
+        $country = $netsResponse->payment->consumer->billingAddress->country ??
+            $customer->customer_invoicecountry ?? 
+            $customer->customer_visitcountry ?? 
+            $customer->customer_delivercountry ?? 
+            null;      
 
-        return view('pages/payment/downloadinvoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer', 'payment_id'));
+        if (is_int($country)) {
+            $country = Country::find($country)->name;
+        }
+
+        $invoice_number = InvoiceNumber::getInvoiceNumber($payment_id);
+        return view('pages/payment/downloadinvoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer', 'payment_id','country'));
     }
 }

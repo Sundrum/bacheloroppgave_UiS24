@@ -19,13 +19,13 @@
             <h4>New sensorunit</h4>
         </div>
     </div>
-    <form method="POST" action=" {{ route('dboperationsnewunit') }}">
+    <form method="POST" action=" {{ route('dboperationsnewunit') }}" style="text-align: center;">
         @csrf
         <input type="text" name="payment_id" placeholder="An existing payment ID" size="30">
         <input type="text" name="serialnumber" placeholder="A new serialnumber" >
         <input type="text" name="product_id_ref" placeholder="The corresponding product ID" size="30">
         <input type="text" name="customer_id_ref" placeholder="The corresponding customer ID" size="30"> <br> <br>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn-7g">Submit</button>
     </form>
     <br>
 </section>

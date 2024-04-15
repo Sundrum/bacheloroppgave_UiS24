@@ -39,10 +39,7 @@
             $customer->customer_visitcity ??
             $customer->customer_delivercity ??
             'No city' }},
-        {{ $netsResponse->payment->consumer->billingAddress->country ?? 
-            $customer->customer_invoicecountry ??
-            $customer->customer_visitcountry ??
-            $customer->customer_delivercountry ??
+        {{ $country ??
             'No country' }}</p>
     <br>
     <h4>Order lines</h4>

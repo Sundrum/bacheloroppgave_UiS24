@@ -51,7 +51,7 @@
     </div>
     <div id="LoadingText" style="text-align: center;">
     Loading history:
-    <p id="dateCount"></p>
+    <p id="dateCount">Today</p>
     </div>
 </section>
 
@@ -63,17 +63,17 @@
 <script>
 
  
-let customer = {!! json_encode($customer ?? null) !!};
 document.getElementById('year-filter').addEventListener('change', filterTable);
 document.getElementById('month-filter').addEventListener('change', filterTable);
 document.getElementById('status-filter').addEventListener('change', filterTable);
+let customer = {!! json_encode($customer ?? null) !!};
+let currentDate = new Date();
+let formattedDate = formatDate(currentDate);
 
 function submitForm(paymentId) {
-    // Find the form element corresponding to the paymentId
-    const form = document.getElementById(`form_${paymentId}`);
     // Redirect to the newly generated view if needed
     window.location.href = 'https://student.portal.7sense.no/downloadinvoice?paymentId=' + paymentId;
-    }
+}
 
 async function fetchPaymentHistory(Date) {
         try {
@@ -89,7 +89,7 @@ async function fetchPaymentHistory(Date) {
         } catch (error) {
             //console.error('Error fetching payment history:', error);
         }
-    }
+}
 
 // Function to format date as yyyy-mm-dd
 function formatDate(date) {
@@ -97,8 +97,8 @@ function formatDate(date) {
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
-    }
-    // Function to update the payment table with fetched data
+}
+
 // Function to update the payment table with fetched data
 function updatePaymentTable(paymentData) {
     // Clear existing table rows
@@ -136,6 +136,7 @@ function updatePaymentTable(paymentData) {
         filterTable();
     });
 }
+
 function getStatus(statusCode) {
     const statusCodes = {
         0: 'Created',
@@ -144,20 +145,6 @@ function getStatus(statusCode) {
         3: 'Completed'
     };
     return statusCodes[statusCode] ?? 'Unknown';
-}
-function getDescription(description) {
-    switch(description) {
-        case "Created":
-            return 0;
-        case "Cancelled":
-            return 1;
-        case "Failed":
-            return 2;
-        case "Completed":
-            return 3;
-        default:
-            return null;
-    }
 }
 
 
@@ -190,10 +177,6 @@ function getPreviousDate(date) {
     // Return the previous date as a Date object
     return new Date(previousYear, previousMonth - 1, previousDay); // Note: JavaScript months are zero-based
 }
-
-
-let currentDate = new Date();
-let formattedDate = formatDate(currentDate);
 
 // Loop until the date is older than 2020
 async function LoadPaymentHistory() {

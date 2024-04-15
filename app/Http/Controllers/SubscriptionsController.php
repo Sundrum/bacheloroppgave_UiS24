@@ -89,8 +89,10 @@ class SubscriptionsController extends Controller
         {
             return view('fallback');
         }
+
         $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
         $netsResponse = Payment::getNetsResponse($payment->payment_id);
+
         $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
         $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
 
@@ -125,7 +127,14 @@ class SubscriptionsController extends Controller
         }
         $subscription->subscription_status = 1;
         $subscription->save();
-        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+
+        $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
+        $netsResponse = Payment::getNetsResponse($payment->payment_id);
+
+        $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
+        $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription', 'maskedPan', 'cardType'));
     }
     public function reactivateSubscription(Request $request)
     {
@@ -158,7 +167,13 @@ class SubscriptionsController extends Controller
         $subscription->subscription_status = 2;
         $subscription->save();
 
-        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription'));
+        $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
+        $netsResponse = Payment::getNetsResponse($payment->payment_id);
+
+        $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
+        $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+
+        return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription', 'maskedPan', 'cardType'));
     }
     public function manageSubscription(Request $request)
     {
