@@ -1,5 +1,3 @@
-
-
 function GetLang(){
   if(language == 1)
   {
@@ -14,23 +12,54 @@ function GetLang(){
   return lang
 };
 
+
+// Not implemented, but use this function to handle the case where the SDK fails to load
+function handleSdkLoadFailure() {
+  document.getElementById('error-message').style.display = 'block';
+}
+
+
+function setTheme(bgColor, panelColor){
+  var theme = {
+    "backgroundColor": bgColor,
+    "panelcolor": panelColor,
+  }
+  return theme;
+}
+
 //On Load
 document.addEventListener('DOMContentLoaded', function () {
+  {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentId = urlParams.get('paymentId');
     if (paymentId) {
       const checkoutOptions = {
-        checkoutKey: 'test-checkout-key-6ead172d804948e5af1e46507d13d3b5',
+        checkoutKey: checkoutKey,
         paymentId: paymentId,
         containerId: "checkout-container-div",
-        language: GetLang()
+        language: GetLang(),
       };
       const checkout = new Dibs.Checkout(checkoutOptions);
+      var theme = {
+        "backgroundColor": "#white",
+        "panelColor": "#white",
+        "buttonbackgroundColor":"#00265a",
+        "primaryColor":"#00265a",
+        "linkColor":"#00265a",
+        "primaryOutlineColor":"#00265a",
+        "outlineColor":"#00265a",
+      };
+      checkout.setTheme(theme);
       checkout.on('payment-completed', function (response) {
-        window.location = checkoutSuccessRoute;
+        if (!managebool){
+          window.location = "https://student.portal.7sense.no/checkoutsuccess?payment_id=" + paymentId;
+        }else{
+          window.location = "https://student.portal.7sense.no/subscriptions?subscription_id=" + subscriptionId + "&payment_id=" + paymentId;
+        }
       });
     } else {
       console.log("Expected a paymentId");   // No paymentId provided, 
       window.location = 'cart.html';         // go back to cart.html
     }
+  }
 });

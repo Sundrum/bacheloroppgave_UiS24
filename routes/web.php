@@ -13,11 +13,31 @@
 
 // Sigurd og Kristian
 
-Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']); // API
+Route::get('/api/create-payment', [App\Http\Controllers\PaymentController::class, 'createPayment']);// API
 Route::get('/subscriptions', [App\Http\Controllers\SubscriptionsController::class, 'subscriptions'])->name('subscriptions');
 Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
 Route::get('/checkoutsuccess', [App\Http\Controllers\CheckoutController::class, 'success'])->name('checkoutSuccess');
 //Route::get('/checkout/{paymentId}', [App\Http\Controllers\CheckoutController::class, 'checkout'])->name('checkout');
+Route::post('/subscriptiondetails', [App\Http\Controllers\SubscriptionsController::class, 'subscriptionDetails'])->name('subscriptiondetails');
+Route::post('/cancelSubscription', [App\Http\Controllers\SubscriptionsController::class, 'cancelSubscription'])->name('cancelSubscription');
+Route::post('/reactivateSubscription', [App\Http\Controllers\SubscriptionsController::class, 'reactivateSubscription'])->name('reactivateSubscription');
+Route::post('/manageSubscription', [App\Http\Controllers\SubscriptionsController::class, 'manageSubscription'])->name('manageSubscription');
+Route::get('/updateUserData', [App\Http\Controllers\PaymentController::class, 'updateUserData'])->name('updateUserData');
+Route::get('/retrievePayment', [App\Http\Controllers\retrievePaymentController::class, 'retrievePayment'])->name('retrievePayment');
+Route::get('/paymenthistory', [App\Http\Controllers\PaymentHistoryController::class, 'paymentHistory'])->name('paymenthistory');
+Route::get('/dboperations', [App\Http\Controllers\DbOperationsController::class, 'DbOperations'])->name('dboperations');
+Route::post('/dboperationsdeleted', [App\Http\Controllers\DbOperationsController::class, 'delete'])->name('dboperationsdeleted');
+Route::post('/dboperationsupdated', [App\Http\Controllers\DbOperationsController::class, 'update'])->name('dboperationsupdated');
+Route::post('/dboperationsnewunit', [App\Http\Controllers\DbOperationsController::class, 'newSensorUnit'])->name('dboperationsnewunit');
+Route::post('/dboperationsprice', [App\Http\Controllers\DbOperationsController::class, 'changePrice'])->name('dboperationsprice');
+Route::post('/subscriptionpaymentdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletesubpay'])->name('subscriptionpaymentdelete');
+Route::post('/paymentsunitsdelete' , [App\Http\Controllers\DbOperationsController::class, 'deletepayunits'])->name('paymentsunitsdelete');
+Route::post('/invoice', [App\Http\Controllers\InvoiceController::class, 'invoice'])->name('invoice');
+Route::get('/shop', [App\Http\Controllers\ShopController::class, 'shop'])->name('shop');
+Route::get('/managebilling', [App\Http\Controllers\CheckoutController::class, 'manageBilling'])->name('managebilling');
+Route::get('/fetchPaymentHistory', [App\Http\Controllers\PaymentHistoryController::class, 'fetchPaymentHistory'])->name('fetchPaymentHistory');
+Route::get('/downloadinvoice', [App\Http\Controllers\InvoiceController::class, 'downloadinvoice'])->name('downloadinvoice');
+
 
 
 /***

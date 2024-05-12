@@ -1,0 +1,45 @@
+.user-form {
+    max-width: 500px;
+    margin: 0 auto;
+    margin-bottom: 5em;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the text horizontally */
+}
+
+.user-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left; /* Reset text alignment for labels */
+}
+
+.user-form input[type="text"],
+.user-form input[type="email"],
+.user-form input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    text-align: center; /* Center the text horizontally */
+}
+
+.user-form button[type="submit"] {
+    background-color: #00265a;
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.user-form button[type="submit"]:hover {
+    background-color: #a7c49d;
+}
