@@ -14,6 +14,7 @@ use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
 use App\Models\PaymentsProducts;
 use App\Models\PaymentsUnits;
+use App\Models\InvoiceNumber;
 use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
@@ -58,26 +59,27 @@ class SubscriptionPaymentTask extends Command
         } catch (\Exception $e) {
             //Log::error("Failed to charge subscriptions" . $e->getMessage());
             $charged = [[],[]];
-            $err[] = "Failed to charge subscriptions" . $e->getMessage();
+            $err[] = "Failed to charge subscriptions " . $e->getMessage();
         }
         try {
             $cancelled = $this->cancelSubscriptions($currentDateString);
         } catch (\Exception $e) {
             //Log::error("Failed to cancel subscriptions" . $e->getMessage());
             $cancelled = [[],[]];
-            $err[] = "Failed to cancel subscriptions" . $e->getMessage();
+            $err[] = "Failed to cancel subscriptions " . $e->getMessage();
         }
         try {
             $outdated = $this->outdatedSubscriptions($currentDateString);
         } catch (\Exception $e) {
             //Log::error("Failed to outdate subscriptions" . $e->getMessage());
             $outdated = [[],[]];
-            $err[] = "Failed to outdate subscriptions" . $e->getMessage();
+            $err[] = "Failed to outdate subscriptions " . $e->getMessage();
         }
 
         $this->info('CUSTOM TASK COMPLETED:');
         $admin_mail = env('MAIL_ADMIN_ADDRESS');
-        Mail::to($admin_mail)->send(new SubscriptionTaskStatus($charged, $cancelled, $outdated, $err, $currentDateString));
+        // Send email to admin with task status and errors. Remove comment to activate. 1 email per 24 hours @ 00:00 UTC.
+        //Mail::to($admin_mail)->send(new SubscriptionTaskStatus($charged, $cancelled, $outdated, $err, $currentDateString));
         //Log::info('CUSTOM TASK COMPLETED:');
     }
 
@@ -157,7 +159,6 @@ class SubscriptionPaymentTask extends Command
         if ($chargeSuccessJSON) {
             $bulkId = json_decode($chargeSuccessJSON, true)['bulkId'];
             $status = "Processing";
-
             $maxRetries = 60;   // Retry for 1 hour
             $retryCount = 0;    // Initialize the retry counter
 
@@ -177,7 +178,17 @@ class SubscriptionPaymentTask extends Command
 
                     if ($status === "Done") {
                         foreach ($charges['page'] as $charge) {
-                            $this->readCharge($charge, $currentDateString);
+                            $errors = $this->readCharge($charge, $currentDateString);
+                            if (count($errors) > 0) {
+                                foreach($errors as $error){
+                                    $err[] = $error;
+                                }
+                                foreach($subscriptions as $key => $subscription){
+                                    if ($subscription['subscription_id'] === $charge['subscriptionId']){
+                                        unset($subscriptions[$key]);
+                                    }
+                                }
+                            }
                         }
                     }else{                
                     sleep(60);// Sleep for 1 minute before retrying
@@ -200,8 +211,8 @@ class SubscriptionPaymentTask extends Command
     {   
         // Initialize payload array
         $payload = [
-            //"externalBulkChargeId" => $date,
-            "externalBulkChargeId" => "18-03-2024-A0043",
+            "externalBulkChargeId" => $date,
+            //"externalBulkChargeId" => "18-04-2024-A0064",
             "subscriptions" => []
         ];
 
@@ -298,6 +309,7 @@ class SubscriptionPaymentTask extends Command
 
     public function readCharge($charge, $currentDate){
         $subscription=Subscription::find($charge['subscriptionId']);
+        $err = [];
         if ($charge['status']==='Succeeded'){
             $subscription->subscription_status=2;//Active
 
@@ -313,27 +325,39 @@ class SubscriptionPaymentTask extends Command
         }else{
             $subscription->subscription_status=0; //Inactive
             $payment_status=2; //Failed
+            $err[] = "Failed to charge subscription with ID: " . $charge['subscriptionId'];
         }
         try {
             $subscription->save();
         } catch (\Exception $e) {
             //Log::error("Failed to update subscription entry: " . $e->getMessage());
+            $err[] = "Failed to update subscription entry: " . $e->getMessage();
         }
         try {
             $this->initPaymentEntry($charge['paymentId'], $subscription->customer_id_ref, $payment_status);
         } catch (\Exception $e) {
             //Log::error("Failed to initialize payment entry: " . $e->getMessage());
+            $err[] = 'Failed to initialize payment entry: '. $e->getMessage();
         }
         try {
             $this->initSubscriptionPaymentEntry($charge['subscriptionId'], $charge['paymentId']);
         } catch (\Exception $e) {
             //Log::error("Failed to initialize subscription-payment entry: " . $e->getMessage());
+            $err[] = 'Failed to initialize subscription-payment entry: '. $e->getMessage();
         }
         try {
-            $this->initPaymentsUnitsEntry($charge['paymentId'], $subscription->serialnumber);
+            $this->initInvoiceNumberEntry($charge['paymentId']);
         } catch (\Exception $e) {
             //Log::error("Failed to initialize payment units entry: " . $e->getMessage());
+            $err[] = 'Failed to initialize InvoiceNumberEntry entry: '. $e->getMessage();
         }
+        // try {
+        //     $this->initPaymentsUnitsEntry($charge['paymentId'], $subscription->serialnumber);
+        // } catch (\Exception $e) {
+        //     //Log::error("Failed to initialize payment units entry: " . $e->getMessage());
+        //     $err[] = 'Failed to initialize payment units entry: '. $e->getMessage();
+        // }
+        return $err;
     }
 
     public static function initPaymentEntry($payment_id, $customer_id_ref,$payment_status){
@@ -355,4 +379,11 @@ class SubscriptionPaymentTask extends Command
        $paymentsUnits->serialnumber = $serialnumber;
        $paymentsUnits->save();
    }
+   public static function initInvoiceNumberEntry($payment_id){
+    $invoiceNumber = new InvoiceNumber;
+    $invoice_number = InvoiceNumber::getNextInvoiceNumber();
+    $invoiceNumber->payment_id = $payment_id;
+    $invoiceNumber->invoice_number = $invoice_number;
+    $invoiceNumber->save();
+}
 }

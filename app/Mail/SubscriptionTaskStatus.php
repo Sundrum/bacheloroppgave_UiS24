@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 class SubscriptionTaskStatus extends Mailable
 {
     use Queueable, SerializesModels;
-    public $charge;
+    public $charged;
     public $cancelled;
     public $outdated;
     public $errors;
@@ -26,9 +26,9 @@ class SubscriptionTaskStatus extends Mailable
      *
      * @return void
      */
-    public function __construct($charge, $cancelled, $outdated, $errors, $currentDate)
+    public function __construct(array $charged, array $cancelled, array $outdated, array $errors, string $currentDate)
     {
-        $this->charge = $charge;
+        $this->charged = $charged;
         $this->cancelled = $cancelled;
         $this->outdated = $outdated;
         $this->errors = $errors;

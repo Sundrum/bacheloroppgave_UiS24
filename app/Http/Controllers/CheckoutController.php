@@ -12,6 +12,7 @@ use App\Models\SubscriptionPayment;
 use App\Models\Sensorunit;
 use App\Models\PaymentsProducts;
 use App\Models\PaymentsUnits;
+use App\Models\Customer;
 use App\Models\InvoiceNumber;
 use Illuminate\Support\Facades\Mail;
 use PDF;
@@ -49,6 +50,10 @@ class CheckoutController extends Controller
     } catch (\Exception $e) {
         Log::error("An error occurred in initPaymentsProductsEntry: " . $e->getMessage());
     }
+
+    //OBS Payments Units brukes kun ved Ativering (betaling for eksisterende abonnement) og ønskes utfases, men brukes i checkout Success
+    //OBS se funksjon  PaymentsUnits::firstDistinctPaymentUnit($payment_id); lenger nede
+    //OBS ved fjerning av PaymentsUnits må Serialnumber sendes som en URL parameter fra checkout.js. til checkout success.
     if ($serial_number) {
         try {
             self::initPaymentsUnitsEntry($payment_id, $serial_number);
@@ -56,6 +61,7 @@ class CheckoutController extends Controller
             Log::error("An error occurred in initPaymentsUnitsEntry: " . $e->getMessage());
         }
     }
+    //kan fjeren logikk over relatert til initPaymentsUnitsEntry
     
     return view('pages/payment/checkout', ['managebool' => $managebool, 'paymentId' => $payment_id, 'language' => $language, 'checkoutKey' => $checkoutKey]);
    }
@@ -76,6 +82,9 @@ class CheckoutController extends Controller
        if ($is_subscription){
             $subscription_id= $netsResponse->payment->subscription->id;
             $customer_id_ref= $payment->customer_id_ref;
+
+            //OBS - utfaser gammel tabell PaymentUnits. Serialnumber må finnes på en annen måte
+            //OBS ved fjerning av PaymentsUnits må Serialnumber sendes som en URL parameter fra checkout.js. - Dette er ikke vasnkelig:) 
             $paymentUnit = PaymentsUnits::firstDistinctPaymentUnit($payment_id);
             $serialnumber = $paymentUnit->serialnumber ?? null; //set serialnumber if it exists, else null.
             try {
@@ -178,8 +187,8 @@ class CheckoutController extends Controller
         $paymentProduct = PaymentsProducts::where('payment_id', $payment_id)->first();
         $product_id = $paymentProduct->product_id;
         $amount = $paymentProduct->Amount;
-        $customer=null;
         $customer_id = Payment::where('payment_id', $payment_id)->first()->customer_id_ref;
+        $customer= Customer::find($customer_id);
         $product = Product::find($product_id);
         $price_ex_vat = $product->product_price / 1.25;
         $vat = $product->product_price - $price_ex_vat;
@@ -195,8 +204,14 @@ class CheckoutController extends Controller
             $ordertype = 2;
         }
 
+        $country = $netsResponse->payment->consumer->billingAddress->country ??
+            $customer->customer_invoicecountry ?? 
+            $customer->customer_visitcountry ?? 
+            $customer->customer_delivercountry ?? 
+            null;   
+
         $invoice_number = InvoiceNumber::getInvoiceNumber($payment_id);
-        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer'));
+        $pdf = PDF::loadView('pages/payment/invoice', compact('netsResponse', 'invoice_number', 'product', 'amount', 'price_ex_vat', 'vat', 'subscription_ex_vat', 'subscription_vat', 'ordertype','customer', 'country'));
 
         return $pdf;
     }

@@ -2,7 +2,7 @@
 
 <h4>Charged subscriptions</h4>
 <p>All new subscription payments that happened overnight</p>
-@if(count($charge[0]) == 0)
+@if(count($charged[0]) == 0)
     <p>No subscriptions were charged today</p>
 @else
 <table>
@@ -18,7 +18,7 @@
     @php
     $totalSubscriptionPrice = 0;
     @endphp
-    @foreach ($charge[0] as $subscription)
+    @foreach ($charged[0] as $subscription)
         <tr>
             <td>{{ $subscription->customer_id_ref }}</td>
             <td>{{ $subscription->product_name }}</td>
@@ -91,7 +91,7 @@
 
 <h4>Errors</h4>
 <p>Charge errors:</p>
-@foreach ($charge[1] as $error)
+@foreach ($charged[1] as $error)
     <p>{{ $error }}</p>
 @endforeach
 <br>

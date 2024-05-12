@@ -41,6 +41,7 @@
             <thead>
                 <tr>
                     <th>Product Name</th>
+                    <th>Product ID</th>
                     <th>Image</th>
                     <th>Price</th>
                     <th>Subscription price</th>
@@ -56,6 +57,7 @@
                             {{$product->product_name}}
                             <input type="hidden" name="product_id" value="{{$product->product_id}}" />
                         </td>
+                        <td>{{$product->product_id}}</td>
                         <td><img src="{{ $product->product_image_url }}" alt="{{ $product->product_name }}" style="width: 100px; height: 80px;"></td>
                         <td><input type="text" name="product_price" value="{{$product->product_price}}"></td>
                         <td><input type="text" name="subscription_price" value="{{$product->subscription_price}}"></td>
@@ -76,45 +78,7 @@
             <h4>Edit and delete database tables</h4>
         </div>
     </div>
-    <h4>Payments table</h4>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Payment ID</th>
-                <th>Created At</th>
-                <th>Payment Status</th>
-                <th>Customer ID</th>
-                <th>Save</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($payments as $payment)
-            <form method="POST" action="{{ route('dboperationsupdated') }}">
-                @csrf
-                <tr>
-                    <td>
-                        {{$payment->payment_id}}
-                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
-                    </td>
-                    <td>{{$payment->created_at}}</td>
-                    <td><input type="text" name="payment_status" value="{{$payment->payment_status}}"></td>
-                    <td><input type="text" name="customer_id_ref" value="{{$payment->customer_id_ref}}"></td>
-                    <td><button class="btn-7g" type="submit"><i class="fa fa-lg fa-check"></i></button></td>
-                </form>
-                <td>
-                    <form action="{{ route('dboperationsdeleted') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
-                        <button type="submit" class="btn-7r">
-                            <i class="fa fa-lg fa-trash"></i>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+
     <h4>Subscriptions table</h4>
     <table class="table table-bordered">
         <thead>
@@ -159,6 +123,46 @@
                         </form>
                     </td>
                 </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <h4>Payments table</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Created At</th>
+                <th>Payment Status</th>
+                <th>Customer ID</th>
+                <th>Save</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($payments as $payment)
+            <form method="POST" action="{{ route('dboperationsupdated') }}">
+                @csrf
+                <tr>
+                    <td>
+                        {{$payment->payment_id}}
+                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
+                    </td>
+                    <td>{{$payment->created_at}}</td>
+                    <td><input type="text" name="payment_status" value="{{$payment->payment_status}}"></td>
+                    <td><input type="text" name="customer_id_ref" value="{{$payment->customer_id_ref}}"></td>
+                    <td><button class="btn-7g" type="submit"><i class="fa fa-lg fa-check"></i></button></td>
+                </form>
+                <td>
+                    <form action="{{ route('dboperationsdeleted') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="payment_id" value="{{$payment->payment_id}}" />
+                        <button type="submit" class="btn-7r">
+                            <i class="fa fa-lg fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>

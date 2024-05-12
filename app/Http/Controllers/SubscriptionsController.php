@@ -93,8 +93,22 @@ class SubscriptionsController extends Controller
         $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
         $netsResponse = Payment::getNetsResponse($payment->payment_id);
 
-        $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
-        $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+        try {
+            $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
+            $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+        }
+        catch (\Exception $e) {
+            $payment = self::GetSecondMostRecentPaymentForSubscription($subscriptionId);
+            $netsResponse = Payment::getNetsResponse($payment->payment_id);
+            try {
+                $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
+                $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
+            }
+            catch (\Exception $e) {
+                $maskedPan = null;
+                $cardType = null;
+            }
+        }
 
         return view('pages/payment/subscriptiondetails', compact('sensorUnit','subscription', 'maskedPan', 'cardType'));
     }
@@ -130,6 +144,11 @@ class SubscriptionsController extends Controller
 
         $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
         $netsResponse = Payment::getNetsResponse($payment->payment_id);
+        if ($netsResponse->payment->paymentDetails->cardDetails == null) {
+            $payment = self::GetSecondMostRecentPaymentForSubscription($subscriptionId);
+            $netsResponse = Payment::getNetsResponse($payment->payment_id);
+        }
+
 
         $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
         $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
@@ -169,6 +188,10 @@ class SubscriptionsController extends Controller
 
         $payment = self::GetMostRecentPaymentForSubscription($subscriptionId);
         $netsResponse = Payment::getNetsResponse($payment->payment_id);
+        if ($netsResponse->payment->paymentDetails->cardDetails == null) {
+            $payment = self::GetSecondMostRecentPaymentForSubscription($subscriptionId);
+            $netsResponse = Payment::getNetsResponse($payment->payment_id);
+        }
 
         $maskedPan = $netsResponse->payment->paymentDetails->cardDetails->maskedPan;
         $cardType = $netsResponse->payment->paymentDetails->paymentMethod;
@@ -216,5 +239,16 @@ class SubscriptionsController extends Controller
             $old_payment = $new_payment;
         }
         return $payment;
+    }
+
+    public static function GetSecondMostRecentPaymentForSubscription($subscriptionId){
+        $payment_ids = SubscriptionPayment::getPaymentIdsBySubscriptionId($subscriptionId);
+        $payments = [];
+        foreach ($payment_ids as $payment_id) {
+            $payments[] = Payment::find($payment_id);
+        }
+        $createdAt = array_column($payments, 'created_at');
+        array_multisort($createdAt, SORT_DESC, $payments);
+        return $payments[1];
     }
 }

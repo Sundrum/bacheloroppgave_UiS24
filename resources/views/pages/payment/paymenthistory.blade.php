@@ -40,7 +40,7 @@
                         <th>Company</th>
                         <th>Method</th>
                         <th>Status</th>
-                        <th>PDF</th>
+                        <th>Invoice</th>
                     </tr>
                 </thead>
                 <tbody id="payment-table-body">
