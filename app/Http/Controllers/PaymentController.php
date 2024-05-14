@@ -57,8 +57,15 @@ class PaymentController extends Controller
         $itemsDecode = json_decode(urldecode($itemsString), true);        // Parse the items string into an array
         $subOrder = array_shift($itemsDecode)['subOrder'];
         $newOrder = array_shift($itemsDecode)['newOrder'];
+
+        //Sikrer at man ikke kjøper nytt produkt uten produktpris:
+        if($newOrder==0 && isset($itemsDecode[0]['productId'])){
+            return;
+        };
+
         $items =  $this->generateItemsList($itemsDecode,$subOrder,$newOrder);
         $payload = $this->createPayload($subOrder,$items, $subscriptionId);
+
 
         $secretAPIKey = env('NETS_EASY_API_KEY_SECRET');
         Log::info("Payload created");
